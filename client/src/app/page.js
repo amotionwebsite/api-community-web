@@ -99,7 +99,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Anak Programmer Indonesia. Dibangun dengan Next.js & Node.js.
+        © 2026 Anak Programmer Indonesia. Dibangun dengan Next.js & Node.js.
       </footer>
     </div>
   );
