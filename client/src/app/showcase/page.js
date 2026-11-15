@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { IoTerminal, IoStar, IoArrowForward, IoAdd, IoClose } from "react-icons/io5";
 
 const INITIAL_PROJECTS = [
   {
@@ -83,12 +84,10 @@ export default function ShowcasePage() {
       {/* Navbar */}
       <header className="sticky top-3 z-50 px-3 sm:px-6">
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#0c0718]/80 backdrop-blur-xl border border-violet-900/40 flex items-center justify-between gap-2">
-          <Link href="/" className="flex items-center gap-2 min-w-0">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="w-7 h-7 rounded-lg object-cover border border-violet-500/30 shrink-0"
-            />
+          <Link href="/" className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-[9px] bg-gradient-to-b from-violet-600 to-purple-950 border border-violet-400/30 shadow-[0_2px_10px_rgba(109,40,217,0.45)] flex items-center justify-center shrink-0">
+              <IoTerminal className="text-white text-base" />
+            </div>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-slate-100 truncate">
               Anak Programmer ID
             </span>
@@ -126,9 +125,19 @@ export default function ShowcasePage() {
 
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-700 to-purple-950 border border-violet-500/40 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-violet-950/50 hover:brightness-110 transition w-fit"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-700 to-purple-950 border border-violet-500/40 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-violet-950/50 hover:brightness-110 transition w-fit"
           >
-            {showForm ? "Tutup Form" : "+ Pajang Karya"}
+            {showForm ? (
+              <>
+                <IoClose className="text-base" />
+                <span>Tutup Form</span>
+              </>
+            ) : (
+              <>
+                <IoAdd className="text-base" />
+                <span>Pajang Karya</span>
+              </>
+            )}
           </button>
         </div>
 
@@ -219,7 +228,9 @@ export default function ShowcasePage() {
               <div>
                 <div className="flex items-center justify-between text-xs font-mono text-slate-500 mb-3">
                   <span>@{project.author}</span>
-                  <span className="text-violet-400">★ {project.likes} Apresiasi</span>
+                  <span className="inline-flex items-center gap-1 text-violet-400">
+                    <IoStar className="text-xs" /> {project.likes} Apresiasi
+                  </span>
                 </div>
 
                 <h2 className="font-bold text-lg text-slate-100 mb-2">
@@ -250,7 +261,7 @@ export default function ShowcasePage() {
                   className="inline-flex items-center gap-1.5 text-xs font-mono text-violet-300 hover:text-violet-200 transition"
                 >
                   <span>Lihat Source / Demo</span>
-                  <span>-&gt;</span>
+                  <IoArrowForward className="text-xs" />
                 </a>
               </div>
             </motion.div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { IoTerminal, IoArrowForward } from "react-icons/io5";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
@@ -45,7 +46,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Island Navbar (Anti-Potong di HP) */}
+      {/* Floating Island Navbar */}
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -53,10 +54,10 @@ export default function Home() {
         className="sticky top-3 z-50 px-3 sm:px-6"
       >
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#0c0718]/80 backdrop-blur-xl border border-violet-900/40 shadow-[0_8px_32px_rgba(46,16,101,0.35)] flex items-center justify-between gap-2">
-          <Link href="/" className="flex items-center gap-2 min-w-0">
-            <span className="shrink-0 px-2 py-1 rounded-lg bg-gradient-to-br from-violet-700 to-purple-950 border border-violet-500/30 text-violet-200 text-xs font-mono font-bold shadow-inner">
-              &lt;/&gt;
-            </span>
+          <Link href="/" className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-[9px] bg-gradient-to-b from-violet-600 to-purple-950 border border-violet-400/30 shadow-[0_2px_10px_rgba(109,40,217,0.45)] flex items-center justify-center shrink-0">
+              <IoTerminal className="text-white text-base" />
+            </div>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-slate-100 truncate">
               Anak Programmer ID
             </span>
@@ -101,7 +102,7 @@ export default function Home() {
           ~/komunitas/indonesia — active
         </motion.div>
 
-        {/* Typing Heading (Tanpa Icon | & Gradasi Ungu Gelap) */}
+        {/* Typing Heading */}
         <div className="min-h-[135px] sm:min-h-[120px] mb-5 flex items-center">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.18] bg-gradient-to-br from-violet-300 via-violet-500 to-purple-950 bg-clip-text text-transparent">
             {typedText}
@@ -133,7 +134,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-violet-700 via-violet-800 to-purple-950 border border-violet-500/40 text-white text-sm font-semibold shadow-[0_0_25px_rgba(109,40,217,0.4)] hover:shadow-[0_0_35px_rgba(109,40,217,0.65)] transition-all"
             >
               <span>Buka Forum Diskusi</span>
-              <span className="font-mono text-violet-300">-&gt;</span>
+              <IoArrowForward className="text-violet-300 text-base" />
             </Link>
           </motion.div>
 
@@ -147,7 +148,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Asymmetric Bento Grid (Unik & Anti-Template) */}
+        {/* Asymmetric Bento Grid */}
         <motion.div
           id="bento"
           initial="hidden"
@@ -160,7 +161,7 @@ export default function Home() {
           }}
           className="grid grid-cols-1 md:grid-cols-12 gap-4"
         >
-          {/* Card 1 - Lebar 7 Kolom */}
+          {/* Card 1 */}
           <motion.div
             variants={{
               hidden: { opacity: 0, y: 24 },
@@ -187,7 +188,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Card 2 - Lebar 5 Kolom */}
+          {/* Card 2 */}
           <motion.div
             variants={{
               hidden: { opacity: 0, y: 24 },
@@ -210,7 +211,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Card 3 - Lebar Penuh 12 Kolom (Terminal Bar Style) */}
+          {/* Card 3 */}
           <motion.div
             variants={{
               hidden: { opacity: 0, y: 24 },
