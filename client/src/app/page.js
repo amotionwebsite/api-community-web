@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  IoTerminalOutline,
+  IoCodeSlash,
   IoChevronForward,
-  IoBugOutline,
-  IoCubeOutline,
-  IoRadioOutline,
+  IoTerminal,
+  IoCube,
+  IoRadio,
 } from "react-icons/io5";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
@@ -72,7 +72,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <Link href="/" className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-[10px] bg-gradient-to-b from-[#7d56ab] to-[#2e184a] border border-[#c8a8ed]/40 shadow-[0_2px_10px_rgba(46,24,74,0.7)] flex items-center justify-center shrink-0">
-              <IoTerminalOutline className="text-[#f5effc] text-base" />
+              <IoCodeSlash className="text-[#f5effc] text-base" />
             </div>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
@@ -165,7 +165,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Asymmetric Bento Grid dengan Ikon iOS Lembut */}
+        {/* Asymmetric Bento Grid dengan Ikon iOS Non-AI */}
         <motion.div
           id="bento"
           initial="hidden"
@@ -188,8 +188,8 @@ export default function Home() {
             className="md:col-span-7 p-6 rounded-3xl bg-gradient-to-br from-[#231438]/90 to-[#140b21]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors relative overflow-hidden group"
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs">
-                <IoBugOutline className="text-sm" />
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs">
+                <IoTerminal className="text-sm text-[#e1cff7]" />
                 01 // DEBUG_ROOM
               </span>
               <span className="text-xs font-mono text-[#967db5] group-hover:text-[#d4bcf0] transition-colors">
@@ -216,8 +216,8 @@ export default function Home() {
             className="md:col-span-5 p-6 rounded-3xl bg-gradient-to-bl from-[#27163d]/90 to-[#130a1f]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors flex flex-col justify-between"
           >
             <div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs mb-4">
-                <IoCubeOutline className="text-sm" />
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs mb-4">
+                <IoCube className="text-sm text-[#e1cff7]" />
                 02 // SHIP_IT
               </span>
               <h3 className="font-bold text-xl text-[#f5effc] mb-2">
@@ -240,8 +240,8 @@ export default function Home() {
             className="md:col-span-12 p-5 sm:p-6 rounded-3xl bg-[#1d112e]/85 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div>
-              <div className="inline-flex items-center gap-1.5 text-[#b48ee0] font-mono text-xs mb-1">
-                <IoRadioOutline className="text-sm" />
+              <div className="inline-flex items-center gap-2 text-[#c4a6e8] font-mono text-xs mb-1.5">
+                <IoRadio className="text-sm text-[#e1cff7]" />
                 03 // SYNC_CHANNEL
               </div>
               <h3 className="font-bold text-lg text-[#f5effc]">

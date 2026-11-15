@@ -52,6 +52,8 @@ export default function ShowcasePage() {
   const [stackInput, setStackInput] = useState("");
   const [demoUrl, setDemoUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState({ title: false, description: false });
+  const [shakeKey, setShakeKey] = useState(0);
 
   const { scrollYProgress } = useScroll();
   const bgColor = useTransform(
@@ -63,7 +65,14 @@ export default function ShowcasePage() {
 
   const handleAddProject = (e) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    const titleEmpty = !title.trim();
+    const descEmpty = !description.trim();
+
+    if (titleEmpty || descEmpty) {
+      setErrors({ title: titleEmpty, description: descEmpty });
+      setShakeKey((prev) => prev + 1);
+      return;
+    }
 
     const stackArray = stackInput
       .split(",")
@@ -85,6 +94,7 @@ export default function ShowcasePage() {
     setStackInput("");
     setDemoUrl("");
     setDescription("");
+    setErrors({ title: false, description: false });
     setShowForm(false);
   };
 
@@ -141,7 +151,20 @@ export default function ShowcasePage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 pt-10 pb-20">
+      {/* Backdrop Blur saat Form Terbuka */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowForm(false)}
+            className="fixed inset-0 z-20 bg-[#090412]/55 backdrop-blur-md"
+          />
+        )}
+      </AnimatePresence>
+
+      <main className="relative z-30 max-w-5xl mx-auto px-4 pt-10 pb-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <div className="text-xs font-mono text-[#b48ee0] mb-1">
@@ -153,7 +176,10 @@ export default function ShowcasePage() {
           </div>
 
           <button
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => {
+              setShowForm(!showForm);
+              setErrors({ title: false, description: false });
+            }}
             className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#6c4896] to-[#341c52] border border-[#b48ee0]/45 text-[#faf6ff] text-xs sm:text-sm font-semibold shadow-lg shadow-[#11091c]/70 hover:brightness-110 transition w-fit"
           >
             {showForm ? (
@@ -170,26 +196,48 @@ export default function ShowcasePage() {
           </button>
         </div>
 
+        {/* Form Glassmorphism dengan Validasi Merah Getar */}
         <AnimatePresence>
           {showForm && (
             <motion.form
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
+              noValidate
+              initial={{ opacity: 0, y: -14, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.98 }}
+              transition={{ duration: 0.25 }}
               onSubmit={handleAddProject}
-              className="mb-8 p-5 rounded-2xl bg-[#1f1230]/85 backdrop-blur-xl border border-[#7854a3]/65 shadow-2xl space-y-4"
+              className="mb-8 p-5 sm:p-6 rounded-3xl bg-[#221336]/65 backdrop-blur-2xl border border-[#9d75cb]/45 shadow-[0_20px_50px_rgba(8,3,16,0.85)] space-y-4 relative z-30"
             >
               <div>
-                <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
-                  Nama Project
-                </label>
-                <input
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-mono text-[#d4bcf0]">
+                    Nama Project
+                  </label>
+                  {errors.title && (
+                    <span className="text-[11px] font-mono text-rose-400">
+                      * Nama project wajib diisi
+                    </span>
+                  )}
+                </div>
+                <motion.input
+                  key={`proj-title-${shakeKey}`}
+                  animate={
+                    errors.title ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
+                  }
+                  transition={{ duration: 0.35 }}
                   type="text"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (errors.title)
+                      setErrors((prev) => ({ ...prev, title: false }));
+                  }}
                   placeholder="Contoh: Aplikasi Kasir UMKM Berbasis Web"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
-                  required
+                  className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors border ${
+                    errors.title
+                      ? "bg-rose-950/30 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
+                      : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus:border-[#b48ee0]"
+                  }`}
                 />
               </div>
 
@@ -203,7 +251,7 @@ export default function ShowcasePage() {
                     value={stackInput}
                     onChange={(e) => setStackInput(e.target.value)}
                     placeholder="Next.js, Tailwind, Express"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/75 backdrop-blur-md border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
                   />
                 </div>
 
@@ -216,22 +264,41 @@ export default function ShowcasePage() {
                     value={demoUrl}
                     onChange={(e) => setDemoUrl(e.target.value)}
                     placeholder="https://github.com/..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/75 backdrop-blur-md border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
-                  Deskripsi Singkat
-                </label>
-                <textarea
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-mono text-[#d4bcf0]">
+                    Deskripsi Singkat
+                  </label>
+                  {errors.description && (
+                    <span className="text-[11px] font-mono text-rose-400">
+                      * Deskripsi wajib diisi
+                    </span>
+                  )}
+                </div>
+                <motion.textarea
+                  key={`proj-desc-${shakeKey}`}
+                  animate={
+                    errors.description ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
+                  }
+                  transition={{ duration: 0.35 }}
                   rows={3}
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (errors.description)
+                      setErrors((prev) => ({ ...prev, description: false }));
+                  }}
                   placeholder="Ceritakan fitur utama atau masalah yang diselesaikan project ini..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
-                  required
+                  className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors border ${
+                    errors.description
+                      ? "bg-rose-950/30 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
+                      : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus:border-[#b48ee0]"
+                  }`}
                 />
               </div>
 

@@ -12,7 +12,7 @@ import {
   IoChatbubbleOutline,
   IoChevronDownOutline,
   IoCheckmarkOutline,
-  IoSendOutline,
+  IoPaperPlaneOutline,
 } from "react-icons/io5";
 
 const INITIAL_THREADS = [
@@ -30,13 +30,13 @@ const INITIAL_THREADS = [
         id: 101,
         author: "rizky_code",
         time: "1 jam lalu",
-        text: "Coba cek di cors({ origin: 'https://domain-vercel-kamu.vercel.app', credentials: true }), pastikan tanpa slash di belakang.",
+        text: "Pastikan origin di cors({ origin: 'https://domain-vercel-kamu.vercel.app' }) ditulis tanpa garis miring di akhir bro.",
       },
       {
         id: 102,
         author: "anak_termux",
         time: "45 menit lalu",
-        text: "Bener banget, sekalian cek juga apakah method OPTIONS udah diizinkan di server Express-nya.",
+        text: "Cek juga header preflight OPTIONS-nya, kadang browser nge-block kalau credentials: true tapi origin masih '*'.",
       },
     ],
   },
@@ -54,7 +54,7 @@ const INITIAL_THREADS = [
         id: 201,
         author: "jason_dev",
         time: "3 jam lalu",
-        text: "Kalau skala menengah, pisahin komponen global di src/components/ui dan komponen spesifik fitur di dalam masing-masing route folder biar rapi.",
+        text: "Kalau udah di atas 15 halaman, mending kelompokkan per fitur biar gampang nyarinya pas ngoding di HP.",
       },
     ],
   },
@@ -71,8 +71,8 @@ const INITIAL_THREADS = [
       {
         id: 301,
         author: "droid_coder",
-        time: "20 jam lalu",
-        text: "Selalu tambahin flag --webpack di Next.js 16 biar nggak crash Turbopack di ARM64 Android.",
+        time: "18 jam lalu",
+        text: "Pakai flag --webpack di next dev jauh lebih adem daripada turbopack di Termux!",
       },
     ],
   },
@@ -85,19 +85,19 @@ export default function ForumPage() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [showForm, setShowForm] = useState(false);
 
-  // Form Buat Diskusi + State Error Validasi
+  // Form states & validasi getar merah
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Bug & Error");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [content, setContent] = useState("");
   const [errors, setErrors] = useState({ title: false, content: false });
-  const [shakeTrigger, setShakeTrigger] = useState(0);
+  const [shakeKey, setShakeKey] = useState(0);
 
-  // State Buka/Tutup Balasan per Thread
+  // State untuk membuka balasan per thread
   const [openRepliesId, setOpenRepliesId] = useState(null);
-  const [replyText, setReplyText] = useState("");
-  const [replyError, setReplyError] = useState(false);
-  const [replyShake, setReplyShake] = useState(0);
+  const [replyInputs, setReplyInputs] = useState({});
+  const [replyErrors, setReplyErrors] = useState({});
+  const [replyShakeKey, setReplyShakeKey] = useState(0);
 
   const { scrollYProgress } = useScroll();
   const bgColor = useTransform(
@@ -121,7 +121,7 @@ export default function ForumPage() {
 
     if (titleEmpty || contentEmpty) {
       setErrors({ title: titleEmpty, content: contentEmpty });
-      setShakeTrigger((prev) => prev + 1);
+      setShakeKey((prev) => prev + 1);
       return;
     }
 
@@ -144,11 +144,13 @@ export default function ForumPage() {
     setIsDropdownOpen(false);
   };
 
-  const handleAddReply = (e, threadId) => {
+  const handleSendReply = (e, threadId) => {
     e.preventDefault();
-    if (!replyText.trim()) {
-      setReplyError(true);
-      setReplyShake((prev) => prev + 1);
+    const text = (replyInputs[threadId] || "").trim();
+
+    if (!text) {
+      setReplyErrors((prev) => ({ ...prev, [threadId]: true }));
+      setReplyShakeKey((prev) => prev + 1);
       return;
     }
 
@@ -163,15 +165,16 @@ export default function ForumPage() {
                   id: Date.now(),
                   author: "kamu",
                   time: "Baru saja",
-                  text: replyText.trim(),
+                  text,
                 },
               ],
             }
           : t
       )
     );
-    setReplyText("");
-    setReplyError(false);
+
+    setReplyInputs((prev) => ({ ...prev, [threadId]: "" }));
+    setReplyErrors((prev) => ({ ...prev, [threadId]: false }));
   };
 
   return (
@@ -195,7 +198,7 @@ export default function ForumPage() {
         <div className="absolute bottom-10 -left-20 w-[380px] h-[380px] rounded-full bg-[#331a52]/55 blur-[130px]" />
       </div>
 
-      {/* Navbar dengan Tombol Home iOS Lembut */}
+      {/* Navbar */}
       <header className="sticky top-3 z-50 px-3 sm:px-6">
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
@@ -229,8 +232,21 @@ export default function ForumPage() {
         </div>
       </header>
 
+      {/* Backdrop Blur saat Form Terbuka */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowForm(false)}
+            className="fixed inset-0 z-20 bg-[#090412]/55 backdrop-blur-md"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Main Forum Content */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 pt-10 pb-20">
+      <main className="relative z-30 max-w-5xl mx-auto px-4 pt-10 pb-20">
         {/* Header & Tombol Buat Thread */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
@@ -263,42 +279,49 @@ export default function ForumPage() {
           </button>
         </div>
 
-        {/* Form Buat Diskusi Baru (Glassmorphism + Validasi Getar Merah) */}
+        {/* Form Glassmorphism dengan Validasi Merah Getar */}
         <AnimatePresence>
           {showForm && (
             <motion.form
               noValidate
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
+              initial={{ opacity: 0, y: -14, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.98 }}
+              transition={{ duration: 0.25 }}
               onSubmit={handleCreateThread}
-              className="mb-8 p-5 rounded-3xl bg-[#1f1230]/60 backdrop-blur-2xl border border-[#8e67bd]/45 shadow-[0_12px_40px_rgba(9,4,18,0.75)] space-y-4"
+              className="mb-8 p-5 sm:p-6 rounded-3xl bg-[#221336]/65 backdrop-blur-2xl border border-[#9d75cb]/45 shadow-[0_20px_50px_rgba(8,3,16,0.85)] space-y-4 relative z-30"
             >
-              {/* Input Judul */}
               <div>
-                <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
-                  Judul Pertanyaan / Topik
-                </label>
-                <motion.div
-                  key={`title-${shakeTrigger}`}
-                  animate={errors.title ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-mono text-[#d4bcf0]">
+                    Judul Pertanyaan / Topik
+                  </label>
+                  {errors.title && (
+                    <span className="text-[11px] font-mono text-rose-400">
+                      * Judul wajib diisi
+                    </span>
+                  )}
+                </div>
+                <motion.input
+                  key={`title-${shakeKey}`}
+                  animate={
+                    errors.title ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
+                  }
                   transition={{ duration: 0.35 }}
-                >
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                      if (errors.title) setErrors({ ...errors, title: false });
-                    }}
-                    placeholder="Contoh: Error saat connect MongoDB Atlas di Node.js..."
-                    className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
-                      errors.title
-                        ? "bg-red-950/35 border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-                        : "bg-[#120a1f]/65 border border-[#67468f]/60 focus:border-[#b48ee0]"
-                    }`}
-                  />
-                </motion.div>
+                  type="text"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (errors.title)
+                      setErrors((prev) => ({ ...prev, title: false }));
+                  }}
+                  placeholder="Contoh: Error saat connect MongoDB Atlas di Node.js..."
+                  className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors border ${
+                    errors.title
+                      ? "bg-rose-950/30 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
+                      : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus:border-[#b48ee0]"
+                  }`}
+                />
               </div>
 
               {/* Custom Glassmorphism Dropdown */}
@@ -309,7 +332,7 @@ export default function ForumPage() {
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/65 backdrop-blur-md border border-[#67468f]/60 hover:border-[#b48ee0] text-sm text-[#f5effc] flex items-center justify-between transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#180d29]/80 backdrop-blur-md border border-[#7854a3]/65 hover:border-[#b48ee0] text-sm text-[#f5effc] flex items-center justify-between transition"
                 >
                   <span>{category}</span>
                   <motion.span
@@ -327,7 +350,7 @@ export default function ForumPage() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.98 }}
                       transition={{ duration: 0.18 }}
-                      className="absolute left-0 right-0 mt-2 z-30 rounded-2xl bg-[#221336]/80 backdrop-blur-2xl border border-[#8e67bd]/60 shadow-[0_12px_36px_rgba(10,5,18,0.85)] overflow-hidden p-1.5 space-y-1"
+                      className="absolute left-0 right-0 mt-2 z-40 rounded-2xl bg-[#25163b]/90 backdrop-blur-2xl border border-[#8e67bd]/65 shadow-[0_12px_36px_rgba(10,5,18,0.85)] overflow-hidden p-1.5 space-y-1"
                     >
                       {FORM_CATEGORIES.map((item) => {
                         const active = category === item;
@@ -357,32 +380,37 @@ export default function ForumPage() {
                 </AnimatePresence>
               </div>
 
-              {/* Input Detail Masalah */}
               <div>
-                <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
-                  Detail Masalah / Kode
-                </label>
-                <motion.div
-                  key={`content-${shakeTrigger}`}
-                  animate={errors.content ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-mono text-[#d4bcf0]">
+                    Detail Masalah / Kode
+                  </label>
+                  {errors.content && (
+                    <span className="text-[11px] font-mono text-rose-400">
+                      * Detail wajib diisi
+                    </span>
+                  )}
+                </div>
+                <motion.textarea
+                  key={`content-${shakeKey}`}
+                  animate={
+                    errors.content ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
+                  }
                   transition={{ duration: 0.35 }}
-                >
-                  <textarea
-                    rows={4}
-                    value={content}
-                    onChange={(e) => {
-                      setContent(e.target.value);
-                      if (errors.content)
-                        setErrors({ ...errors, content: false });
-                    }}
-                    placeholder="Jelaskan detail error atau paste potongan kode di sini..."
-                    className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
-                      errors.content
-                        ? "bg-red-950/35 border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-                        : "bg-[#120a1f]/65 border border-[#67468f]/60 focus:border-[#b48ee0]"
-                    }`}
-                  />
-                </motion.div>
+                  rows={4}
+                  value={content}
+                  onChange={(e) => {
+                    setContent(e.target.value);
+                    if (errors.content)
+                      setErrors((prev) => ({ ...prev, content: false }));
+                  }}
+                  placeholder="Jelaskan detail error atau paste potongan kode di sini..."
+                  className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors border ${
+                    errors.content
+                      ? "bg-rose-950/30 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
+                      : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus:border-[#b48ee0]"
+                  }`}
+                />
               </div>
 
               <button
@@ -395,7 +423,7 @@ export default function ForumPage() {
           )}
         </AnimatePresence>
 
-        {/* Filter Kategori Glass Pills */}
+        {/* Filter Kategori */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6">
           {categories.map((cat) => (
             <button
@@ -412,10 +440,12 @@ export default function ForumPage() {
           ))}
         </div>
 
-        {/* List Thread Diskusi (Tanpa Label Solved + Interaktif Lihat Balasan) */}
+        {/* List Thread Diskusi (Tanpa Solved & Balasan Interaktif Smooth) */}
         <div className="space-y-3.5">
           {filteredThreads.map((thread, idx) => {
             const isRepliesOpen = openRepliesId === thread.id;
+            const hasReplyError = replyErrors[thread.id];
+
             return (
               <motion.div
                 key={thread.id}
@@ -424,7 +454,7 @@ export default function ForumPage() {
                 transition={{ delay: idx * 0.08 }}
                 className="p-5 rounded-2xl bg-gradient-to-br from-[#231438]/90 to-[#140b21]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition"
               >
-                <div className="flex items-center justify-between gap-2 mb-2 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 text-xs">
                   <span className="px-2.5 py-0.5 rounded-md bg-[#311d4d] border border-[#7854a3]/55 text-[#d4bcf0] font-mono">
                     {thread.category}
                   </span>
@@ -437,11 +467,10 @@ export default function ForumPage() {
                   {thread.title}
                 </h2>
 
-                <p className="text-xs sm:text-sm text-[#c1abd9] mb-4 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#c1abd9] leading-relaxed mb-4">
                   {thread.preview}
                 </p>
 
-                {/* Bar Aksi Upvote & Tombol Buka Balasan */}
                 <div className="flex items-center gap-4 text-xs font-mono text-[#ab94c7]">
                   <span className="inline-flex items-center gap-1 text-[#d4bcf0]">
                     <IoChevronUpOutline className="text-sm" /> {thread.upvotes} Upvote
@@ -449,22 +478,27 @@ export default function ForumPage() {
 
                   <button
                     type="button"
-                    onClick={() => {
-                      setOpenRepliesId(isRepliesOpen ? null : thread.id);
-                      setReplyError(false);
-                    }}
+                    onClick={() =>
+                      setOpenRepliesId(isRepliesOpen ? null : thread.id)
+                    }
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition ${
                       isRepliesOpen
-                        ? "bg-[#432766]/80 border-[#b48ee0]/60 text-[#f5effc]"
-                        : "bg-[#2a1842]/60 border-[#67468f]/40 text-[#d4bcf0] hover:border-[#9d75cb]"
+                        ? "bg-[#4a2f6e]/70 border-[#b48ee0]/60 text-[#faf6ff]"
+                        : "bg-[#241538]/70 border-[#5a3d7a]/50 text-[#d4bcf0] hover:border-[#9d75cb]"
                     }`}
                   >
                     <IoChatbubbleOutline className="text-sm" />
                     <span>{thread.repliesList.length} Balasan</span>
+                    <motion.span
+                      animate={{ rotate: isRepliesOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <IoChevronDownOutline className="text-xs" />
+                    </motion.span>
                   </button>
                 </div>
 
-                {/* Drawer Balasan Animasi Smooth */}
+                {/* Accordion Balasan Smooth */}
                 <AnimatePresence initial={false}>
                   {isRepliesOpen && (
                     <motion.div
@@ -476,65 +510,67 @@ export default function ForumPage() {
                     >
                       <div className="mt-4 pt-4 border-t border-[#4a3169]/60 space-y-3">
                         {thread.repliesList.length === 0 ? (
-                          <p className="text-xs font-mono text-[#8e74ab]">
+                          <p className="text-xs font-mono text-[#8e76ab]">
                             Belum ada balasan. Jadilah yang pertama membantu!
                           </p>
                         ) : (
                           thread.repliesList.map((rep) => (
-                            <motion.div
+                            <div
                               key={rep.id}
-                              initial={{ opacity: 0, y: 6 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="p-3.5 rounded-xl bg-[#160c24]/75 backdrop-blur-md border border-[#563878]/50"
+                              className="p-3.5 rounded-xl bg-[#160d24]/80 border border-[#4a3169]/55"
                             >
-                              <div className="flex items-center justify-between text-[11px] font-mono text-[#9d83ba] mb-1">
-                                <span className="text-[#d4bcf0]">@{rep.author}</span>
+                              <div className="flex items-center justify-between text-[11px] font-mono text-[#9d75cb] mb-1">
+                                <span>@{rep.author}</span>
                                 <span>{rep.time}</span>
                               </div>
-                              <p className="text-xs sm:text-sm text-[#e8dcf5] leading-relaxed">
+                              <p className="text-xs sm:text-sm text-[#e1cff7] leading-relaxed">
                                 {rep.text}
                               </p>
-                            </motion.div>
+                            </div>
                           ))
                         )}
 
-                        {/* Form Tambah Balasan Baru */}
+                        {/* Input Kirim Balasan Baru */}
                         <form
                           noValidate
-                          onSubmit={(e) => handleAddReply(e, thread.id)}
+                          onSubmit={(e) => handleSendReply(e, thread.id)}
                           className="flex items-center gap-2 pt-1"
                         >
-                          <motion.div
-                            key={`rep-${replyShake}`}
+                          <motion.input
+                            key={`reply-${thread.id}-${replyShakeKey}`}
                             animate={
-                              replyError
+                              hasReplyError
                                 ? { x: [0, -6, 6, -4, 4, 0] }
                                 : { x: 0 }
                             }
-                            transition={{ duration: 0.32 }}
-                            className="flex-1"
-                          >
-                            <input
-                              type="text"
-                              value={replyText}
-                              onChange={(e) => {
-                                setReplyText(e.target.value);
-                                if (replyError) setReplyError(false);
-                              }}
-                              placeholder="Tulis balasan atau solusi..."
-                              className={`w-full px-3.5 py-2 rounded-xl backdrop-blur-md text-xs sm:text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
-                                replyError
-                                  ? "bg-red-950/35 border border-red-500/80"
-                                  : "bg-[#120a1f]/70 border border-[#67468f]/60 focus:border-[#b48ee0]"
-                              }`}
-                            />
-                          </motion.div>
+                            transition={{ duration: 0.35 }}
+                            type="text"
+                            value={replyInputs[thread.id] || ""}
+                            onChange={(e) => {
+                              setReplyInputs((prev) => ({
+                                ...prev,
+                                [thread.id]: e.target.value,
+                              }));
+                              if (hasReplyError) {
+                                setReplyErrors((prev) => ({
+                                  ...prev,
+                                  [thread.id]: false,
+                                }));
+                              }
+                            }}
+                            placeholder="Tulis balasan atau solusi..."
+                            className={`flex-1 px-3.5 py-2 rounded-xl backdrop-blur-md text-xs sm:text-sm text-[#f5effc] placeholder-[#7f669c] focus:outline-none border transition-colors ${
+                              hasReplyError
+                                ? "bg-rose-950/30 border-rose-500/80"
+                                : "bg-[#120a1f]/80 border-[#5e3e85]/70 focus:border-[#b48ee0]"
+                            }`}
+                          />
                           <button
                             type="submit"
                             className="p-2.5 rounded-xl bg-gradient-to-r from-[#6c4896] to-[#3d235e] border border-[#b48ee0]/45 text-white hover:brightness-110 transition active:scale-95 shrink-0"
                             title="Kirim Balasan"
                           >
-                            <IoSendOutline className="text-base" />
+                            <IoPaperPlaneOutline className="text-base" />
                           </button>
                         </form>
                       </div>
