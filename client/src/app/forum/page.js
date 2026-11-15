@@ -8,11 +8,11 @@ import {
   IoChevronBack,
   IoAddOutline,
   IoCloseOutline,
-  IoCheckmarkCircleOutline,
   IoChevronUpOutline,
   IoChatbubbleOutline,
   IoChevronDownOutline,
   IoCheckmarkOutline,
+  IoSendOutline,
 } from "react-icons/io5";
 
 const INITIAL_THREADS = [
@@ -21,36 +21,60 @@ const INITIAL_THREADS = [
     title: "Cara mengatasi CORS error saat fetch API Express dari Next.js?",
     category: "Bug & Error",
     author: "jason_dev",
-    replies: 12,
     upvotes: 28,
     time: "2 jam lalu",
-    solved: true,
     preview:
       "Udah pasang app.use(cors()) di backend Node.js tapi pas di-deploy ke Vercel masih kena block origin...",
+    repliesList: [
+      {
+        id: 101,
+        author: "rizky_code",
+        time: "1 jam lalu",
+        text: "Coba cek di cors({ origin: 'https://domain-vercel-kamu.vercel.app', credentials: true }), pastikan tanpa slash di belakang.",
+      },
+      {
+        id: 102,
+        author: "anak_termux",
+        time: "45 menit lalu",
+        text: "Bener banget, sekalian cek juga apakah method OPTIONS udah diizinkan di server Express-nya.",
+      },
+    ],
   },
   {
     id: 2,
     title: "Rekomendasi struktur folder Next.js App Router untuk project skala menengah",
     category: "Diskusi",
     author: "rizky_code",
-    replies: 8,
     upvotes: 19,
     time: "5 jam lalu",
-    solved: false,
     preview:
       "Mending pisah folder components per fitur atau digabung semua dalam satu folder src/components?",
+    repliesList: [
+      {
+        id: 201,
+        author: "jason_dev",
+        time: "3 jam lalu",
+        text: "Kalau skala menengah, pisahin komponen global di src/components/ui dan komponen spesifik fitur di dalam masing-masing route folder biar rapi.",
+      },
+    ],
   },
   {
     id: 3,
     title: "Tips optimasi Termux biar ngoding React/Next.js di HP nggak cepat panas",
     category: "Tips & Trik",
     author: "anak_termux",
-    replies: 21,
     upvotes: 45,
     time: "1 hari lalu",
-    solved: true,
     preview:
       "Sharing pengalaman ngoding fullstack dari Android pakai Acode + Termux tanpa lag...",
+    repliesList: [
+      {
+        id: 301,
+        author: "droid_coder",
+        time: "20 jam lalu",
+        text: "Selalu tambahin flag --webpack di Next.js 16 biar nggak crash Turbopack di ARM64 Android.",
+      },
+    ],
   },
 ];
 
@@ -60,10 +84,20 @@ export default function ForumPage() {
   const [threads, setThreads] = useState(INITIAL_THREADS);
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [showForm, setShowForm] = useState(false);
+
+  // Form Buat Diskusi + State Error Validasi
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Bug & Error");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [content, setContent] = useState("");
+  const [errors, setErrors] = useState({ title: false, content: false });
+  const [shakeTrigger, setShakeTrigger] = useState(0);
+
+  // State Buka/Tutup Balasan per Thread
+  const [openRepliesId, setOpenRepliesId] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [replyError, setReplyError] = useState(false);
+  const [replyShake, setReplyShake] = useState(0);
 
   const { scrollYProgress } = useScroll();
   const bgColor = useTransform(
@@ -82,25 +116,62 @@ export default function ForumPage() {
 
   const handleCreateThread = (e) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    const titleEmpty = !title.trim();
+    const contentEmpty = !content.trim();
+
+    if (titleEmpty || contentEmpty) {
+      setErrors({ title: titleEmpty, content: contentEmpty });
+      setShakeTrigger((prev) => prev + 1);
+      return;
+    }
 
     const newThread = {
       id: Date.now(),
       title,
       category,
       author: "member_baru",
-      replies: 0,
       upvotes: 1,
       time: "Baru saja",
-      solved: false,
       preview: content,
+      repliesList: [],
     };
 
     setThreads([newThread, ...threads]);
     setTitle("");
     setContent("");
+    setErrors({ title: false, content: false });
     setShowForm(false);
     setIsDropdownOpen(false);
+  };
+
+  const handleAddReply = (e, threadId) => {
+    e.preventDefault();
+    if (!replyText.trim()) {
+      setReplyError(true);
+      setReplyShake((prev) => prev + 1);
+      return;
+    }
+
+    setThreads((prev) =>
+      prev.map((t) =>
+        t.id === threadId
+          ? {
+              ...t,
+              repliesList: [
+                ...t.repliesList,
+                {
+                  id: Date.now(),
+                  author: "kamu",
+                  time: "Baru saja",
+                  text: replyText.trim(),
+                },
+              ],
+            }
+          : t
+      )
+    );
+    setReplyText("");
+    setReplyError(false);
   };
 
   return (
@@ -172,7 +243,10 @@ export default function ForumPage() {
           </div>
 
           <button
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => {
+              setShowForm(!showForm);
+              setErrors({ title: false, content: false });
+            }}
             className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#6c4896] to-[#341c52] border border-[#b48ee0]/45 text-[#faf6ff] text-xs sm:text-sm font-semibold shadow-lg shadow-[#11091c]/70 hover:brightness-110 transition w-fit"
           >
             {showForm ? (
@@ -189,28 +263,42 @@ export default function ForumPage() {
           </button>
         </div>
 
-        {/* Form Buat Diskusi Baru */}
+        {/* Form Buat Diskusi Baru (Glassmorphism + Validasi Getar Merah) */}
         <AnimatePresence>
           {showForm && (
             <motion.form
+              noValidate
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               onSubmit={handleCreateThread}
-              className="mb-8 p-5 rounded-2xl bg-[#1f1230]/85 backdrop-blur-xl border border-[#7854a3]/65 shadow-2xl space-y-4"
+              className="mb-8 p-5 rounded-3xl bg-[#1f1230]/60 backdrop-blur-2xl border border-[#8e67bd]/45 shadow-[0_12px_40px_rgba(9,4,18,0.75)] space-y-4"
             >
+              {/* Input Judul */}
               <div>
                 <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
                   Judul Pertanyaan / Topik
                 </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Contoh: Error saat connect MongoDB Atlas di Node.js..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
-                  required
-                />
+                <motion.div
+                  key={`title-${shakeTrigger}`}
+                  animate={errors.title ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (errors.title) setErrors({ ...errors, title: false });
+                    }}
+                    placeholder="Contoh: Error saat connect MongoDB Atlas di Node.js..."
+                    className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
+                      errors.title
+                        ? "bg-red-950/35 border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
+                        : "bg-[#120a1f]/65 border border-[#67468f]/60 focus:border-[#b48ee0]"
+                    }`}
+                  />
+                </motion.div>
               </div>
 
               {/* Custom Glassmorphism Dropdown */}
@@ -221,7 +309,7 @@ export default function ForumPage() {
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#241538]/80 backdrop-blur-md border border-[#7854a3]/65 hover:border-[#b48ee0] text-sm text-[#f5effc] flex items-center justify-between transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/65 backdrop-blur-md border border-[#67468f]/60 hover:border-[#b48ee0] text-sm text-[#f5effc] flex items-center justify-between transition"
                 >
                   <span>{category}</span>
                   <motion.span
@@ -239,7 +327,7 @@ export default function ForumPage() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.98 }}
                       transition={{ duration: 0.18 }}
-                      className="absolute left-0 right-0 mt-2 z-30 rounded-2xl bg-[#25163b]/90 backdrop-blur-2xl border border-[#8e67bd]/65 shadow-[0_12px_36px_rgba(10,5,18,0.85)] overflow-hidden p-1.5 space-y-1"
+                      className="absolute left-0 right-0 mt-2 z-30 rounded-2xl bg-[#221336]/80 backdrop-blur-2xl border border-[#8e67bd]/60 shadow-[0_12px_36px_rgba(10,5,18,0.85)] overflow-hidden p-1.5 space-y-1"
                     >
                       {FORM_CATEGORIES.map((item) => {
                         const active = category === item;
@@ -269,18 +357,32 @@ export default function ForumPage() {
                 </AnimatePresence>
               </div>
 
+              {/* Input Detail Masalah */}
               <div>
                 <label className="block text-xs font-mono text-[#d4bcf0] mb-1.5">
                   Detail Masalah / Kode
                 </label>
-                <textarea
-                  rows={4}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Jelaskan detail error atau paste potongan kode di sini..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#120a1f]/90 border border-[#5e3e85]/70 text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none focus:border-[#b48ee0]"
-                  required
-                />
+                <motion.div
+                  key={`content-${shakeTrigger}`}
+                  animate={errors.content ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  <textarea
+                    rows={4}
+                    value={content}
+                    onChange={(e) => {
+                      setContent(e.target.value);
+                      if (errors.content)
+                        setErrors({ ...errors, content: false });
+                    }}
+                    placeholder="Jelaskan detail error atau paste potongan kode di sini..."
+                    className={`w-full px-3.5 py-2.5 rounded-xl backdrop-blur-md text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
+                      errors.content
+                        ? "bg-red-950/35 border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
+                        : "bg-[#120a1f]/65 border border-[#67468f]/60 focus:border-[#b48ee0]"
+                    }`}
+                  />
+                </motion.div>
               </div>
 
               <button
@@ -310,48 +412,138 @@ export default function ForumPage() {
           ))}
         </div>
 
-        {/* List Thread Diskusi */}
+        {/* List Thread Diskusi (Tanpa Label Solved + Interaktif Lihat Balasan) */}
         <div className="space-y-3.5">
-          {filteredThreads.map((thread, idx) => (
-            <motion.div
-              key={thread.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.08 }}
-              className="p-5 rounded-2xl bg-gradient-to-br from-[#231438]/90 to-[#140b21]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition"
-            >
-              <div className="flex flex-wrap items-center gap-2 mb-2 text-xs">
-                <span className="px-2.5 py-0.5 rounded-md bg-[#311d4d] border border-[#7854a3]/55 text-[#d4bcf0] font-mono">
-                  {thread.category}
-                </span>
-                {thread.solved && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-700/40 text-emerald-300 font-mono">
-                    <IoCheckmarkCircleOutline className="text-sm" /> Solved
+          {filteredThreads.map((thread, idx) => {
+            const isRepliesOpen = openRepliesId === thread.id;
+            return (
+              <motion.div
+                key={thread.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.08 }}
+                className="p-5 rounded-2xl bg-gradient-to-br from-[#231438]/90 to-[#140b21]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition"
+              >
+                <div className="flex items-center justify-between gap-2 mb-2 text-xs">
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#311d4d] border border-[#7854a3]/55 text-[#d4bcf0] font-mono">
+                    {thread.category}
                   </span>
-                )}
-                <span className="text-[#967db5] font-mono ml-auto">
-                  @{thread.author} • {thread.time}
-                </span>
-              </div>
+                  <span className="text-[#967db5] font-mono">
+                    @{thread.author} • {thread.time}
+                  </span>
+                </div>
 
-              <h2 className="font-bold text-base sm:text-lg text-[#f5effc] mb-1.5">
-                {thread.title}
-              </h2>
+                <h2 className="font-bold text-base sm:text-lg text-[#f5effc] mb-1.5">
+                  {thread.title}
+                </h2>
 
-              <p className="text-xs sm:text-sm text-[#c1abd9] line-clamp-2 mb-4">
-                {thread.preview}
-              </p>
+                <p className="text-xs sm:text-sm text-[#c1abd9] mb-4 leading-relaxed">
+                  {thread.preview}
+                </p>
 
-              <div className="flex items-center gap-4 text-xs font-mono text-[#ab94c7]">
-                <span className="inline-flex items-center gap-1 text-[#d4bcf0]">
-                  <IoChevronUpOutline className="text-sm" /> {thread.upvotes} Upvote
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <IoChatbubbleOutline className="text-sm" /> {thread.replies} Balasan
-                </span>
-              </div>
-            </motion.div>
-          ))}
+                {/* Bar Aksi Upvote & Tombol Buka Balasan */}
+                <div className="flex items-center gap-4 text-xs font-mono text-[#ab94c7]">
+                  <span className="inline-flex items-center gap-1 text-[#d4bcf0]">
+                    <IoChevronUpOutline className="text-sm" /> {thread.upvotes} Upvote
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenRepliesId(isRepliesOpen ? null : thread.id);
+                      setReplyError(false);
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition ${
+                      isRepliesOpen
+                        ? "bg-[#432766]/80 border-[#b48ee0]/60 text-[#f5effc]"
+                        : "bg-[#2a1842]/60 border-[#67468f]/40 text-[#d4bcf0] hover:border-[#9d75cb]"
+                    }`}
+                  >
+                    <IoChatbubbleOutline className="text-sm" />
+                    <span>{thread.repliesList.length} Balasan</span>
+                  </button>
+                </div>
+
+                {/* Drawer Balasan Animasi Smooth */}
+                <AnimatePresence initial={false}>
+                  {isRepliesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 pt-4 border-t border-[#4a3169]/60 space-y-3">
+                        {thread.repliesList.length === 0 ? (
+                          <p className="text-xs font-mono text-[#8e74ab]">
+                            Belum ada balasan. Jadilah yang pertama membantu!
+                          </p>
+                        ) : (
+                          thread.repliesList.map((rep) => (
+                            <motion.div
+                              key={rep.id}
+                              initial={{ opacity: 0, y: 6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="p-3.5 rounded-xl bg-[#160c24]/75 backdrop-blur-md border border-[#563878]/50"
+                            >
+                              <div className="flex items-center justify-between text-[11px] font-mono text-[#9d83ba] mb-1">
+                                <span className="text-[#d4bcf0]">@{rep.author}</span>
+                                <span>{rep.time}</span>
+                              </div>
+                              <p className="text-xs sm:text-sm text-[#e8dcf5] leading-relaxed">
+                                {rep.text}
+                              </p>
+                            </motion.div>
+                          ))
+                        )}
+
+                        {/* Form Tambah Balasan Baru */}
+                        <form
+                          noValidate
+                          onSubmit={(e) => handleAddReply(e, thread.id)}
+                          className="flex items-center gap-2 pt-1"
+                        >
+                          <motion.div
+                            key={`rep-${replyShake}`}
+                            animate={
+                              replyError
+                                ? { x: [0, -6, 6, -4, 4, 0] }
+                                : { x: 0 }
+                            }
+                            transition={{ duration: 0.32 }}
+                            className="flex-1"
+                          >
+                            <input
+                              type="text"
+                              value={replyText}
+                              onChange={(e) => {
+                                setReplyText(e.target.value);
+                                if (replyError) setReplyError(false);
+                              }}
+                              placeholder="Tulis balasan atau solusi..."
+                              className={`w-full px-3.5 py-2 rounded-xl backdrop-blur-md text-xs sm:text-sm text-[#f5effc] placeholder-[#82689e] focus:outline-none transition-colors ${
+                                replyError
+                                  ? "bg-red-950/35 border border-red-500/80"
+                                  : "bg-[#120a1f]/70 border border-[#67468f]/60 focus:border-[#b48ee0]"
+                              }`}
+                            />
+                          </motion.div>
+                          <button
+                            type="submit"
+                            className="p-2.5 rounded-xl bg-gradient-to-r from-[#6c4896] to-[#3d235e] border border-[#b48ee0]/45 text-white hover:brightness-110 transition active:scale-95 shrink-0"
+                            title="Kirim Balasan"
+                          >
+                            <IoSendOutline className="text-base" />
+                          </button>
+                        </form>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </main>
     </motion.div>

@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  IoCodeSlashOutline,
+  IoTerminalOutline,
   IoChevronForward,
-  IoChatbubblesOutline,
-  IoLayersOutline,
-  IoSparklesOutline,
+  IoBugOutline,
+  IoCubeOutline,
+  IoRadioOutline,
 } from "react-icons/io5";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
@@ -17,7 +17,6 @@ export default function Home() {
   const [typedText, setTypedText] = useState("");
   const { scrollYProgress } = useScroll();
 
-  // Efek perubahan warna background ungu batik saat user menggulir layar
   const bgColor = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
@@ -44,7 +43,7 @@ export default function Home() {
       style={{ backgroundColor: bgColor }}
       className="min-h-screen text-[#f0e8fa] relative overflow-hidden flex flex-col justify-between selection:bg-[#7854a3] selection:text-white transition-colors duration-300"
     >
-      {/* Ambient Background Nuansa Batik Megamendung & Kawung */}
+      {/* Ambient Background Nuansa Batik */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
           className="absolute inset-0 opacity-[0.09]"
@@ -73,7 +72,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <Link href="/" className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-[10px] bg-gradient-to-b from-[#7d56ab] to-[#2e184a] border border-[#c8a8ed]/40 shadow-[0_2px_10px_rgba(46,24,74,0.7)] flex items-center justify-center shrink-0">
-              <IoCodeSlashOutline className="text-[#f5effc] text-base stroke-[2]" />
+              <IoTerminalOutline className="text-[#f5effc] text-base" />
             </div>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
@@ -105,20 +104,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 pt-12 pb-16 flex-1 flex flex-col justify-center">
-        {/* Status Pill */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#221436]/75 border border-[#67468f]/60 text-[#d4bcf0] text-xs font-mono w-fit mb-6 backdrop-blur-md"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c8a8ed] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#b48ee0]" />
-          </span>
-          ~/komunitas/indonesia — active
-        </motion.div>
-
         {/* Typing Heading dengan Gradasi Bergerak */}
         <div className="min-h-[135px] sm:min-h-[120px] mb-5 flex items-center">
           <motion.h1
@@ -180,7 +165,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Asymmetric Bento Grid */}
+        {/* Asymmetric Bento Grid dengan Ikon iOS Lembut */}
         <motion.div
           id="bento"
           initial="hidden"
@@ -204,7 +189,7 @@ export default function Home() {
           >
             <div className="flex items-center justify-between mb-4">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs">
-                <IoChatbubblesOutline className="text-sm" />
+                <IoBugOutline className="text-sm" />
                 01 // DEBUG_ROOM
               </span>
               <span className="text-xs font-mono text-[#967db5] group-hover:text-[#d4bcf0] transition-colors">
@@ -232,7 +217,7 @@ export default function Home() {
           >
             <div>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs mb-4">
-                <IoLayersOutline className="text-sm" />
+                <IoCubeOutline className="text-sm" />
                 02 // SHIP_IT
               </span>
               <h3 className="font-bold text-xl text-[#f5effc] mb-2">
@@ -256,7 +241,7 @@ export default function Home() {
           >
             <div>
               <div className="inline-flex items-center gap-1.5 text-[#b48ee0] font-mono text-xs mb-1">
-                <IoSparklesOutline className="text-sm" />
+                <IoRadioOutline className="text-sm" />
                 03 // SYNC_CHANNEL
               </div>
               <h3 className="font-bold text-lg text-[#f5effc]">

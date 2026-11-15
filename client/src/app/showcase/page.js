@@ -93,7 +93,6 @@ export default function ShowcasePage() {
       style={{ backgroundColor: bgColor }}
       className="min-h-screen text-[#f0e8fa] relative overflow-hidden transition-colors duration-300"
     >
-      {/* Ambient Background Nuansa Batik */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
           className="absolute inset-0 opacity-[0.09]"
@@ -109,7 +108,6 @@ export default function ShowcasePage() {
         <div className="absolute bottom-0 -right-24 w-[400px] h-[400px] rounded-full bg-[#331a52]/55 blur-[130px]" />
       </div>
 
-      {/* Navbar dengan Tombol Home iOS Lembut */}
       <header className="sticky top-3 z-50 px-3 sm:px-6">
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
@@ -143,9 +141,7 @@ export default function ShowcasePage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 pt-10 pb-20">
-        {/* Header & Tombol Submit Karya */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <div className="text-xs font-mono text-[#b48ee0] mb-1">
@@ -174,7 +170,6 @@ export default function ShowcasePage() {
           </button>
         </div>
 
-        {/* Form Submit Project */}
         <AnimatePresence>
           {showForm && (
             <motion.form
@@ -250,7 +245,6 @@ export default function ShowcasePage() {
           )}
         </AnimatePresence>
 
-        {/* Grid Kartu Project */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((project, idx) => (
             <motion.div
