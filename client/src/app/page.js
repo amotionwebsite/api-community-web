@@ -2,13 +2,29 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { IoTerminal, IoArrowForward } from "react-icons/io5";
+import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  IoCodeSlashOutline,
+  IoChevronForward,
+  IoChatbubblesOutline,
+  IoLayersOutline,
+  IoSparklesOutline,
+} from "react-icons/io5";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
 export default function Home() {
   const [typedText, setTypedText] = useState("");
+  const { scrollYProgress } = useScroll();
+
+  // Efek perubahan warna background ungu batik saat user menggulir layar
+  const bgColor = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["#11091c", "#1d1030", "#0d0617"]
+  );
+  const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.35, 0.55, 0.3]);
 
   useEffect(() => {
     let index = 0;
@@ -18,37 +34,32 @@ export default function Home() {
       if (index >= FULL_TEXT.length) {
         clearInterval(interval);
       }
-    }, 62); // Kecepatan ketik pas (tidak cepat & tidak lambat)
+    }, 62);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0d0814] text-[#ede6f5] relative overflow-hidden flex flex-col justify-between selection:bg-[#6b4694] selection:text-white">
-      {/* Ambient Background & Nuansa Batik Ungu Pekat */}
+    <motion.div
+      style={{ backgroundColor: bgColor }}
+      className="min-h-screen text-[#f0e8fa] relative overflow-hidden flex flex-col justify-between selection:bg-[#7854a3] selection:text-white transition-colors duration-300"
+    >
+      {/* Ambient Background Nuansa Batik Megamendung & Kawung */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
-          className="absolute inset-0 opacity-[0.07]"
+          className="absolute inset-0 opacity-[0.09]"
           style={{
-            backgroundImage: `radial-gradient(circle at 12px 12px, #c4a6e8 1.5px, transparent 1.5px), radial-gradient(circle at 0px 0px, #7b52ab 1px, transparent 1px)`,
-            backgroundSize: "24px 24px",
+            backgroundImage: `radial-gradient(circle at 14px 14px, #c8a8ed 1.4px, transparent 1.4px), radial-gradient(circle at 0px 0px, #7854a3 1px, transparent 1px)`,
+            backgroundSize: "28px 28px",
           }}
         />
         <motion.div
-          animate={{
-            scale: [1, 1.12, 1],
-            opacity: [0.25, 0.38, 0.25],
-          }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-36 -left-24 w-[420px] h-[420px] rounded-full bg-[#361d54]/60 blur-[120px]"
+          style={{ y: glowY, opacity: glowOpacity }}
+          className="absolute -top-32 -left-24 w-[440px] h-[440px] rounded-full bg-[#4c2b73] blur-[130px]"
         />
         <motion.div
-          animate={{
-            scale: [1.08, 0.96, 1.08],
-            opacity: [0.2, 0.32, 0.2],
-          }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 -right-28 w-[420px] h-[420px] rounded-full bg-[#24123b]/80 blur-[130px]"
+          style={{ opacity: glowOpacity }}
+          className="absolute bottom-0 -right-24 w-[420px] h-[420px] rounded-full bg-[#331a52] blur-[140px]"
         />
       </div>
 
@@ -59,32 +70,32 @@ export default function Home() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="sticky top-3 z-50 px-3 sm:px-6"
       >
-        <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#160e24]/75 backdrop-blur-xl border border-[#4a3169]/60 shadow-[0_8px_32px_rgba(10,5,18,0.65)] flex items-center justify-between gap-2">
+        <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <Link href="/" className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-[9px] bg-gradient-to-b from-[#6f499c] to-[#26143d] border border-[#a986d4]/40 shadow-[0_2px_10px_rgba(38,20,61,0.7)] flex items-center justify-center shrink-0">
-              <IoTerminal className="text-[#f3ebfc] text-base" />
+            <div className="w-8 h-8 rounded-[10px] bg-gradient-to-b from-[#7d56ab] to-[#2e184a] border border-[#c8a8ed]/40 shadow-[0_2px_10px_rgba(46,24,74,0.7)] flex items-center justify-center shrink-0">
+              <IoCodeSlashOutline className="text-[#f5effc] text-base stroke-[2]" />
             </div>
-            <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f3ebfc] truncate">
+            <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
             </span>
           </Link>
 
-          <nav className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm text-[#c7b5db] shrink-0">
+          <nav className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm text-[#d2bfe8] shrink-0">
             <Link
               href="/forum"
-              className="hover:text-[#e5d4f7] transition-colors"
+              className="hover:text-[#f5effc] transition-colors"
             >
               Forum
             </Link>
             <Link
               href="/showcase"
-              className="hover:text-[#e5d4f7] transition-colors"
+              className="hover:text-[#f5effc] transition-colors"
             >
               Showcase
             </Link>
             <Link
               href="/login"
-              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#57367d] to-[#2d1947] hover:from-[#674194] hover:to-[#392059] border border-[#9d75cb]/40 text-[#f3ebfc] font-medium transition shadow-md shadow-[#0d0814]/80"
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#66438f] to-[#361e54] hover:from-[#754ea3] hover:to-[#432666] border border-[#b48ee0]/40 text-[#f5effc] font-medium transition shadow-md shadow-[#11091c]/70"
             >
               Masuk
             </Link>
@@ -99,16 +110,16 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#1c112e]/70 border border-[#523675]/60 text-[#c4a6e8] text-xs font-mono w-fit mb-6 backdrop-blur-md"
+          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#221436]/75 border border-[#67468f]/60 text-[#d4bcf0] text-xs font-mono w-fit mb-6 backdrop-blur-md"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b995e3] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#9d75cb]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c8a8ed] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#b48ee0]" />
           </span>
           ~/komunitas/indonesia — active
         </motion.div>
 
-        {/* Typing Heading dengan Warna Gradasi Bergerak */}
+        {/* Typing Heading dengan Gradasi Bergerak */}
         <div className="min-h-[135px] sm:min-h-[120px] mb-5 flex items-center">
           <motion.h1
             animate={{
@@ -121,7 +132,7 @@ export default function Home() {
             }}
             style={{
               backgroundImage:
-                "linear-gradient(90deg, #e5d4f7, #9d75cb, #593880, #c4a6e8, #e5d4f7)",
+                "linear-gradient(90deg, #f2e8fc, #b48ee0, #6f499c, #d4bcf0, #f2e8fc)",
               backgroundSize: "250% 250%",
             }}
             className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.18] bg-clip-text text-transparent"
@@ -135,7 +146,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
-          className="text-[#b39ec9] text-sm sm:text-base max-w-xl mb-8 leading-relaxed"
+          className="text-[#c1abd9] text-sm sm:text-base max-w-xl mb-8 leading-relaxed"
         >
           Ruang kolaborasi bawah tanah untuk programmer pemula hingga sepuh di
           Indonesia. Bedah error bareng, rilis side-project, dan temukan partner
@@ -152,17 +163,17 @@ export default function Home() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link
               href="/forum"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#5e3b87] via-[#452966] to-[#26143d] border border-[#9d75cb]/45 text-[#f7f2fc] text-sm font-semibold shadow-[0_8px_25px_rgba(38,20,61,0.65)] hover:border-[#c4a6e8]/70 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#6c4896] via-[#503273] to-[#2e1947] border border-[#b48ee0]/45 text-[#faf6ff] text-sm font-semibold shadow-[0_8px_25px_rgba(46,25,71,0.65)] hover:border-[#d4bcf0]/75 transition-all"
             >
               <span>Buka Forum Diskusi</span>
-              <IoArrowForward className="text-[#d4bcf0] text-base" />
+              <IoChevronForward className="text-[#e1cff7] text-base" />
             </Link>
           </motion.div>
 
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <a
               href="#bento"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#180f26]/70 hover:bg-[#231638]/80 border border-[#4a3169]/60 text-[#d8c5ed] text-sm font-medium backdrop-blur-md transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1f1230]/75 hover:bg-[#2b1942]/85 border border-[#67468f]/55 text-[#e1cff7] text-sm font-medium backdrop-blur-md transition-all"
             >
               Gabung Discord / WA
             </a>
@@ -189,20 +200,21 @@ export default function Home() {
               visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
             }}
             whileHover={{ y: -4 }}
-            className="md:col-span-7 p-6 rounded-3xl bg-gradient-to-br from-[#1b112b]/90 to-[#110a1c]/95 border border-[#4a3169]/55 hover:border-[#8c64ba]/70 backdrop-blur-md transition-colors relative overflow-hidden group"
+            className="md:col-span-7 p-6 rounded-3xl bg-gradient-to-br from-[#231438]/90 to-[#140b21]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors relative overflow-hidden group"
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="px-2.5 py-1 rounded-md bg-[#281940] border border-[#5a3d7a]/60 text-[#c4a6e8] font-mono text-xs">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs">
+                <IoChatbubblesOutline className="text-sm" />
                 01 // DEBUG_ROOM
               </span>
-              <span className="text-xs font-mono text-[#826b9c] group-hover:text-[#c4a6e8] transition-colors">
+              <span className="text-xs font-mono text-[#967db5] group-hover:text-[#d4bcf0] transition-colors">
                 [active_threads]
               </span>
             </div>
-            <h3 className="font-bold text-xl text-[#f3ebfc] mb-2">
+            <h3 className="font-bold text-xl text-[#f5effc] mb-2">
               Bedah Error & Arsitektur Kode
             </h3>
-            <p className="text-sm text-[#b39ec9] leading-relaxed">
+            <p className="text-sm text-[#c1abd9] leading-relaxed">
               Stuck di terminal atau kebingungan milih stack? Lempar potongan
               kode dan log error-nya di sini untuk dipecahkan bareng member
               lain.
@@ -216,16 +228,17 @@ export default function Home() {
               visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
             }}
             whileHover={{ y: -4 }}
-            className="md:col-span-5 p-6 rounded-3xl bg-gradient-to-bl from-[#1f1333]/90 to-[#10091a]/95 border border-[#4a3169]/55 hover:border-[#8c64ba]/70 backdrop-blur-md transition-colors flex flex-col justify-between"
+            className="md:col-span-5 p-6 rounded-3xl bg-gradient-to-bl from-[#27163d]/90 to-[#130a1f]/95 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors flex flex-col justify-between"
           >
             <div>
-              <span className="inline-block px-2.5 py-1 rounded-md bg-[#281940] border border-[#5a3d7a]/60 text-[#c4a6e8] font-mono text-xs mb-4">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs mb-4">
+                <IoLayersOutline className="text-sm" />
                 02 // SHIP_IT
               </span>
-              <h3 className="font-bold text-xl text-[#f3ebfc] mb-2">
+              <h3 className="font-bold text-xl text-[#f5effc] mb-2">
                 Pamer Side-Project
               </h3>
-              <p className="text-sm text-[#b39ec9] leading-relaxed">
+              <p className="text-sm text-[#c1abd9] leading-relaxed">
                 Rilis web, aplikasi mobile, atau CLI tools buatanmu buat dapet
                 feedback jujur dan validasi.
               </p>
@@ -239,21 +252,22 @@ export default function Home() {
               visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
             }}
             whileHover={{ y: -3 }}
-            className="md:col-span-12 p-5 sm:p-6 rounded-3xl bg-[#160e24]/85 border border-[#4a3169]/55 hover:border-[#8c64ba]/70 backdrop-blur-md transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            className="md:col-span-12 p-5 sm:p-6 rounded-3xl bg-[#1d112e]/85 border border-[#67468f]/50 hover:border-[#a982d6]/75 backdrop-blur-md transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div>
-              <div className="text-[#9d75cb] font-mono text-xs mb-1">
+              <div className="inline-flex items-center gap-1.5 text-[#b48ee0] font-mono text-xs mb-1">
+                <IoSparklesOutline className="text-sm" />
                 03 // SYNC_CHANNEL
               </div>
-              <h3 className="font-bold text-lg text-[#f3ebfc]">
+              <h3 className="font-bold text-lg text-[#f5effc]">
                 Terhubung Langsung ke Discord & WhatsApp
               </h3>
-              <p className="text-sm text-[#b39ec9]">
+              <p className="text-sm text-[#c1abd9]">
                 Ikuti live coding, bedah karya mingguan, dan obrolan santai
                 seputar dunia IT Indonesia.
               </p>
             </div>
-            <div className="shrink-0 font-mono text-xs px-4 py-2.5 rounded-xl bg-[#24163b] border border-[#5a3d7a]/60 text-[#d4bcf0]">
+            <div className="shrink-0 font-mono text-xs px-4 py-2.5 rounded-xl bg-[#2c1a47] border border-[#7854a3]/55 text-[#e1cff7]">
               $ join --community=api
             </div>
           </motion.div>
@@ -261,9 +275,9 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-[#2f1d45] py-6 text-center text-xs font-mono text-[#7c6696]">
+      <footer className="relative z-10 border-t border-[#3b2359] py-6 text-center text-xs font-mono text-[#967db5]">
         © 2026 Anak Programmer Indonesia // Built with Next.js & Node.js
       </footer>
-    </div>
+    </motion.div>
   );
 }
