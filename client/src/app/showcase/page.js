@@ -103,7 +103,7 @@ export default function ShowcasePage() {
       style={{ backgroundColor: bgColor }}
       className="min-h-screen text-[#f8f0fc] relative overflow-hidden transition-colors duration-300"
     >
-      {/* Ambient Background Gradasi Orange - Ungu */}
+      {/* Ambient Background */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
           className="absolute inset-0 opacity-[0.08]"
@@ -168,14 +168,9 @@ export default function ShowcasePage() {
 
       <main className="relative z-30 max-w-5xl mx-auto px-4 pt-10 pb-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <div className="text-xs font-mono text-orange-300/90 mb-1">
-              ~/showcase/karya-member
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-200 via-orange-400 to-purple-400 bg-clip-text text-transparent">
-              Pamer Side-Project & Portofolio
-            </h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-200 via-orange-400 to-purple-400 bg-clip-text text-transparent">
+            Pamer Side-Project & Portofolio
+          </h1>
 
           <button
             onClick={() => {
@@ -198,7 +193,7 @@ export default function ShowcasePage() {
           </button>
         </div>
 
-        {/* Form Glassmorphism dengan Validasi Merah Getar */}
+        {/* Form Glassmorphism */}
         <AnimatePresence>
           {showForm && (
             <motion.form
