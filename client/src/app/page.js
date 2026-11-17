@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
-  Code,
   CaretRight,
-  DiscordLogo,
   Quotes,
   Sparkle,
 } from "@phosphor-icons/react";
@@ -15,6 +13,7 @@ const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
 export default function Home() {
   const [typedText, setTypedText] = useState("");
+  const [showBrandText, setShowBrandText] = useState(true);
   const { scrollYProgress } = useScroll();
 
   const bgColor = useTransform(
@@ -25,6 +24,7 @@ export default function Home() {
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
   const glowOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.35, 0.55, 0.3]);
 
+  // Efek mengetik heading utama
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
@@ -36,6 +36,18 @@ export default function Home() {
     }, 62);
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Siklus animasi teks "Anak Programmer ID" keluar-masuk dari logo setiap 30 detik
+  useEffect(() => {
+    const cycleInterval = setInterval(() => {
+      setShowBrandText(false);
+      setTimeout(() => {
+        setShowBrandText(true);
+      }, 900);
+    }, 30000);
+
+    return () => clearInterval(cycleInterval);
   }, []);
 
   return (
@@ -62,7 +74,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Glass Navbar */}
+      {/* Floating Glass Navbar dengan /logoapi.png & Animasi Teks Keluar-Masuk */}
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -70,13 +82,38 @@ export default function Home() {
         className="sticky top-3 z-50 px-3 sm:px-6"
       >
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(12,5,24,0.65)] flex items-center justify-between gap-2">
-          <Link href="/" className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-orange-500 via-amber-600 to-purple-900 border border-orange-300/40 shadow-[0_2px_12px_rgba(249,115,22,0.35)] flex items-center justify-center shrink-0">
-              <Code weight="duotone" className="text-white text-lg" />
+          <Link href="/" className="flex items-center gap-2.5 min-w-0 overflow-hidden">
+            <motion.div
+              animate={{ scale: showBrandText ? 1 : 1.08 }}
+              transition={{ duration: 0.35 }}
+              className="relative z-10 w-8 h-8 rounded-[10px] overflow-hidden bg-gradient-to-br from-orange-500/20 to-purple-900/60 border border-orange-300/35 shadow-[0_2px_12px_rgba(249,115,22,0.3)] shrink-0"
+            >
+              <img
+                src="/logoapi.png"
+                alt="Logo Anak Programmer Indonesia"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+
+            <div className="overflow-hidden">
+              <AnimatePresence mode="wait">
+                {showBrandText && (
+                  <motion.span
+                    key="brand-text"
+                    initial={{ x: -110, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -110, opacity: 0 }}
+                    transition={{
+                      duration: 0.65,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="block font-bold text-xs sm:text-sm tracking-tight text-[#fdf6ff] truncate"
+                  >
+                    Anak Programmer ID
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
-            <span className="font-bold text-xs sm:text-sm tracking-tight text-[#fdf6ff] truncate">
-              Anak Programmer ID
-            </span>
           </Link>
 
           <nav className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm text-[#decce8] shrink-0">
@@ -138,7 +175,7 @@ export default function Home() {
           ngoding satu frekuensi.
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons dengan Animasi /discordlogo.png */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,20 +199,34 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white/[0.06] hover:bg-[#5865F2]/25 border border-white/15 hover:border-[#5865F2]/60 text-[#f2e6fa] text-sm font-semibold backdrop-blur-xl shadow-[0_8px_24px_rgba(88,101,242,0.15)] transition-all"
             >
-              <DiscordLogo weight="duotone" className="text-xl text-[#8ea1e1]" />
+              <motion.img
+                src="/discordlogo.png"
+                alt="Discord"
+                animate={{
+                  y: [0, -3, 0, 2, 0],
+                  rotate: [0, -12, 12, -6, 0],
+                  scale: [1, 1.08, 1],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-5 h-5 object-contain shrink-0"
+              />
               <span>Gabung Discord Yuk!</span>
             </a>
           </motion.div>
         </motion.div>
 
-        {/* Section Baru: Tentang Anak Programmer Indonesia (Editorial Glass Manifesto) */}
+        {/* Section: Tentang Anak Programmer Indonesia */}
         <motion.section
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.65 }}
           className="relative"
         >
-          <div className="relative pl-5 sm:pl-8 py-2 border-l-2 border-gradient-to-b from-orange-400 to-purple-600 before:content-[''] before:absolute before:left-[-2px] before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-orange-400 before:via-fuchsia-500 before:to-purple-800">
+          <div className="relative pl-5 sm:pl-8 py-2 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-orange-400 before:via-fuchsia-500 before:to-purple-800">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-300/90 mb-3">
               <Sparkle weight="duotone" className="text-base text-orange-400" />
               <span>Tentang Anak Programmer Indonesia</span>
@@ -192,7 +243,7 @@ export default function Home() {
               lahir sebagai rumah singgah bagi para pegiat teknologi Tanah Air—mulai dari pelajar yang baru menyentuh HTML di layar ponsel, hingga engineer yang merancang sistem skala produksi. Di sini tidak ada pertanyaan yang dianggap terlalu dasar; setiap bug dibedah bersama, dan setiap karya kecil dirayakan sebagai langkah maju.
             </p>
 
-            {/* Kutipan & Highlight Horizontal Tanpa Box Kartu */}
+            {/* Kutipan & Highlight */}
             <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-orange-500/[0.08] via-purple-900/[0.2] to-transparent border border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
                 <Quotes
