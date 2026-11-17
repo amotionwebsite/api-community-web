@@ -7,15 +7,20 @@ import {
   CaretRight,
   Quotes,
   Info,
+  Copy,
+  Check,
+  Target,
+  CheckCircle,
 } from "@phosphor-icons/react";
 import { MOTIVATIONAL_QUOTES } from "../data/quotes";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
-export default function Home() {
+export default function HomeView() {
   const [typedText, setTypedText] = useState("");
   const [showBrandText, setShowBrandText] = useState(true);
   const [quote, setQuote] = useState(MOTIVATIONAL_QUOTES[0]);
+  const [copied, setCopied] = useState(false);
   const { scrollYProgress } = useScroll();
 
   const bgColor = useTransform(
@@ -55,6 +60,24 @@ export default function Home() {
     return () => clearInterval(cycleInterval);
   }, []);
 
+  const handleCopyQuote = async () => {
+    const textToCopy = `"${quote.text}" — ${quote.author}`;
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = textToCopy;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <motion.div
       style={{ backgroundColor: bgColor }}
@@ -79,7 +102,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Glass Navbar dengan Logo & Teks Diperbesar */}
+      {/* Floating Glass Navbar */}
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -143,7 +166,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 pt-12 pb-16 flex-1 flex flex-col justify-center">
-        {/* Typing Heading dengan Font Coolvetica & Gradasi Bergerak */}
+        {/* Typing Heading dengan Font Coolvetica */}
         <div className="min-h-[135px] sm:min-h-[120px] mb-5 flex items-center">
           <motion.h1
             animate={{
@@ -222,14 +245,14 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Section: Tentang Anak Programmer Indonesia */}
+        {/* Section 1: Tentang Anak Programmer Indonesia */}
         <motion.section
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.65 }}
           className="relative"
         >
-          <div className="relative pl-5 sm:pl-8 py-2 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-orange-400 before:via-fuchsia-500 before:to-purple-800">
+          <div className="relative pl-5 sm:pl-8 pt-2 pb-10 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-orange-400 before:via-fuchsia-500 before:to-purple-800">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-300/90 mb-3">
               <motion.span
                 animate={{
@@ -252,7 +275,7 @@ export default function Home() {
               Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar belakang.
             </h2>
 
-            <p className="text-sm sm:text-base text-[#cbb6d9] leading-relaxed max-w-3xl mb-6">
+            <p className="text-sm sm:text-base text-[#cbb6d9] leading-relaxed max-w-3xl mb-7">
               <span
                 style={{ fontFamily: "var(--font-utendo), sans-serif" }}
                 className="text-orange-200"
@@ -262,37 +285,167 @@ export default function Home() {
               lahir sebagai rumah singgah bagi para pegiat teknologi Tanah Air—mulai dari pelajar yang baru menyentuh HTML di layar ponsel, hingga engineer yang merancang sistem skala produksi. Di sini tidak ada pertanyaan yang dianggap terlalu dasar; setiap bug dibedah bersama, dan setiap karya kecil dirayakan sebagai langkah maju.
             </p>
 
-            {/* Kutipan Motivasi Tokoh Dinamis & Highlight */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-orange-500/[0.08] via-purple-900/[0.2] to-transparent border border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <Quotes
-                  weight="duotone"
-                  className="text-2xl text-orange-400 shrink-0 mt-0.5"
-                />
-                <div>
-                  <p className="text-xs sm:text-sm italic text-[#e8d8f2] leading-relaxed mb-1">
-                    &ldquo;{quote.text}&rdquo;
-                  </p>
-                  <span className="block text-[11px] font-mono text-orange-300/90">
-                    — {quote.author}
-                  </span>
+            {/* Box Quotes dengan Background Animasi Bergerak & Tombol Salin */}
+            <motion.div
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{
+                backgroundImage:
+                  "linear-gradient(120deg, rgba(249,115,22,0.16), rgba(126,34,206,0.26), rgba(236,72,153,0.14), rgba(46,16,101,0.35), rgba(249,115,22,0.16))",
+                backgroundSize: "240% 240%",
+              }}
+              className="relative p-4 sm:p-5 rounded-2xl border border-orange-300/20 backdrop-blur-2xl shadow-[0_8px_32px_rgba(12,5,24,0.5)] overflow-hidden"
+            >
+              {/* Aura Cahaya Halus Bergerak di Dalam Box */}
+              <motion.div
+                animate={{
+                  x: ["-25%", "25%", "-25%"],
+                  opacity: [0.25, 0.5, 0.25],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="pointer-events-none absolute -top-10 -left-10 w-44 h-44 rounded-full bg-orange-500/25 blur-2xl"
+              />
+
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <Quotes
+                    weight="duotone"
+                    className="text-2xl text-orange-400 shrink-0 mt-0.5"
+                  />
+                  <div>
+                    <p className="text-xs sm:text-sm italic text-[#f3e8fa] leading-relaxed mb-1.5">
+                      &ldquo;{quote.text}&rdquo;
+                    </p>
+                    <span className="block text-[11px] font-mono text-orange-300">
+                      — {quote.author}
+                    </span>
+                  </div>
                 </div>
+
+                {/* Tombol Salin Quotes dengan Animasi Klik */}
+                <motion.button
+                  type="button"
+                  onClick={handleCopyQuote}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.85, rotate: -8 }}
+                  title="Salin Quotes"
+                  className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-mono backdrop-blur-md transition-colors ${
+                    copied
+                      ? "bg-emerald-500/20 border-emerald-400/50 text-emerald-200"
+                      : "bg-white/[0.07] hover:bg-white/[0.14] border-white/15 text-orange-200"
+                  }`}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {copied ? (
+                      <motion.span
+                        key="copied"
+                        initial={{ scale: 0.4, opacity: 0, rotate: -30 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                        exit={{ scale: 0.4, opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 450, damping: 20 }}
+                        className="inline-flex items-center gap-1"
+                      >
+                        <Check weight="bold" className="text-sm text-emerald-300" />
+                        <span>Tersalin</span>
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="copy"
+                        initial={{ scale: 0.4, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.4, opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="inline-flex items-center gap-1"
+                      >
+                        <Copy weight="duotone" className="text-sm text-orange-300" />
+                        <span>Salin</span>
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Section 2: Visi & Misi Anak Programmer Indonesia */}
+          <div className="relative pl-5 sm:pl-8 pt-2 pb-4 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-purple-800 before:via-orange-500 before:to-transparent">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-300/90 mb-3">
+              <motion.span
+                animate={{
+                  scale: [1, 1.16, 1],
+                }}
+                transition={{
+                  duration: 2.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="inline-flex items-center justify-center"
+              >
+                <Target weight="duotone" className="text-lg text-orange-400" />
+              </motion.span>
+              <span>Visi &amp; Misi Anak Programmer Indonesia</span>
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-bold text-[#fdf6ff] leading-snug mb-5 max-w-2xl">
+              Mencetak ekosistem developer lokal yang inklusif, kolaboratif, dan siap berkarya.
+            </h3>
+
+            <div className="space-y-4 max-w-3xl">
+              {/* Visi */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+                <span className="inline-block text-[11px] font-mono uppercase tracking-wider text-orange-300 mb-1.5">
+                  Visi Utama
+                </span>
+                <p className="text-sm sm:text-base text-[#e8d8f2] leading-relaxed">
+                  Menjadi wadah kolaborasi programmer Indonesia yang terbuka bagi siapa saja—membuktikan bahwa keterbatasan perangkat bukanlah penghalang untuk melahirkan inovasi digital yang berdampak.
+                </p>
               </div>
 
-              <div className="flex items-center gap-6 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10 font-mono">
-                <div>
-                  <div className="text-lg font-extrabold bg-gradient-to-r from-orange-300 to-purple-300 bg-clip-text text-transparent">
-                    100%
-                  </div>
-                  <div className="text-[11px] text-[#a78eb8]">Open Sharing</div>
-                </div>
-                <div className="h-7 w-[1px] bg-white/10" />
-                <div>
-                  <div className="text-lg font-extrabold bg-gradient-to-r from-orange-300 to-purple-300 bg-clip-text text-transparent">
-                    24/7
-                  </div>
-                  <div className="text-[11px] text-[#a78eb8]">Diskusi Aktif</div>
-                </div>
+              {/* Misi */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl space-y-3">
+                <span className="inline-block text-[11px] font-mono uppercase tracking-wider text-purple-300">
+                  Misi Kami
+                </span>
+
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#cbb6d9] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle
+                      weight="duotone"
+                      className="text-lg text-orange-400 shrink-0 mt-0.5"
+                    />
+                    <span>
+                      Membangun budaya saling bantu tanpa menghakimi dalam memecahkan bug, error, maupun arsitektur kode.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle
+                      weight="duotone"
+                      className="text-lg text-orange-400 shrink-0 mt-0.5"
+                    />
+                    <span>
+                      Mendorong anggota untuk berani merilis *side-project* sejak dini dan mendapatkan apresiasi maupun masukan konstruktif.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle
+                      weight="duotone"
+                      className="text-lg text-orange-400 shrink-0 mt-0.5"
+                    />
+                    <span>
+                      Menghubungkan sesama programmer lintas daerah di Indonesia melalui diskusi rutin, bedah kode, dan kolaborasi proyek terbuka.
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -308,7 +461,7 @@ export default function Home() {
         >
           Anak Programmer Indonesia
         </span>{" "}
-        // Built with Next.js & Node.js
+        // Built with Next.js &amp; Node.js
       </footer>
     </motion.div>
   );
