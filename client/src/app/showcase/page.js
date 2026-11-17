@@ -4,13 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
-  IoHomeOutline,
-  IoChevronBack,
-  IoStarOutline,
-  IoChevronForward,
-  IoAddOutline,
-  IoCloseOutline,
-} from "react-icons/io5";
+  House,
+  CaretLeft,
+  Star,
+  CaretRight,
+  Plus,
+  X,
+} from "@phosphor-icons/react";
 
 const INITIAL_PROJECTS = [
   {
@@ -126,8 +126,8 @@ export default function ShowcasePage() {
               title="Kembali ke Beranda"
               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#2a1942]/80 hover:bg-[#392259] border border-[#7854a3]/50 text-[#e1cff7] text-xs font-medium transition-all active:scale-95 shrink-0"
             >
-              <IoChevronBack className="text-sm" />
-              <IoHomeOutline className="text-sm" />
+              <CaretLeft weight="bold" className="text-sm" />
+              <House weight="duotone" className="text-base" />
             </Link>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
@@ -184,12 +184,12 @@ export default function ShowcasePage() {
           >
             {showForm ? (
               <>
-                <IoCloseOutline className="text-lg" />
+                <X weight="bold" className="text-base" />
                 <span>Tutup Form</span>
               </>
             ) : (
               <>
-                <IoAddOutline className="text-lg" />
+                <Plus weight="bold" className="text-base" />
                 <span>Pajang Karya</span>
               </>
             )}
@@ -326,7 +326,7 @@ export default function ShowcasePage() {
                 <div className="flex items-center justify-between text-xs font-mono text-[#967db5] mb-3">
                   <span>@{project.author}</span>
                   <span className="inline-flex items-center gap-1 text-[#d4bcf0]">
-                    <IoStarOutline className="text-sm" /> {project.likes} Apresiasi
+                    <Star weight="duotone" className="text-sm" /> {project.likes} Apresiasi
                   </span>
                 </div>
 
@@ -358,7 +358,7 @@ export default function ShowcasePage() {
                   className="inline-flex items-center gap-1.5 text-xs font-mono text-[#d4bcf0] hover:text-[#f5effc] transition"
                 >
                   <span>Lihat Source / Demo</span>
-                  <IoChevronForward className="text-sm" />
+                  <CaretRight weight="bold" className="text-xs" />
                 </a>
               </div>
             </motion.div>

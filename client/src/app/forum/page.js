@@ -4,16 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
-  IoHomeOutline,
-  IoChevronBack,
-  IoAddOutline,
-  IoCloseOutline,
-  IoChevronUpOutline,
-  IoChatbubbleOutline,
-  IoChevronDownOutline,
-  IoCheckmarkOutline,
-  IoPaperPlaneOutline,
-} from "react-icons/io5";
+  House,
+  CaretLeft,
+  Plus,
+  X,
+  CaretUp,
+  ChatCircleDots,
+  CaretDown,
+  Check,
+  PaperPlaneTilt,
+} from "@phosphor-icons/react";
 
 const INITIAL_THREADS = [
   {
@@ -85,7 +85,6 @@ export default function ForumPage() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [showForm, setShowForm] = useState(false);
 
-  // Form states & validasi getar merah
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Bug & Error");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -93,7 +92,6 @@ export default function ForumPage() {
   const [errors, setErrors] = useState({ title: false, content: false });
   const [shakeKey, setShakeKey] = useState(0);
 
-  // State untuk membuka balasan per thread
   const [openRepliesId, setOpenRepliesId] = useState(null);
   const [replyInputs, setReplyInputs] = useState({});
   const [replyErrors, setReplyErrors] = useState({});
@@ -207,8 +205,8 @@ export default function ForumPage() {
               title="Kembali ke Beranda"
               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#2a1942]/80 hover:bg-[#392259] border border-[#7854a3]/50 text-[#e1cff7] text-xs font-medium transition-all active:scale-95 shrink-0"
             >
-              <IoChevronBack className="text-sm" />
-              <IoHomeOutline className="text-sm" />
+              <CaretLeft weight="bold" className="text-sm" />
+              <House weight="duotone" className="text-base" />
             </Link>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
@@ -247,7 +245,6 @@ export default function ForumPage() {
 
       {/* Main Forum Content */}
       <main className="relative z-30 max-w-5xl mx-auto px-4 pt-10 pb-20">
-        {/* Header & Tombol Buat Thread */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <div className="text-xs font-mono text-[#b48ee0] mb-1">
@@ -267,12 +264,12 @@ export default function ForumPage() {
           >
             {showForm ? (
               <>
-                <IoCloseOutline className="text-lg" />
+                <X weight="bold" className="text-base" />
                 <span>Tutup Form</span>
               </>
             ) : (
               <>
-                <IoAddOutline className="text-lg" />
+                <Plus weight="bold" className="text-base" />
                 <span>Buat Diskusi Baru</span>
               </>
             )}
@@ -339,7 +336,7 @@ export default function ForumPage() {
                     animate={{ rotate: isDropdownOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <IoChevronDownOutline className="text-[#d4bcf0]" />
+                    <CaretDown weight="bold" className="text-[#d4bcf0]" />
                   </motion.span>
                 </button>
 
@@ -370,7 +367,7 @@ export default function ForumPage() {
                           >
                             <span>{item}</span>
                             {active && (
-                              <IoCheckmarkOutline className="text-[#e1cff7] text-base" />
+                              <Check weight="bold" className="text-[#e1cff7] text-base" />
                             )}
                           </button>
                         );
@@ -440,7 +437,7 @@ export default function ForumPage() {
           ))}
         </div>
 
-        {/* List Thread Diskusi (Tanpa Solved & Balasan Interaktif Smooth) */}
+        {/* List Thread Diskusi */}
         <div className="space-y-3.5">
           {filteredThreads.map((thread, idx) => {
             const isRepliesOpen = openRepliesId === thread.id;
@@ -473,7 +470,7 @@ export default function ForumPage() {
 
                 <div className="flex items-center gap-4 text-xs font-mono text-[#ab94c7]">
                   <span className="inline-flex items-center gap-1 text-[#d4bcf0]">
-                    <IoChevronUpOutline className="text-sm" /> {thread.upvotes} Upvote
+                    <CaretUp weight="bold" className="text-sm" /> {thread.upvotes} Upvote
                   </span>
 
                   <button
@@ -487,13 +484,13 @@ export default function ForumPage() {
                         : "bg-[#241538]/70 border-[#5a3d7a]/50 text-[#d4bcf0] hover:border-[#9d75cb]"
                     }`}
                   >
-                    <IoChatbubbleOutline className="text-sm" />
+                    <ChatCircleDots weight="duotone" className="text-base" />
                     <span>{thread.repliesList.length} Balasan</span>
                     <motion.span
                       animate={{ rotate: isRepliesOpen ? 180 : 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <IoChevronDownOutline className="text-xs" />
+                      <CaretDown weight="bold" className="text-xs" />
                     </motion.span>
                   </button>
                 </div>
@@ -530,7 +527,6 @@ export default function ForumPage() {
                           ))
                         )}
 
-                        {/* Input Kirim Balasan Baru */}
                         <form
                           noValidate
                           onSubmit={(e) => handleSendReply(e, thread.id)}
@@ -570,7 +566,7 @@ export default function ForumPage() {
                             className="p-2.5 rounded-xl bg-gradient-to-r from-[#6c4896] to-[#3d235e] border border-[#b48ee0]/45 text-white hover:brightness-110 transition active:scale-95 shrink-0"
                             title="Kirim Balasan"
                           >
-                            <IoPaperPlaneOutline className="text-base" />
+                            <PaperPlaneTilt weight="duotone" className="text-base" />
                           </button>
                         </form>
                       </div>

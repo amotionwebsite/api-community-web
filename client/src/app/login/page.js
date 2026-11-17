@@ -5,20 +5,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  IoHomeOutline,
-  IoChevronBack,
-  IoPersonOutline,
-  IoMailOutline,
-  IoLockClosedOutline,
-  IoEyeOutline,
-  IoEyeOffOutline,
-  IoArrowForward,
-  IoCodeSlash,
-} from "react-icons/io5";
+  House,
+  CaretLeft,
+  User,
+  EnvelopeSimple,
+  LockKey,
+  Eye,
+  EyeSlash,
+  ArrowRight,
+  Code,
+} from "@phosphor-icons/react";
 
 export default function AuthPage() {
   const router = useRouter();
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +53,6 @@ export default function AuthPage() {
       return;
     }
 
-    // Setelah berhasil masuk/daftar, arahkan ke halaman Forum
     router.push("/forum");
   };
 
@@ -79,13 +78,13 @@ export default function AuthPage() {
             href="/"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#1e1230]/75 hover:bg-[#2b1a45] backdrop-blur-xl border border-[#67468f]/55 text-[#e1cff7] text-xs font-medium transition active:scale-95"
           >
-            <IoChevronBack className="text-sm" />
-            <IoHomeOutline className="text-sm" />
+            <CaretLeft weight="bold" className="text-sm" />
+            <House weight="duotone" className="text-base" />
             <span>Beranda</span>
           </Link>
 
           <div className="flex items-center gap-2 text-xs font-mono text-[#b48ee0]">
-            <IoCodeSlash className="text-sm" />
+            <Code weight="duotone" className="text-base" />
             <span>API_AUTH_PORTAL</span>
           </div>
         </div>
@@ -139,7 +138,7 @@ export default function AuthPage() {
           </div>
 
           <form noValidate onSubmit={handleSubmit} className="space-y-4">
-            {/* Field Username (Hanya saat Daftar) */}
+            {/* Field Username */}
             <AnimatePresence initial={false}>
               {mode === "register" && (
                 <motion.div
@@ -171,7 +170,7 @@ export default function AuthPage() {
                         : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus-within:border-[#b48ee0]"
                     }`}
                   >
-                    <IoPersonOutline className="text-[#b48ee0] text-base shrink-0" />
+                    <User weight="duotone" className="text-[#b48ee0] text-lg shrink-0" />
                     <input
                       type="text"
                       value={username}
@@ -212,7 +211,7 @@ export default function AuthPage() {
                     : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus-within:border-[#b48ee0]"
                 }`}
               >
-                <IoMailOutline className="text-[#b48ee0] text-base shrink-0" />
+                <EnvelopeSimple weight="duotone" className="text-[#b48ee0] text-lg shrink-0" />
                 <input
                   type="email"
                   value={email}
@@ -251,7 +250,7 @@ export default function AuthPage() {
                     : "bg-[#120a1f]/75 border-[#5e3e85]/70 focus-within:border-[#b48ee0]"
                 }`}
               >
-                <IoLockClosedOutline className="text-[#b48ee0] text-base shrink-0" />
+                <LockKey weight="duotone" className="text-[#b48ee0] text-lg shrink-0" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -269,9 +268,9 @@ export default function AuthPage() {
                   className="text-[#9d75cb] hover:text-[#e1cff7] transition"
                 >
                   {showPassword ? (
-                    <IoEyeOffOutline className="text-base" />
+                    <EyeSlash weight="duotone" className="text-lg" />
                   ) : (
-                    <IoEyeOutline className="text-base" />
+                    <Eye weight="duotone" className="text-lg" />
                   )}
                 </button>
               </motion.div>
@@ -284,7 +283,7 @@ export default function AuthPage() {
               className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#6c4896] via-[#503273] to-[#2e1947] border border-[#b48ee0]/45 text-[#faf6ff] text-sm font-semibold shadow-[0_8px_25px_rgba(46,25,71,0.7)] hover:brightness-110 transition flex items-center justify-center gap-2"
             >
               <span>{mode === "login" ? "Masuk Sekarang" : "Buat Akun"}</span>
-              <IoArrowForward className="text-base" />
+              <ArrowRight weight="bold" className="text-base" />
             </motion.button>
           </form>
         </motion.div>

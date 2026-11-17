@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  IoCodeSlash,
-  IoChevronForward,
-  IoTerminal,
-  IoCube,
-  IoRadio,
-} from "react-icons/io5";
+  Code,
+  CaretRight,
+  TerminalWindow,
+  Cube,
+  Broadcast,
+} from "@phosphor-icons/react";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
@@ -72,7 +72,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-[#1b102b]/75 backdrop-blur-xl border border-[#67468f]/55 shadow-[0_8px_32px_rgba(12,6,23,0.65)] flex items-center justify-between gap-2">
           <Link href="/" className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-[10px] bg-gradient-to-b from-[#7d56ab] to-[#2e184a] border border-[#c8a8ed]/40 shadow-[0_2px_10px_rgba(46,24,74,0.7)] flex items-center justify-center shrink-0">
-              <IoCodeSlash className="text-[#f5effc] text-base" />
+              <Code weight="duotone" className="text-[#f5effc] text-lg" />
             </div>
             <span className="font-bold text-xs sm:text-sm tracking-tight text-[#f5effc] truncate">
               Anak Programmer ID
@@ -151,7 +151,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#6c4896] via-[#503273] to-[#2e1947] border border-[#b48ee0]/45 text-[#faf6ff] text-sm font-semibold shadow-[0_8px_25px_rgba(46,25,71,0.65)] hover:border-[#d4bcf0]/75 transition-all"
             >
               <span>Buka Forum Diskusi</span>
-              <IoChevronForward className="text-[#e1cff7] text-base" />
+              <CaretRight weight="bold" className="text-[#e1cff7] text-base" />
             </Link>
           </motion.div>
 
@@ -165,7 +165,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Asymmetric Bento Grid dengan Ikon iOS Non-AI */}
+        {/* Asymmetric Bento Grid dengan Phosphor Duotone Icons */}
         <motion.div
           id="bento"
           initial="hidden"
@@ -189,7 +189,7 @@ export default function Home() {
           >
             <div className="flex items-center justify-between mb-4">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs">
-                <IoTerminal className="text-sm text-[#e1cff7]" />
+                <TerminalWindow weight="duotone" className="text-base text-[#e1cff7]" />
                 01 // DEBUG_ROOM
               </span>
               <span className="text-xs font-mono text-[#967db5] group-hover:text-[#d4bcf0] transition-colors">
@@ -217,7 +217,7 @@ export default function Home() {
           >
             <div>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#2e1b4a] border border-[#7854a3]/55 text-[#d4bcf0] font-mono text-xs mb-4">
-                <IoCube className="text-sm text-[#e1cff7]" />
+                <Cube weight="duotone" className="text-base text-[#e1cff7]" />
                 02 // SHIP_IT
               </span>
               <h3 className="font-bold text-xl text-[#f5effc] mb-2">
@@ -241,7 +241,7 @@ export default function Home() {
           >
             <div>
               <div className="inline-flex items-center gap-2 text-[#c4a6e8] font-mono text-xs mb-1.5">
-                <IoRadio className="text-sm text-[#e1cff7]" />
+                <Broadcast weight="duotone" className="text-base text-[#e1cff7]" />
                 03 // SYNC_CHANNEL
               </div>
               <h3 className="font-bold text-lg text-[#f5effc]">
