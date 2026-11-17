@@ -180,7 +180,7 @@ export default function ForumPage() {
       style={{ backgroundColor: bgColor }}
       className="min-h-screen text-[#f8f0fc] relative overflow-hidden transition-colors duration-300"
     >
-      {/* Ambient Background Gradasi Orange - Ungu */}
+      {/* Ambient Background */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
           className="absolute inset-0 opacity-[0.08]"
@@ -246,14 +246,9 @@ export default function ForumPage() {
       {/* Main Forum Content */}
       <main className="relative z-30 max-w-5xl mx-auto px-4 pt-10 pb-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <div className="text-xs font-mono text-orange-300/90 mb-1">
-              ~/forum/diskusi
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-200 via-orange-400 to-purple-400 bg-clip-text text-transparent">
-              Forum Diskusi & Tanya Error
-            </h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-200 via-orange-400 to-purple-400 bg-clip-text text-transparent">
+            Forum Diskusi & Tanya Error
+          </h1>
 
           <button
             onClick={() => {
@@ -276,7 +271,7 @@ export default function ForumPage() {
           </button>
         </div>
 
-        {/* Form Glassmorphism dengan Validasi Merah Getar */}
+        {/* Form Glassmorphism */}
         <AnimatePresence>
           {showForm && (
             <motion.form
@@ -321,7 +316,6 @@ export default function ForumPage() {
                 />
               </div>
 
-              {/* Custom Glassmorphism Dropdown */}
               <div className="relative">
                 <label className="block text-xs font-mono text-orange-200 mb-1.5">
                   Kategori
@@ -420,7 +414,7 @@ export default function ForumPage() {
           )}
         </AnimatePresence>
 
-        {/* Filter Kategori Glass Pills */}
+        {/* Filter Kategori */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6">
           {categories.map((cat) => (
             <button
@@ -495,7 +489,6 @@ export default function ForumPage() {
                   </button>
                 </div>
 
-                {/* Accordion Balasan Smooth */}
                 <AnimatePresence initial={false}>
                   {isRepliesOpen && (
                     <motion.div
