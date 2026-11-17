@@ -1,296 +1,170 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  House,
-  CaretLeft,
-  User,
-  EnvelopeSimple,
-  LockKey,
-  Eye,
-  EyeSlash,
   ArrowRight,
-  Code,
+  GithubLogo,
+  DiscordLogo,
+  Keyhole,
 } from "@phosphor-icons/react";
+import Navbar from "../components/Navbar";
 
-export default function AuthPage() {
-  const router = useRouter();
-  const [mode, setMode] = useState("login");
-  const [username, setUsername] = useState("");
+export default function LoginView() {
+  const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [errors, setErrors] = useState({
-    username: false,
-    email: false,
-    password: false,
-  });
-  const [shakeKey, setShakeKey] = useState(0);
-
-  const switchMode = (newMode) => {
-    setMode(newMode);
-    setErrors({ username: false, email: false, password: false });
-  };
+  const [statusMsg, setStatusMsg] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const usernameErr = mode === "register" && !username.trim();
-    const emailErr = !email.trim();
-    const passwordErr = !password.trim();
-
-    if (usernameErr || emailErr || passwordErr) {
-      setErrors({
-        username: usernameErr,
-        email: emailErr,
-        password: passwordErr,
-      });
-      setShakeKey((prev) => prev + 1);
-      return;
-    }
-
-    router.push("/forum");
+    setStatusMsg(
+      isRegister
+        ? "Pendaftaran diterima! Silakan hubungkan endpoint API auth."
+        : "Sesi siap diverifikasi! Silakan hubungkan endpoint API auth."
+    );
   };
 
   return (
-    <div className="min-h-screen bg-[#12081c] text-[#f8f0fc] relative overflow-hidden flex flex-col justify-between selection:bg-orange-500/40 selection:text-white">
-      {/* Ambient Background Gradasi Orange - Ungu */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 14px 14px, #fdba74 1.3px, transparent 1.3px), radial-gradient(circle at 0px 0px, #a855f7 1px, transparent 1px)`,
-            backgroundSize: "28px 28px",
-          }}
-        />
-        <div className="absolute -top-36 -left-24 w-[450px] h-[450px] rounded-full bg-gradient-to-br from-orange-600/40 via-purple-800/45 to-transparent blur-[135px]" />
-        <div className="absolute bottom-0 -right-24 w-[440px] h-[440px] rounded-full bg-gradient-to-tl from-violet-900/60 via-orange-700/30 to-transparent blur-[140px]" />
-      </div>
+    <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35">
+      <Navbar />
 
-      {/* Top Navigation Bar */}
-      <header className="relative z-20 px-4 pt-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] backdrop-blur-xl border border-white/15 text-orange-200 text-xs font-medium transition active:scale-95"
-          >
-            <CaretLeft weight="bold" className="text-sm" />
-            <House weight="duotone" className="text-base" />
-            <span>Beranda</span>
-          </Link>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-orange-300/90">
-            <Code weight="duotone" className="text-base" />
-            <span>API_AUTH_PORTAL</span>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Form Container Glass */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-10">
+      <main className="max-w-md mx-auto w-full px-4 py-14 flex-1 flex flex-col justify-center">
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white/[0.08] via-purple-950/50 to-[#140824]/80 backdrop-blur-2xl border border-white/20 shadow-[0_24px_64px_rgba(8,3,16,0.85)]"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="space-y-6"
         >
-          {/* Switcher Tab Masuk / Daftar */}
-          <div className="grid grid-cols-2 p-1 rounded-2xl bg-white/[0.04] border border-white/10 mb-7">
-            <button
-              type="button"
-              onClick={() => switchMode("login")}
-              className={`py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                mode === "login"
-                  ? "bg-gradient-to-r from-orange-500/80 via-fuchsia-700/80 to-purple-900/90 text-white shadow-md border border-orange-300/35"
-                  : "text-[#bfa8cf] hover:text-white"
-              }`}
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-400 mb-2">
+              <Keyhole weight="duotone" className="text-base" />
+              <span>AUTH // MEMBER PORTAL</span>
+            </div>
+            <h1
+              style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
+              className="text-3xl font-normal tracking-wide text-[#faf5ff]"
             >
-              Masuk
-            </button>
-            <button
-              type="button"
-              onClick={() => switchMode("register")}
-              className={`py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                mode === "register"
-                  ? "bg-gradient-to-r from-orange-500/80 via-fuchsia-700/80 to-purple-900/90 text-white shadow-md border border-orange-300/35"
-                  : "text-[#bfa8cf] hover:text-white"
-              }`}
-            >
-              Daftar Akun
-            </button>
-          </div>
-
-          <div className="mb-6">
-            <h1 className="text-2xl font-extrabold text-[#fdf6ff] mb-1">
-              {mode === "login"
-                ? "Selamat Datang Kembali"
-                : "Gabung Komunitas"}
+              {isRegister ? "Gabung Sebagai Member" : "Masuk ke Akun"}
             </h1>
-            <p className="text-xs sm:text-sm text-[#cbb6d9]">
-              {mode === "login"
-                ? "Masuk untuk mulai berdiskusi dan memamerkan karyamu."
-                : "Buat akun developer Anak Programmer Indonesia sekarang."}
+            <p className="text-xs sm:text-sm text-[#a894b8] mt-1">
+              Akses forum diskusi, simpan snippet, dan rilis karya di Showcase.
             </p>
           </div>
 
-          <form noValidate onSubmit={handleSubmit} className="space-y-4">
-            {/* Field Username */}
-            <AnimatePresence initial={false}>
-              {mode === "register" && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-mono text-orange-200">
-                      Username
-                    </label>
-                    {errors.username && (
-                      <span className="text-[11px] font-mono text-rose-400">
-                        * Wajib diisi
-                      </span>
-                    )}
-                  </div>
-                  <motion.div
-                    key={`user-${shakeKey}`}
-                    animate={
-                      errors.username ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
-                    }
-                    transition={{ duration: 0.35 }}
-                    className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md border transition-colors ${
-                      errors.username
-                        ? "bg-rose-950/35 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
-                        : "bg-white/[0.05] border-white/15 focus-within:border-orange-400/70"
-                    }`}
-                  >
-                    <User weight="duotone" className="text-orange-300 text-lg shrink-0" />
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => {
-                        setUsername(e.target.value);
-                        if (errors.username)
-                          setErrors((prev) => ({ ...prev, username: false }));
-                      }}
-                      placeholder="contoh: jason_dev"
-                      className="w-full bg-transparent text-sm text-[#fdf6ff] placeholder-[#9c82ad] focus:outline-none"
-                    />
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Field Email */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-mono text-orange-200">
-                  Email
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isRegister && (
+              <div>
+                <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+                  Username
                 </label>
-                {errors.email && (
-                  <span className="text-[11px] font-mono text-rose-400">
-                    * Email wajib diisi
-                  </span>
-                )}
-              </div>
-              <motion.div
-                key={`email-${shakeKey}`}
-                animate={
-                  errors.email ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
-                }
-                transition={{ duration: 0.35 }}
-                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md border transition-colors ${
-                  errors.email
-                    ? "bg-rose-950/35 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
-                    : "bg-white/[0.05] border-white/15 focus-within:border-orange-400/70"
-                }`}
-              >
-                <EnvelopeSimple weight="duotone" className="text-orange-300 text-lg shrink-0" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (errors.email)
-                      setErrors((prev) => ({ ...prev, email: false }));
-                  }}
-                  placeholder="developer@email.com"
-                  className="w-full bg-transparent text-sm text-[#fdf6ff] placeholder-[#9c82ad] focus:outline-none"
+                  type="text"
+                  required
+                  placeholder="misal: jason_dev"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
                 />
-              </motion.div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                placeholder="nama@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
+              />
             </div>
 
-            {/* Field Password */}
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-mono text-orange-200">
-                  Kata Sandi
-                </label>
-                {errors.password && (
-                  <span className="text-[11px] font-mono text-rose-400">
-                    * Sandi wajib diisi
-                  </span>
-                )}
-              </div>
-              <motion.div
-                key={`pass-${shakeKey}`}
-                animate={
-                  errors.password ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }
-                }
-                transition={{ duration: 0.35 }}
-                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md border transition-colors ${
-                  errors.password
-                    ? "bg-rose-950/35 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.2)]"
-                    : "bg-white/[0.05] border-white/15 focus-within:border-orange-400/70"
-                }`}
-              >
-                <LockKey weight="duotone" className="text-orange-300 text-lg shrink-0" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errors.password)
-                      setErrors((prev) => ({ ...prev, password: false }));
-                  }}
-                  placeholder="••••••••"
-                  className="w-full bg-transparent text-sm text-[#fdf6ff] placeholder-[#9c82ad] focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-orange-300/80 hover:text-orange-200 transition"
-                >
-                  {showPassword ? (
-                    <EyeSlash weight="duotone" className="text-lg" />
-                  ) : (
-                    <Eye weight="duotone" className="text-lg" />
-                  )}
-                </button>
-              </motion.div>
+              <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
+              />
             </div>
+
+            {statusMsg && (
+              <p className="text-xs font-mono text-orange-300 bg-orange-500/10 border border-orange-400/30 px-3 py-2 rounded-lg">
+                {statusMsg}
+              </p>
+            )}
 
             <motion.button
-              whileHover={{ scale: 1.015 }}
-              whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-orange-500/85 via-fuchsia-700/80 to-purple-900/90 border border-orange-300/35 text-white text-sm font-semibold shadow-[0_8px_25px_rgba(249,115,22,0.25)] hover:brightness-110 transition flex items-center justify-center gap-2"
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-700 text-white text-sm font-semibold shadow-[0_6px_24px_rgba(249,115,22,0.25)] hover:brightness-110 transition"
             >
-              <span>{mode === "login" ? "Masuk Sekarang" : "Buat Akun"}</span>
-              <ArrowRight weight="bold" className="text-base" />
+              <span>{isRegister ? "Buat Akun" : "Masuk Sekarang"}</span>
+              <ArrowRight weight="bold" />
             </motion.button>
           </form>
+
+          {/* OAuth Divider */}
+          <div className="relative flex py-1 items-center">
+            <div className="flex-grow border-t border-white/[0.08]" />
+            <span className="shrink mx-3 text-[11px] font-mono text-[#7d698f]">
+              ATAU LANJUT DENGAN
+            </span>
+            <div className="flex-grow border-t border-white/[0.08]" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 text-xs font-semibold text-[#e9d8f5] transition"
+            >
+              <GithubLogo weight="fill" className="text-base" />
+              <span>GitHub</span>
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] hover:bg-[#5865F2]/20 border border-white/10 hover:border-[#5865F2]/50 text-xs font-semibold text-[#e9d8f5] transition"
+            >
+              <DiscordLogo weight="fill" className="text-base text-[#7289da]" />
+              <span>Discord</span>
+            </button>
+          </div>
+
+          <p className="text-center text-xs text-[#9f8bb0] pt-2">
+            {isRegister ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegister(!isRegister);
+                setStatusMsg("");
+              }}
+              className="text-orange-400 hover:underline font-semibold"
+            >
+              {isRegister ? "Masuk di sini" : "Daftar gratis"}
+            </button>
+          </p>
         </motion.div>
       </main>
 
-      <footer className="relative z-10 py-5 text-center text-xs font-mono text-[#9d85b0]">
-        © 2026 Anak Programmer Indonesia
+      <footer className="border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
+        © 2026{" "}
+        <span
+          style={{ fontFamily: "var(--font-utendo), sans-serif" }}
+          className="text-[#cbb6d9]"
+        >
+          Anak Programmer Indonesia
+        </span>
       </footer>
     </div>
   );
