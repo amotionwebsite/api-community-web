@@ -8,8 +8,7 @@ import {
   Quotes,
   Copy,
   Check,
-  Atom,
-  Sparkle,
+  FlagBanner,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 import { MOTIVATIONAL_QUOTES } from "../data/quotes";
@@ -69,12 +68,12 @@ export default function HomeView() {
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 max-w-5xl mx-auto w-full px-4 sm:px-5 pt-11 sm:pt-16 pb-20 flex-1"
+        className="relative z-10 max-w-5xl mx-auto w-full px-4 sm:px-6 pt-11 sm:pt-16 pb-20 flex-1"
       >
         {/* Hero Heading Smooth Word-by-Word + Animasi Gradasi Orange-Ungu */}
         <h1
           style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
-          className="text-[34px] sm:text-[56px] font-normal tracking-wide leading-[1.15] mb-5 flex flex-wrap gap-x-2.5 sm:gap-x-3.5 gap-y-1"
+          className="text-[34px] sm:text-5xl lg:text-[56px] font-normal tracking-wide leading-[1.15] mb-5 flex flex-wrap gap-x-2.5 sm:gap-x-3.5 gap-y-1 max-w-4xl"
         >
           {HEADLINE_WORDS.map((word, i) => (
             <motion.span
@@ -156,16 +155,34 @@ export default function HomeView() {
           </motion.div>
         </motion.div>
 
-        {/* Section: Tentang Anak Programmer Indonesia (Font Roboto Tipis + Ikon React Smooth) */}
-        <section className="py-12 border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-10">
-          <div className="md:col-span-4">
-            <div className="inline-flex items-center gap-2 text-xs text-orange-300/95">
+        {/* Section: Tentang Anak Programmer Indonesia (Ikon Huruf 'i' Modern Smooth) */}
+        <section className="py-12 border-b border-white/[0.08] grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
+          <div className="lg:col-span-4">
+            <div className="inline-flex items-center gap-2.5">
               <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-                className="inline-flex items-center justify-center text-base text-[#FFAD03]"
+                animate={{
+                  scale: [1, 1.12, 1],
+                  y: [0, -1.5, 0],
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="w-5 h-5 rounded-full bg-gradient-to-br from-[#F56A00]/25 to-[#9D4EDD]/30 border border-[#FFAD03]/40 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(255,173,3,0.25)]"
               >
-                <Atom weight="duotone" />
+                <svg
+                  width="10"
+                  height="12"
+                  viewBox="0 0 10 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-[#FFAD03]"
+                >
+                  <circle cx="5" cy="2.2" r="1.15" fill="currentColor" />
+                  <path
+                    d="M5 5V10.2"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </motion.span>
               <span
                 style={{ fontFamily: "var(--font-roboto), sans-serif" }}
@@ -176,7 +193,7 @@ export default function HomeView() {
             </div>
           </div>
 
-          <div className="md:col-span-8 space-y-5">
+          <div className="lg:col-span-8 space-y-5">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#faf5ff] leading-snug">
               Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar belakang.
             </h2>
@@ -262,19 +279,19 @@ export default function HomeView() {
           </div>
         </section>
 
-        {/* Section: Visi & Misi Anak Programmer Indonesia (Font Roboto Tipis + Ikon Smooth) */}
-        <section className="pt-12 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-10">
-          <div className="md:col-span-4">
-            <div className="inline-flex items-center gap-2 text-xs">
+        {/* Section: Visi & Misi Anak Programmer Indonesia (Ikon Bendera Smooth) */}
+        <section className="pt-12 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
+          <div className="lg:col-span-4">
+            <div className="inline-flex items-center gap-2.5">
               <motion.span
                 animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, -10, 0],
+                  rotate: [0, -8, 8, -4, 0],
+                  y: [0, -1.5, 0],
                 }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex items-center justify-center text-base text-[#CEA7EE]"
+                transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+                className="w-5 h-5 rounded-full bg-gradient-to-br from-[#9D4EDD]/30 to-[#F56A00]/25 border border-[#CEA7EE]/40 flex items-center justify-center shrink-0 text-[#CEA7EE]"
               >
-                <Sparkle weight="duotone" />
+                <FlagBanner weight="duotone" className="text-xs" />
               </motion.span>
               <span
                 style={{ fontFamily: "var(--font-roboto), sans-serif" }}
@@ -285,7 +302,7 @@ export default function HomeView() {
             </div>
           </div>
 
-          <div className="md:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-8">
             <div>
               <span
                 style={{ fontFamily: "var(--font-roboto), sans-serif" }}
