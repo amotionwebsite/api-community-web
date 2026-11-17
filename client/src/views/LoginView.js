@@ -6,7 +6,6 @@ import {
   ArrowRight,
   GithubLogo,
   DiscordLogo,
-  Keyhole,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 
@@ -30,23 +29,19 @@ export default function LoginView() {
     <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35">
       <Navbar />
 
-      <main className="max-w-md mx-auto w-full px-4 py-14 flex-1 flex flex-col justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="space-y-6"
-        >
+      <motion.main
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-md mx-auto w-full px-4 py-14 flex-1 flex flex-col justify-center"
+      >
+        <div className="space-y-6">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-400 mb-2">
-              <Keyhole weight="duotone" className="text-base" />
-              <span>AUTH // MEMBER PORTAL</span>
-            </div>
             <h1
               style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
               className="text-3xl font-normal tracking-wide text-[#faf5ff]"
             >
-              {isRegister ? "Gabung Sebagai Member" : "Masuk ke Akun"}
+              {isRegister ? "Daftar Akun Baru" : "Masuk ke Akun"}
             </h1>
             <p className="text-xs sm:text-sm text-[#a894b8] mt-1">
               Akses forum diskusi, simpan snippet, dan rilis karya di Showcase.
@@ -99,23 +94,27 @@ export default function LoginView() {
             </div>
 
             {statusMsg && (
-              <p className="text-xs font-mono text-orange-300 bg-orange-500/10 border border-orange-400/30 px-3 py-2 rounded-lg">
+              <p className="text-xs font-mono text-[#FFCF70] bg-orange-500/10 border border-orange-400/30 px-3 py-2 rounded-lg">
                 {statusMsg}
               </p>
             )}
 
             <motion.button
               type="submit"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-700 text-white text-sm font-semibold shadow-[0_6px_24px_rgba(249,115,22,0.25)] hover:brightness-110 transition"
+              whileHover={{ y: -1, scale: 1.01 }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                backgroundImage: isRegister
+                  ? "linear-gradient(135deg, #4b5563 0%, #374151 50%, #1f2937 100%)"
+                  : "linear-gradient(135deg, #F56A00 0%, #FA8B01 38%, #9D4EDD 78%, #72369D 100%)",
+              }}
+              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-semibold shadow-lg hover:brightness-110 transition"
             >
               <span>{isRegister ? "Buat Akun" : "Masuk Sekarang"}</span>
               <ArrowRight weight="bold" />
             </motion.button>
           </form>
 
-          {/* OAuth Divider */}
           <div className="relative flex py-1 items-center">
             <div className="flex-grow border-t border-white/[0.08]" />
             <span className="shrink mx-3 text-[11px] font-mono text-[#7d698f]">
@@ -149,13 +148,13 @@ export default function LoginView() {
                 setIsRegister(!isRegister);
                 setStatusMsg("");
               }}
-              className="text-orange-400 hover:underline font-semibold"
+              className="text-[#FFAD03] hover:underline font-semibold"
             >
               {isRegister ? "Masuk di sini" : "Daftar gratis"}
             </button>
           </p>
-        </motion.div>
-      </main>
+        </div>
+      </motion.main>
 
       <footer className="border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
         © 2026{" "}

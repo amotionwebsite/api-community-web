@@ -7,7 +7,6 @@ import {
   Plus,
   CheckCircle,
   Clock,
-  Terminal,
   X,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
@@ -86,35 +85,36 @@ export default function ForumView() {
     <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35">
       <Navbar />
 
-      <main className="max-w-5xl mx-auto w-full px-4 sm:px-5 pt-10 pb-20 flex-1">
-        {/* Header Section */}
+      <motion.main
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-5xl mx-auto w-full px-4 sm:px-5 pt-10 pb-20 flex-1"
+      >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-white/[0.08]">
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-400 mb-2">
-              <Terminal weight="duotone" className="text-base" />
-              <span>FORUM // BEDAH KODE</span>
-            </div>
-            <h1
-              style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
-              className="text-3xl sm:text-4xl font-normal tracking-wide text-[#faf5ff]"
-            >
-              Diskusi &amp; Tanya Error
-            </h1>
-          </div>
+          <h1
+            style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
+            className="text-3xl sm:text-4xl font-normal tracking-wide text-[#faf5ff]"
+          >
+            Diskusi &amp; Tanya Error
+          </h1>
 
           <motion.button
             type="button"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={{ y: -2, scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowForm(!showForm)}
-            className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-purple-700 text-white text-xs sm:text-sm font-semibold shadow-[0_6px_20px_rgba(249,115,22,0.25)]"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #F56A00 0%, #FA8B01 40%, #9D4EDD 82%, #72369D 100%)",
+            }}
+            className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs sm:text-sm font-semibold shadow-[0_6px_20px_rgba(245,106,0,0.25)]"
           >
             {showForm ? <X weight="bold" /> : <Plus weight="bold" />}
             <span>{showForm ? "Tutup Form" : "Buat Thread Baru"}</span>
           </motion.button>
         </div>
 
-        {/* Form Buat Thread Baru */}
         <AnimatePresence>
           {showForm && (
             <motion.form
@@ -155,7 +155,7 @@ export default function ForumView() {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white text-xs sm:text-sm font-semibold transition"
+                    className="px-5 py-2 rounded-xl bg-[#F56A00] hover:bg-[#FA8B01] text-white text-xs sm:text-sm font-semibold transition"
                   >
                     Posting Diskusi
                   </button>
@@ -165,45 +165,45 @@ export default function ForumView() {
           )}
         </AnimatePresence>
 
-        {/* Category Filter Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto py-5 border-b border-white/[0.08]">
           {CATEGORIES.map((cat) => {
             const active = activeCategory === cat;
             return (
-              <button
+              <motion.button
                 key={cat}
                 type="button"
+                whileTap={{ scale: 0.94 }}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-mono whitespace-nowrap transition ${
                   active
-                    ? "bg-orange-500/20 text-orange-300 border border-orange-400/40"
+                    ? "bg-orange-500/20 text-[#FFCF70] border border-orange-400/40"
                     : "text-[#9f8bb0] hover:text-white border border-transparent"
                 }`}
               >
                 {cat}
-              </button>
+              </motion.button>
             );
           })}
         </div>
 
-        {/* Thread List - Editorial Divider Rows */}
         <div className="divide-y divide-white/[0.08]">
-          {filteredThreads.map((item) => (
+          {filteredThreads.map((item, index) => (
             <motion.article
               key={item.id}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.06 }}
               className="py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
             >
               <div className="space-y-1.5 max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                  <span className="text-orange-400">[{item.category}]</span>
+                  <span className="text-[#FA8B01]">[{item.category}]</span>
                   {item.solved ? (
                     <span className="inline-flex items-center gap-1 text-emerald-400">
                       <CheckCircle weight="fill" /> Terpecahkan
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-purple-300">
+                    <span className="inline-flex items-center gap-1 text-[#CEA7EE]">
                       <Clock weight="duotone" /> Terbuka
                     </span>
                   )}
@@ -212,7 +212,7 @@ export default function ForumView() {
                   </span>
                 </div>
 
-                <h2 className="text-base sm:text-lg font-bold text-[#faf5ff] group-hover:text-orange-300 transition-colors leading-snug">
+                <h2 className="text-base sm:text-lg font-bold text-[#faf5ff] group-hover:text-[#FFAD03] transition-colors leading-snug">
                   {item.title}
                 </h2>
 
@@ -222,13 +222,13 @@ export default function ForumView() {
               </div>
 
               <div className="flex items-center gap-2 self-start sm:self-center shrink-0 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] text-xs font-mono text-[#cbb6d9]">
-                <ChatTeardropText weight="duotone" className="text-base text-orange-400" />
+                <ChatTeardropText weight="duotone" className="text-base text-[#FA8B01]" />
                 <span>{item.replies} Balasan</span>
               </div>
             </motion.article>
           ))}
         </div>
-      </main>
+      </motion.main>
 
       <footer className="border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
         © 2026{" "}

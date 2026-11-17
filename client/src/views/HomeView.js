@@ -8,33 +8,30 @@ import {
   Quotes,
   Copy,
   Check,
-  TerminalWindow,
-  CompassTool,
+  Atom,
   Sparkle,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 import { MOTIVATIONAL_QUOTES } from "../data/quotes";
 
-const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
+const HEADLINE_WORDS = [
+  "Tempat",
+  "Ngoding,",
+  "Diskusi",
+  "Error,",
+  "dan",
+  "Pamer",
+  "Karya",
+  "Bareng.",
+];
 
 export default function HomeView() {
-  const [typedText, setTypedText] = useState("");
   const [quote, setQuote] = useState(MOTIVATIONAL_QUOTES[0]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
     setQuote(MOTIVATIONAL_QUOTES[randomIndex]);
-  }, []);
-
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      index += 1;
-      setTypedText(FULL_TEXT.slice(0, index));
-      if (index >= FULL_TEXT.length) clearInterval(interval);
-    }, 58);
-    return () => clearInterval(interval);
   }, []);
 
   const handleCopyQuote = async () => {
@@ -55,78 +52,97 @@ export default function HomeView() {
 
   return (
     <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35 selection:text-white relative overflow-x-hidden">
-      {/* Subtle Ambient Accent */}
+      {/* Ambient Mesh Glow */}
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[620px] h-[340px] rounded-full bg-gradient-to-r from-orange-600/20 via-purple-700/25 to-fuchsia-800/20 blur-[130px]" />
+        <div
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 15%, rgba(245,106,0,0.18), transparent 45%), radial-gradient(circle at 80% 25%, rgba(157,78,221,0.22), transparent 50%), radial-gradient(circle at 50% 85%, rgba(70,30,92,0.28), transparent 55%)",
+          }}
+          className="absolute inset-0"
+        />
       </div>
 
       <Navbar />
 
-      <main className="relative z-10 max-w-5xl mx-auto w-full px-4 sm:px-5 pt-10 sm:pt-16 pb-20 flex-1">
-        {/* Live Status Pill */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.09] bg-white/[0.02] text-[11px] font-mono text-[#cbb6d9] mb-6"
+      <motion.main
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 max-w-5xl mx-auto w-full px-4 sm:px-5 pt-11 sm:pt-16 pb-20 flex-1"
+      >
+        {/* Hero Heading Smooth Word-by-Word + Animasi Gradasi Orange-Ungu */}
+        <h1
+          style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
+          className="text-[34px] sm:text-[56px] font-normal tracking-wide leading-[1.15] mb-5 flex flex-wrap gap-x-2.5 sm:gap-x-3.5 gap-y-1"
         >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
-          </span>
-          <span>COMMUNITY_HUB // INDONESIA</span>
-        </motion.div>
-
-        {/* Hero Heading - Coolvetica */}
-        <div className="min-h-[125px] sm:min-h-[115px] mb-5 flex items-center">
-          <h1
-            style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
-            className="text-[32px] sm:text-[54px] font-normal tracking-wide leading-[1.14] text-[#faf5ff]"
-          >
-            {typedText}
+          {HEADLINE_WORDS.map((word, i) => (
             <motion.span
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.7, repeat: Infinity }}
-              className="inline-block w-[3px] h-7 sm:h-11 bg-orange-500 ml-1 align-middle"
-            />
-          </h1>
-        </div>
+              key={word + i}
+              initial={{ opacity: 0, y: 22, filter: "blur(6px)" }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                opacity: { duration: 0.65, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+                y: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+                filter: { duration: 0.6, delay: i * 0.08 },
+                backgroundPosition: { duration: 7, repeat: Infinity, ease: "linear" },
+              }}
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, #F56A00, #FFAD03, #FFCF70, #CEA7EE, #9D4EDD, #F56A00)",
+                backgroundSize: "260% 260%",
+              }}
+              className="inline-block bg-clip-text text-transparent"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </h1>
 
         {/* Subheadline */}
         <motion.p
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="text-[#a894b8] text-sm sm:text-base max-w-xl mb-8 leading-relaxed"
+          transition={{ duration: 0.6, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="text-[#b8a5c7] text-sm sm:text-base max-w-xl mb-8 leading-relaxed"
         >
           Ruang kolaborasi bawah tanah untuk programmer pemula hingga sepuh di
           Indonesia. Bedah error bareng, rilis side-project, dan temukan partner
           ngoding satu frekuensi.
         </motion.p>
 
-        {/* CTA Row */}
+        {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
+          transition={{ duration: 0.6, delay: 0.55 }}
           className="flex flex-wrap items-center gap-3 pb-14 border-b border-white/[0.08]"
         >
-          <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+          <motion.div whileHover={{ y: -2, scale: 1.02 }} whileTap={{ scale: 0.96 }}>
             <Link
               href="/forum"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-700 text-white text-sm font-semibold shadow-[0_6px_24px_rgba(249,115,22,0.28)] hover:brightness-110 transition"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, #F56A00 0%, #FA8B01 40%, #9D4EDD 82%, #72369D 100%)",
+              }}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white text-sm font-semibold shadow-[0_8px_26px_rgba(245,106,0,0.28)] hover:brightness-110 transition"
             >
               <span>Buka Forum Diskusi</span>
               <ArrowUpRight weight="bold" className="text-base" />
             </Link>
           </motion.div>
 
-          <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+          <motion.div whileHover={{ y: -2, scale: 1.02 }} whileTap={{ scale: 0.96 }}>
             <a
               href="https://discord.gg/7A5qtTpYT"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-white/[0.03] hover:bg-[#5865F2]/15 border border-white/[0.1] hover:border-[#5865F2]/50 text-[#f3e8fa] text-sm font-semibold transition"
+              className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-white/[0.04] hover:bg-[#5865F2]/20 border border-white/[0.1] hover:border-[#5865F2]/50 text-[#f3e8fa] text-sm font-semibold backdrop-blur-xl transition"
             >
               <motion.img
                 src="/discordlogo.png"
@@ -140,17 +156,23 @@ export default function HomeView() {
           </motion.div>
         </motion.div>
 
-        {/* Editorial Section 01: Tentang */}
-        <section className="py-12 border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+        {/* Section: Tentang Anak Programmer Indonesia (Font Roboto Tipis + Ikon React Smooth) */}
+        <section className="py-12 border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-10">
           <div className="md:col-span-4">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-400">
+            <div className="inline-flex items-center gap-2 text-xs text-orange-300/95">
               <motion.span
-                animate={{ y: [0, -2, 0] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+                className="inline-flex items-center justify-center text-base text-[#FFAD03]"
               >
-                <TerminalWindow weight="duotone" className="text-lg" />
+                <Atom weight="duotone" />
               </motion.span>
-              <span>01 // Tentang Kami</span>
+              <span
+                style={{ fontFamily: "var(--font-roboto), sans-serif" }}
+                className="font-light tracking-wide text-xs sm:text-[13px] text-[#e6d5f2]"
+              >
+                Tentang Anak Programmer Indonesia
+              </span>
             </div>
           </div>
 
@@ -162,7 +184,7 @@ export default function HomeView() {
             <p className="text-sm sm:text-base text-[#b8a5c7] leading-relaxed">
               <span
                 style={{ fontFamily: "var(--font-utendo), sans-serif" }}
-                className="text-orange-300"
+                className="text-[#FFCF70]"
               >
                 Anak Programmer Indonesia
               </span>{" "}
@@ -173,27 +195,27 @@ export default function HomeView() {
               dan setiap karya kecil dirayakan sebagai langkah maju.
             </p>
 
-            {/* Editorial Blockquote dengan Animated Gradient Bar & Copy Button */}
+            {/* Quotes dengan Animated Gradient & Tombol Salin */}
             <motion.div
               animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 backgroundImage:
-                  "linear-gradient(125deg, rgba(249,115,22,0.12), rgba(147,51,234,0.18), rgba(249,115,22,0.08))",
-                backgroundSize: "220% 220%",
+                  "linear-gradient(125deg, rgba(245,106,0,0.14), rgba(157,78,221,0.20), rgba(70,30,92,0.24), rgba(250,139,1,0.12))",
+                backgroundSize: "230% 230%",
               }}
-              className="mt-6 pl-4 sm:pl-5 pr-3.5 py-4 border-l-2 border-orange-500 rounded-r-xl flex items-start justify-between gap-3"
+              className="mt-6 pl-4 sm:pl-5 pr-3.5 py-4 border-l-2 border-[#FA8B01] rounded-r-xl flex items-start justify-between gap-3 backdrop-blur-xl"
             >
               <div className="flex items-start gap-2.5">
                 <Quotes
                   weight="fill"
-                  className="text-lg text-orange-400/80 shrink-0 mt-0.5"
+                  className="text-lg text-[#FFAD03] shrink-0 mt-0.5"
                 />
                 <div>
                   <p className="text-xs sm:text-sm italic text-[#efe3f7] leading-relaxed mb-1">
                     &ldquo;{quote.text}&rdquo;
                   </p>
-                  <span className="text-[11px] font-mono text-orange-300/90">
+                  <span className="text-[11px] font-mono text-[#FFCF70]">
                     — {quote.author}
                   </span>
                 </div>
@@ -240,23 +262,35 @@ export default function HomeView() {
           </div>
         </section>
 
-        {/* Editorial Section 02: Visi & Misi */}
-        <section className="pt-12 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+        {/* Section: Visi & Misi Anak Programmer Indonesia (Font Roboto Tipis + Ikon Smooth) */}
+        <section className="pt-12 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-10">
           <div className="md:col-span-4">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300">
+            <div className="inline-flex items-center gap-2 text-xs">
               <motion.span
-                animate={{ rotate: [0, 12, -12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                className="inline-flex items-center justify-center text-base text-[#CEA7EE]"
               >
-                <CompassTool weight="duotone" className="text-lg text-orange-400" />
+                <Sparkle weight="duotone" />
               </motion.span>
-              <span>02 // Visi &amp; Misi</span>
+              <span
+                style={{ fontFamily: "var(--font-roboto), sans-serif" }}
+                className="font-light tracking-wide text-xs sm:text-[13px] text-[#e6d5f2]"
+              >
+                Visi &amp; Misi Anak Programmer Indonesia
+              </span>
             </div>
           </div>
 
           <div className="md:col-span-8 space-y-8">
             <div>
-              <span className="block text-[11px] font-mono uppercase tracking-wider text-orange-400 mb-2">
+              <span
+                style={{ fontFamily: "var(--font-roboto), sans-serif" }}
+                className="block font-light text-xs text-[#FFAD03] mb-2"
+              >
                 Visi Utama
               </span>
               <p className="text-lg sm:text-xl font-semibold text-[#faf5ff] leading-relaxed">
@@ -267,7 +301,10 @@ export default function HomeView() {
             </div>
 
             <div className="border-t border-white/[0.08] pt-6">
-              <span className="block text-[11px] font-mono uppercase tracking-wider text-purple-300 mb-4">
+              <span
+                style={{ fontFamily: "var(--font-roboto), sans-serif" }}
+                className="block font-light text-xs text-[#CEA7EE] mb-4"
+              >
                 Misi Ekosistem
               </span>
 
@@ -290,7 +327,7 @@ export default function HomeView() {
                     key={misi.num}
                     className="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5"
                   >
-                    <span className="font-mono text-xs text-orange-400/90 pt-0.5 shrink-0">
+                    <span className="font-mono text-xs text-[#FA8B01] pt-0.5 shrink-0">
                       {misi.num}.
                     </span>
                     <p className="text-xs sm:text-sm text-[#b8a5c7] leading-relaxed">
@@ -302,7 +339,7 @@ export default function HomeView() {
             </div>
           </div>
         </section>
-      </main>
+      </motion.main>
 
       <footer className="relative z-10 border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
         © 2026{" "}
