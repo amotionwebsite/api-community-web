@@ -6,14 +6,50 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import {
   CaretRight,
   Quotes,
-  Sparkle,
+  Compass,
 } from "@phosphor-icons/react";
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
+const MOTIVATIONAL_QUOTES = [
+  {
+    text: "Keberhasilan bukanlah milik orang yang pintar, melainkan milik mereka yang senantiasa berusaha.",
+    author: "B.J. Habibie",
+  },
+  {
+    text: "Talk is cheap. Show me the code.",
+    author: "Linus Torvalds",
+  },
+  {
+    text: "Ilmu pengetahuan bukan untuk ditumpuk di kepala, tapi dibagikan agar menjadi cahaya bagi sesama.",
+    author: "Onno W. Purbo",
+  },
+  {
+    text: "The most damaging phrase in the language is: 'We've always done it this way.'",
+    author: "Grace Hopper",
+  },
+  {
+    text: "Terbentur, terbentur, terbentur, terbentuk.",
+    author: "Tan Malaka",
+  },
+  {
+    text: "First, solve the problem. Then, write the code.",
+    author: "John Johnson",
+  },
+  {
+    text: "Jangan takut salah saat mencoba hal baru; dari error-lah pemahaman sejati lahir.",
+    author: "Anak Programmer Indonesia",
+  },
+  {
+    text: "Everybody should learn to program a computer, because it teaches you how to think.",
+    author: "Steve Jobs",
+  },
+];
+
 export default function Home() {
   const [typedText, setTypedText] = useState("");
   const [showBrandText, setShowBrandText] = useState(true);
+  const [quote, setQuote] = useState(MOTIVATIONAL_QUOTES[0]);
   const { scrollYProgress } = useScroll();
 
   const bgColor = useTransform(
@@ -23,6 +59,12 @@ export default function Home() {
   );
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
   const glowOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.35, 0.55, 0.3]);
+
+  // Acak kata motivasi tokoh setiap website dibuka / restart
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+    setQuote(MOTIVATIONAL_QUOTES[randomIndex]);
+  }, []);
 
   // Efek mengetik heading utama
   useEffect(() => {
@@ -38,7 +80,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Siklus animasi teks "Anak Programmer ID" keluar-masuk dari logo setiap 30 detik
+  // Siklus animasi teks keluar-masuk dari logo setiap 30 detik
   useEffect(() => {
     const cycleInterval = setInterval(() => {
       setShowBrandText(false);
@@ -74,7 +116,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Glass Navbar dengan /logoapi.png & Animasi Teks Keluar-Masuk */}
+      {/* Floating Glass Navbar dengan /logoapi.png Polos */}
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -82,41 +124,37 @@ export default function Home() {
         className="sticky top-3 z-50 px-3 sm:px-6"
       >
         <div className="max-w-5xl mx-auto px-3.5 py-2.5 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(12,5,24,0.65)] flex items-center justify-between gap-2">
-          <Link href="/" className="flex items-center gap-2.5 min-w-0 overflow-hidden">
-            <motion.div
+          <Link href="/" className="flex items-center gap-2 min-w-0 overflow-hidden">
+            <motion.img
+              src="/logoapi.png"
+              alt="Logo Anak Programmer Indonesia"
               animate={{ scale: showBrandText ? 1 : 1.08 }}
               transition={{ duration: 0.35 }}
-              className="relative z-10 w-8 h-8 rounded-[10px] overflow-hidden bg-gradient-to-br from-orange-500/20 to-purple-900/60 border border-orange-300/35 shadow-[0_2px_12px_rgba(249,115,22,0.3)] shrink-0"
-            >
-              <img
-                src="/logoapi.png"
-                alt="Logo Anak Programmer Indonesia"
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
+              className="relative z-10 w-8 h-8 object-contain shrink-0"
+            />
 
             <div className="overflow-hidden">
               <AnimatePresence mode="wait">
                 {showBrandText && (
                   <motion.span
                     key="brand-text"
-                    initial={{ x: -110, opacity: 0 }}
+                    initial={{ x: -140, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -110, opacity: 0 }}
+                    exit={{ x: -140, opacity: 0 }}
                     transition={{
                       duration: 0.65,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="block font-bold text-xs sm:text-sm tracking-tight text-[#fdf6ff] truncate"
+                    className="block font-bold text-[11px] sm:text-sm tracking-tight text-[#fdf6ff] truncate"
                   >
-                    Anak Programmer ID
+                    Anak Programmer Indonesia
                   </motion.span>
                 )}
               </AnimatePresence>
             </div>
           </Link>
 
-          <nav className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm text-[#decce8] shrink-0">
+          <nav className="flex items-center gap-2.5 sm:gap-5 text-xs sm:text-sm text-[#decce8] shrink-0">
             <Link
               href="/forum"
               className="hover:text-orange-300 transition-colors"
@@ -131,7 +169,7 @@ export default function Home() {
             </Link>
             <Link
               href="/login"
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-500/80 via-purple-700/80 to-violet-900/90 hover:brightness-110 border border-orange-300/30 text-white font-medium transition shadow-md shadow-purple-950/70 backdrop-blur-md"
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-orange-500/80 via-purple-700/80 to-violet-900/90 hover:brightness-110 border border-orange-300/30 text-white font-medium transition shadow-md shadow-purple-950/70 backdrop-blur-md"
             >
               Masuk
             </Link>
@@ -228,7 +266,7 @@ export default function Home() {
         >
           <div className="relative pl-5 sm:pl-8 py-2 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-orange-400 before:via-fuchsia-500 before:to-purple-800">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-orange-300/90 mb-3">
-              <Sparkle weight="duotone" className="text-base text-orange-400" />
+              <Compass weight="duotone" className="text-base text-orange-400" />
               <span>Tentang Anak Programmer Indonesia</span>
             </div>
 
@@ -243,16 +281,21 @@ export default function Home() {
               lahir sebagai rumah singgah bagi para pegiat teknologi Tanah Air—mulai dari pelajar yang baru menyentuh HTML di layar ponsel, hingga engineer yang merancang sistem skala produksi. Di sini tidak ada pertanyaan yang dianggap terlalu dasar; setiap bug dibedah bersama, dan setiap karya kecil dirayakan sebagai langkah maju.
             </p>
 
-            {/* Kutipan & Highlight */}
+            {/* Kutipan Motivasi Tokoh Dinamis & Highlight */}
             <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-orange-500/[0.08] via-purple-900/[0.2] to-transparent border border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
                 <Quotes
                   weight="duotone"
                   className="text-2xl text-orange-400 shrink-0 mt-0.5"
                 />
-                <p className="text-xs sm:text-sm italic text-[#e8d8f2] leading-relaxed">
-                  &ldquo;Bukan seberapa mahal perangkat yang kamu pakai, tapi seberapa konsisten kamu mengeksekusi ide menjadi solusi nyata.&rdquo;
-                </p>
+                <div>
+                  <p className="text-xs sm:text-sm italic text-[#e8d8f2] leading-relaxed mb-1">
+                    &ldquo;{quote.text}&rdquo;
+                  </p>
+                  <span className="block text-[11px] font-mono text-orange-300/90">
+                    — {quote.author}
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center gap-6 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10 font-mono">
