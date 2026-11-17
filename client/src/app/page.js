@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import localFont from "next/font/local";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   CaretRight,
@@ -10,11 +9,6 @@ import {
   Compass,
 } from "@phosphor-icons/react";
 import { MOTIVATIONAL_QUOTES } from "../data/quotes";
-
-const utendoBrand = localFont({
-  src: "../../fonts/Utendo-Bold.ttf",
-  display: "swap",
-});
 
 const FULL_TEXT = "Tempat Ngoding, Diskusi Error, dan Pamer Karya Bareng.";
 
@@ -32,13 +26,11 @@ export default function Home() {
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
   const glowOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.35, 0.55, 0.3]);
 
-  // Acak kata motivasi tokoh setiap website dibuka / restart
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
     setQuote(MOTIVATIONAL_QUOTES[randomIndex]);
   }, []);
 
-  // Efek mengetik heading utama
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
@@ -52,7 +44,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Siklus animasi teks keluar-masuk dari logo setiap 30 detik
   useEffect(() => {
     const cycleInterval = setInterval(() => {
       setShowBrandText(false);
@@ -88,21 +79,21 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Glass Navbar dengan Font Utendo Khusus Brand */}
+      {/* Floating Glass Navbar dengan Font Utendo & Teks Utuh */}
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="sticky top-3 z-50 px-2.5 sm:px-6"
+        className="sticky top-3 z-50 px-2 sm:px-6"
       >
-        <div className="max-w-5xl mx-auto px-3 py-2 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(12,5,24,0.65)] flex items-center justify-between gap-1.5">
+        <div className="max-w-5xl mx-auto px-2.5 sm:px-3.5 py-2 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(12,5,24,0.65)] flex items-center justify-between gap-1.5">
           <Link href="/" className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
             <motion.img
               src="/logoapi.png"
               alt="Logo Anak Programmer Indonesia"
               animate={{ scale: showBrandText ? 1 : 1.08 }}
               transition={{ duration: 0.35 }}
-              className="relative z-10 w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0"
+              className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0"
             />
 
             <div className="overflow-hidden">
@@ -110,14 +101,15 @@ export default function Home() {
                 {showBrandText && (
                   <motion.span
                     key="brand-text"
-                    initial={{ x: -160, opacity: 0 }}
+                    initial={{ x: -180, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -160, opacity: 0 }}
+                    exit={{ x: -180, opacity: 0 }}
                     transition={{
                       duration: 0.65,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className={`${utendoBrand.className} block text-[10px] sm:text-sm tracking-tight text-[#fdf6ff] leading-tight`}
+                    style={{ fontFamily: "var(--font-utendo), sans-serif" }}
+                    className="block text-[9.5px] min-[380px]:text-[10.5px] sm:text-sm tracking-tight text-[#fdf6ff] whitespace-nowrap"
                   >
                     Anak Programmer Indonesia
                   </motion.span>
@@ -126,7 +118,7 @@ export default function Home() {
             </div>
           </Link>
 
-          <nav className="flex items-center gap-2 sm:gap-5 text-[11px] sm:text-sm text-[#decce8] shrink-0">
+          <nav className="flex items-center gap-2 sm:gap-5 text-[10.5px] sm:text-sm text-[#decce8] shrink-0">
             <Link
               href="/forum"
               className="hover:text-orange-300 transition-colors"
@@ -247,7 +239,10 @@ export default function Home() {
             </h2>
 
             <p className="text-sm sm:text-base text-[#cbb6d9] leading-relaxed max-w-3xl mb-6">
-              <span className={`${utendoBrand.className} text-orange-200`}>
+              <span
+                style={{ fontFamily: "var(--font-utendo), sans-serif" }}
+                className="text-orange-200"
+              >
                 Anak Programmer Indonesia
               </span>{" "}
               lahir sebagai rumah singgah bagi para pegiat teknologi Tanah Air—mulai dari pelajar yang baru menyentuh HTML di layar ponsel, hingga engineer yang merancang sistem skala produksi. Di sini tidak ada pertanyaan yang dianggap terlalu dasar; setiap bug dibedah bersama, dan setiap karya kecil dirayakan sebagai langkah maju.
@@ -293,7 +288,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 py-6 text-center text-xs font-mono text-[#9d85b0]">
         © 2026{" "}
-        <span className={`${utendoBrand.className} text-[#cbb6d9]`}>
+        <span
+          style={{ fontFamily: "var(--font-utendo), sans-serif" }}
+          className="text-[#cbb6d9]"
+        >
           Anak Programmer Indonesia
         </span>{" "}
         // Built with Next.js & Node.js
