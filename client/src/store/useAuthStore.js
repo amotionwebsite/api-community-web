@@ -16,8 +16,6 @@ export const useAuthStore = create(
         }),
       logout: () => set({ user: null, token: null }),
     }),
-    {
-      name: "api-community-auth",
-    }
+    { name: "api-community-auth" }
   )
 );
