@@ -1,26 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Copy,
-  Check,
   ChatCircleText,
   ArrowFatUp,
   CodeSimple,
   PaperPlaneTilt,
-  Sparkle,
-  ArrowUpRight,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
-import { MOTIVATIONAL_QUOTES } from "../data/quotes";
 import { INITIAL_THREADS } from "../data/threads";
 import { useAuthStore } from "../store/useAuthStore";
 
 export default function HomeView() {
   const user = useAuthStore((s) => s.user);
-  const [quote, setQuote] = useState(MOTIVATIONAL_QUOTES[0]);
   const [copiedId, setCopiedId] = useState(null);
   const [threads, setThreads] = useState(INITIAL_THREADS);
   const [upvotedIds, setUpvotedIds] = useState([]);
@@ -28,11 +22,6 @@ export default function HomeView() {
   const [codeSnippet, setCodeSnippet] = useState("");
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [filter, setFilter] = useState("semua");
-
-  useEffect(() => {
-    const idx = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
-    setQuote(MOTIVATIONAL_QUOTES[idx]);
-  }, []);
 
   const handleCopy = async (text, id) => {
     try {
@@ -86,99 +75,12 @@ export default function HomeView() {
     <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
-      <main className="container py-4 flex-grow-1" style={{ maxWidth: "740px" }}>
-        {/* Pinned Manifesto & Petuah Card */}
-        <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="smoked-glass p-3 p-sm-4 mb-3"
-        >
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            <span
-              className="d-inline-flex align-items-center gap-1.5"
-              style={{
-                fontSize: "0.72rem",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: "#c5a059",
-              }}
-            >
-              <Sparkle weight="duotone" size={15} />
-              <span>Komunitas Terbuka</span>
-            </span>
-            <a
-              href="https://discord.gg/7A5qtTpYT"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-              style={{ fontSize: "0.72rem" }}
-            >
-              <span>Discord Resmi</span>
-              <ArrowUpRight weight="bold" size={13} />
-            </a>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "var(--font-coolvetica), sans-serif",
-              color: "#f2ece1",
-              letterSpacing: "0.02em",
-            }}
-            className="h3 mb-2"
-          >
-            Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar belakang.
-          </h1>
-          <p
-            className="mb-3"
-            style={{ fontSize: "0.86rem", color: "#b8ad9e", lineHeight: 1.65 }}
-          >
-            Tempat bedah error tanpa sungkan, berbagi potongan logika, dan
-            merilis karya bersama developer Indonesia.
-          </p>
-
-          {/* Quote Strip */}
-          <div
-            className="p-2.5 px-3 d-flex align-items-center justify-content-between gap-2"
-            style={{
-              background: "rgba(14, 12, 10, 0.55)",
-              borderLeft: "2.5px solid #c5a059",
-              borderRadius: "0 12px 12px 0",
-            }}
-          >
-            <div>
-              <p
-                className="fst-italic mb-0"
-                style={{ fontSize: "0.8rem", color: "#e8dfd2" }}
-              >
-                &ldquo;{quote.text}&rdquo;
-              </p>
-              <span style={{ fontSize: "0.7rem", color: "#c5a059" }}>
-                — {quote.author}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() =>
-                handleCopy(`"${quote.text}" — ${quote.author}`, "quote-home")
-              }
-              className="btn btn-sm btn-glass-subtle px-2 py-1 flex-shrink-0"
-              style={{ fontSize: "0.72rem" }}
-            >
-              {copiedId === "quote-home" ? (
-                <Check weight="bold" color="#76a882" />
-              ) : (
-                <Copy weight="duotone" />
-              )}
-            </button>
-          </div>
-        </motion.section>
-
-        {/* Composer Utas Baru ala Threads */}
+      <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
+        {/* Composer Postingan Baru */}
         <motion.form
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.08 }}
+          transition={{ duration: 0.4 }}
           onSubmit={handleCreatePost}
           className="smoked-glass p-3 mb-3"
         >
@@ -203,7 +105,7 @@ export default function HomeView() {
                 rows={2}
                 value={postText}
                 onChange={(e) => setPostText(e.target.value)}
-                placeholder="Mulai utas baru, bagikan catatan ngoding, atau tanyakan error..."
+                placeholder="Tulis postingan baru, bagikan catatan ngoding, atau tanyakan error..."
                 className="form-control border-0 bg-transparent p-0 shadow-none"
                 style={{
                   color: "#f2ece1",
@@ -264,7 +166,7 @@ export default function HomeView() {
         {/* Filter Pill */}
         <div className="d-flex align-items-center gap-2 mb-3">
           {[
-            { id: "semua", label: "Semua Utas" },
+            { id: "semua", label: "Semua Feed" },
             { id: "code", label: "Dengan Kode" },
             { id: "solved", label: "Terpecahkan" },
           ].map((tab) => (
@@ -287,7 +189,7 @@ export default function HomeView() {
           ))}
         </div>
 
-        {/* Feed Utas ala Threads */}
+        {/* Feed Diskusi */}
         <div className="d-flex flex-column gap-2.5 mb-4">
           {visibleThreads.map((item, index) => {
             const upvoted = upvotedIds.includes(item.id);
@@ -306,7 +208,7 @@ export default function HomeView() {
                 className="smoked-glass smoked-glass-interactive p-3"
               >
                 <div className="d-flex gap-2.5">
-                  {/* Avatar + Garis Utas */}
+                  {/* Avatar + Garis Alur */}
                   <div className="d-flex flex-column align-items-center">
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
@@ -325,7 +227,7 @@ export default function HomeView() {
                     <div className="thread-spine flex-grow-1 my-1.5" />
                   </div>
 
-                  {/* Isi Utas */}
+                  {/* Isi Postingan */}
                   <div className="flex-grow-1 min-w-0">
                     <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
                       <div className="d-flex align-items-center gap-1.5 flex-wrap">

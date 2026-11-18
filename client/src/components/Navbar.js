@@ -16,7 +16,7 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: SquaresFour },
-  { href: "/", label: "Utas", icon: Compass },
+  { href: "/", label: "Feed", icon: Compass },
   { href: "/forum", label: "Forum", icon: ChatsTeardrop },
   { href: "/showcase", label: "Karya", icon: Cube },
   { href: "/quotes", label: "Petuah", icon: Quotes },
@@ -78,7 +78,7 @@ export default function Navbar() {
                     backgroundColor: "#76a882",
                   }}
                 />
-                <span>Ruang Kolaborasi &amp; Utas Kode</span>
+                <span>Ruang Kolaborasi &amp; Feed Kode</span>
               </div>
             </div>
           </Link>
