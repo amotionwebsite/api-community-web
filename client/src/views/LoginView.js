@@ -1,57 +1,53 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  GithubLogo,
-  DiscordLogo,
-} from "@phosphor-icons/react";
+import { ArrowRight, GithubLogo, DiscordLogo } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function LoginView() {
+  const router = useRouter();
+  const loginDemo = useAuthStore((s) => s.loginDemo);
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [statusMsg, setStatusMsg] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStatusMsg(
-      isRegister
-        ? "Pendaftaran diterima! Silakan hubungkan endpoint API auth."
-        : "Sesi siap diverifikasi! Silakan hubungkan endpoint API auth."
-    );
+    loginDemo({ username, email });
+    router.push("/");
   };
 
   return (
-    <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35">
+    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
-      <motion.main
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-md mx-auto w-full px-4 py-14 flex-1 flex flex-col justify-center"
+      <main
+        className="container py-5 flex-grow-1 d-flex flex-column justify-content-center"
+        style={{ maxWidth: "440px" }}
       >
-        <div className="space-y-6">
-          <div>
-            <h1
-              style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
-              className="text-3xl font-normal tracking-wide text-[#faf5ff]"
-            >
-              {isRegister ? "Daftar Akun Baru" : "Masuk ke Akun"}
-            </h1>
-            <p className="text-xs sm:text-sm text-[#a894b8] mt-1">
-              Akses forum diskusi, simpan snippet, dan rilis karya di Showcase.
-            </p>
-          </div>
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="smoked-glass p-4"
+        >
+          <h1
+            style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
+            className="h3 mb-1"
+          >
+            {isRegister ? "Daftar Anggota Baru" : "Masuk ke Ruang Anggota"}
+          </h1>
+          <p className="mb-4" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
+            Ikut berdiskusi, simpan catatan kode, dan rilis karya di etalase.
+          </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             {isRegister && (
               <div>
-                <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+                <label className="form-label" style={{ fontSize: "0.76rem", color: "#c5a059" }}>
                   Username
                 </label>
                 <input
@@ -60,13 +56,13 @@ export default function LoginView() {
                   placeholder="misal: jason_dev"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
+                  className="form-control bg-transparent border-secondary-subtle text-light"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+              <label className="form-label" style={{ fontSize: "0.76rem", color: "#c5a059" }}>
                 Email
               </label>
               <input
@@ -75,12 +71,12 @@ export default function LoginView() {
                 placeholder="nama@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
+                className="form-control bg-transparent border-secondary-subtle text-light"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[#cbb6d9] mb-1.5">
+              <label className="form-label" style={{ fontSize: "0.76rem", color: "#c5a059" }}>
                 Password
               </label>
               <input
@@ -89,82 +85,57 @@ export default function LoginView() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/70 outline-none text-sm text-white placeholder:text-[#6f5c80]"
+                className="form-control bg-transparent border-secondary-subtle text-light"
               />
             </div>
 
-            {statusMsg && (
-              <p className="text-xs font-mono text-[#FFCF70] bg-orange-500/10 border border-orange-400/30 px-3 py-2 rounded-lg">
-                {statusMsg}
-              </p>
-            )}
-
-            <motion.button
+            <button
               type="submit"
-              whileHover={{ y: -1, scale: 1.01 }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                backgroundImage: isRegister
-                  ? "linear-gradient(135deg, #4b5563 0%, #374151 50%, #1f2937 100%)"
-                  : "linear-gradient(135deg, #F56A00 0%, #FA8B01 38%, #9D4EDD 78%, #72369D 100%)",
-              }}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-semibold shadow-lg hover:brightness-110 transition"
+              className="btn btn-sogan py-2 d-inline-flex align-items-center justify-content-center gap-2 mt-1"
             >
               <span>{isRegister ? "Buat Akun" : "Masuk Sekarang"}</span>
               <ArrowRight weight="bold" />
-            </motion.button>
+            </button>
           </form>
 
-          <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-white/[0.08]" />
-            <span className="shrink mx-3 text-[11px] font-mono text-[#7d698f]">
-              ATAU LANJUT DENGAN
-            </span>
-            <div className="flex-grow border-t border-white/[0.08]" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 text-xs font-semibold text-[#e9d8f5] transition"
-            >
-              <GithubLogo weight="fill" className="text-base" />
-              <span>GitHub</span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] hover:bg-[#5865F2]/20 border border-white/10 hover:border-[#5865F2]/50 text-xs font-semibold text-[#e9d8f5] transition"
-            >
-              <DiscordLogo weight="fill" className="text-base text-[#7289da]" />
-              <span>Discord</span>
-            </button>
-          </div>
-
-          <p className="text-center text-xs text-[#9f8bb0] pt-2">
-            {isRegister ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
+          <div className="d-grid gap-2 mt-3 pt-3 border-top border-secondary-subtle">
             <button
               type="button"
               onClick={() => {
-                setIsRegister(!isRegister);
-                setStatusMsg("");
+                loginDemo({ username: "github_builder", email: "dev@github.com" });
+                router.push("/");
               }}
-              className="text-[#FFAD03] hover:underline font-semibold"
+              className="btn btn-sm btn-glass-subtle py-2 d-inline-flex align-items-center justify-content-center gap-2"
+            >
+              <GithubLogo weight="fill" size={16} />
+              <span>Lanjut dengan GitHub</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                loginDemo({ username: "discord_member", email: "dev@discord.gg" });
+                router.push("/");
+              }}
+              className="btn btn-sm btn-glass-subtle py-2 d-inline-flex align-items-center justify-content-center gap-2"
+            >
+              <DiscordLogo weight="fill" size={16} />
+              <span>Lanjut dengan Discord</span>
+            </button>
+          </div>
+
+          <p className="text-center mt-3 mb-0" style={{ fontSize: "0.78rem", color: "#9a8f80" }}>
+            {isRegister ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
+            <button
+              type="button"
+              onClick={() => setIsRegister(!isRegister)}
+              className="btn btn-link p-0 text-decoration-none fw-semibold"
+              style={{ color: "#c5a059", fontSize: "0.78rem" }}
             >
               {isRegister ? "Masuk di sini" : "Daftar gratis"}
             </button>
           </p>
-        </div>
-      </motion.main>
-
-      <footer className="border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
-        © 2026{" "}
-        <span
-          style={{ fontFamily: "var(--font-utendo), sans-serif" }}
-          className="text-[#cbb6d9]"
-        >
-          Anak Programmer Indonesia
-        </span>
-      </footer>
+        </motion.div>
+      </main>
     </div>
   );
 }

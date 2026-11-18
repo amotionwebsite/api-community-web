@@ -2,54 +2,39 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy,
   Check,
-  ChatCircle,
-  Heart,
+  ChatCircleText,
+  ArrowFatUp,
+  CodeSimple,
+  PaperPlaneTilt,
+  Sparkle,
   ArrowUpRight,
-  PaperPlaneRight,
-  Info,
-  FlagBanner,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 import { MOTIVATIONAL_QUOTES } from "../data/quotes";
 import { INITIAL_THREADS } from "../data/threads";
-
-const SHOWCASE_ITEMS = [
-  {
-    id: "s1",
-    author: "jason_franklin",
-    title: "aMotion / Loopin Project",
-    desc: "Super-app komunitas dengan Circle, Reels, dan pemutar musik tersinkronisasi.",
-    tags: ["Next.js", "Tailwind", "Node.js"],
-    url: "https://github.com/amotionwebsite",
-  },
-  {
-    id: "s2",
-    author: "apigroup_official",
-    title: "Bot Guard WhatsApp API",
-    desc: "Bot moderasi otomatis berbasis Baileys & PM2 untuk proteksi grup developer.",
-    tags: ["Node.js", "Baileys", "Termux"],
-    url: "https://github.com/amotionwebsite",
-  },
-];
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function HomeView() {
+  const user = useAuthStore((s) => s.user);
   const [quote, setQuote] = useState(MOTIVATIONAL_QUOTES[0]);
-  const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState("diskusi");
+  const [copiedId, setCopiedId] = useState(null);
   const [threads, setThreads] = useState(INITIAL_THREADS);
-  const [likedIds, setLikedIds] = useState([]);
-  const [quickInput, setQuickInput] = useState("");
+  const [upvotedIds, setUpvotedIds] = useState([]);
+  const [postText, setPostText] = useState("");
+  const [codeSnippet, setCodeSnippet] = useState("");
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [filter, setFilter] = useState("semua");
 
   useEffect(() => {
     const idx = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
     setQuote(MOTIVATIONAL_QUOTES[idx]);
   }, []);
 
-  const handleCopyQuote = async () => {
-    const text = `"${quote.text}" — ${quote.author}`;
+  const handleCopy = async (text, id) => {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -60,400 +45,395 @@ export default function HomeView() {
       document.execCommand("copy");
       document.body.removeChild(ta);
     }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1800);
   };
 
-  const toggleLike = (id) => {
-    setLikedIds((prev) =>
+  const handleCreatePost = (e) => {
+    e.preventDefault();
+    if (!postText.trim()) return;
+    const newItem = {
+      id: String(Date.now()),
+      title: postText.trim(),
+      category: codeSnippet.trim() ? "Bug & Error" : "Diskusi Tech",
+      author: user?.username || "pegiat_kode",
+      time: "Baru saja",
+      solved: false,
+      excerpt: postText.trim(),
+      content: postText.trim(),
+      code: codeSnippet.trim() || null,
+      comments: [],
+    };
+    setThreads([newItem, ...threads]);
+    setPostText("");
+    setCodeSnippet("");
+    setShowCodeInput(false);
+  };
+
+  const toggleUpvote = (id) => {
+    setUpvotedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
-  const handleQuickPost = (e) => {
-    e.preventDefault();
-    if (!quickInput.trim()) return;
-    const newThread = {
-      id: String(Date.now()),
-      title: quickInput.trim(),
-      category: "Diskusi Umum",
-      author: "member_baru",
-      time: "Baru saja",
-      solved: false,
-      excerpt: quickInput.trim(),
-      content: quickInput.trim(),
-      comments: [],
-    };
-    setThreads([newThread, ...threads]);
-    setQuickInput("");
-    setActiveTab("diskusi");
-  };
+  const visibleThreads = threads.filter((t) => {
+    if (filter === "solved") return t.solved;
+    if (filter === "code") return Boolean(t.code || t.id === "1");
+    return true;
+  });
 
   return (
-    <div className="min-vh-100 d-flex flex-column batik-canvas">
+    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
-      <main className="container py-4 flex-grow-1" style={{ maxWidth: "680px" }}>
-        {/* Kartu Intro Komunitas + Quote */}
-        <section className="api-card p-3 p-sm-4 mb-3">
-          <h1
-            style={{
-              fontFamily: "var(--font-coolvetica), sans-serif",
-              color: "#f5efe6",
-              letterSpacing: "0.3px",
-            }}
-            className="h3 mb-2"
-          >
-            Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar
-            belakang.
-          </h1>
-          <p
-            className="mb-3"
-            style={{ fontSize: "0.86rem", color: "#b5a898", lineHeight: 1.6 }}
-          >
-            Rumah kolaborasi programmer Indonesia. Bedah error bareng, rilis
-            karya, dan temukan partner satu frekuensi.
-          </p>
-
-          {/* Quote Box dengan Border Kiri Emas Batik */}
-          <div
-            className="p-2 px-3 d-flex align-items-start justify-content-between gap-2"
-            style={{
-              backgroundColor: "#110e0c",
-              borderLeft: "3px solid #c5a059",
-              borderRadius: "0 10px 10px 0",
-            }}
-          >
-            <div>
-              <p
-                className="fst-italic mb-1"
-                style={{ fontSize: "0.8rem", color: "#e5dcd0" }}
-              >
-                &ldquo;{quote.text}&rdquo;
-              </p>
-              <span style={{ fontSize: "0.72rem", color: "#c5a059" }}>
-                — {quote.author}
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCopyQuote}
-              className="btn btn-sm btn-batik-outline d-inline-flex align-items-center gap-1 flex-shrink-0"
-              style={{ fontSize: "0.72rem" }}
+      <main className="container py-4 flex-grow-1" style={{ maxWidth: "740px" }}>
+        {/* Pinned Manifesto & Petuah Card */}
+        <motion.section
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="smoked-glass p-3 p-sm-4 mb-3"
+        >
+          <div className="d-flex align-items-center justify-content-between mb-2">
+            <span
+              className="d-inline-flex align-items-center gap-1.5"
+              style={{
+                fontSize: "0.72rem",
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "#c5a059",
+              }}
             >
-              {copied ? (
-                <>
-                  <Check weight="bold" color="#4ade80" />
-                  <span>Tersalin</span>
-                </>
-              ) : (
-                <>
-                  <Copy weight="duotone" />
-                  <span>Salin</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          <div
-            className="d-flex flex-wrap gap-2 mt-3 pt-3 border-top"
-            style={{ borderColor: "#261f18" }}
-          >
-            <Link
-              href="/forum"
-              className="btn btn-sm btn-batik-gold rounded-pill px-3 d-inline-flex align-items-center gap-1"
-            >
-              <span>Buka Semua Forum</span>
-              <ArrowUpRight weight="bold" />
-            </Link>
+              <Sparkle weight="duotone" size={15} />
+              <span>Komunitas Terbuka</span>
+            </span>
             <a
               href="https://discord.gg/7A5qtTpYT"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-sm btn-batik-outline rounded-pill px-3 d-inline-flex align-items-center gap-1"
+              className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+              style={{ fontSize: "0.72rem" }}
             >
-              <img
-                src="/discordlogo.png"
-                alt="Discord"
-                width={16}
-                height={16}
-              />
-              <span>Gabung Discord</span>
+              <span>Discord Resmi</span>
+              <ArrowUpRight weight="bold" size={13} />
             </a>
           </div>
-        </section>
 
-        {/* Tab Filter Simpel ala Feed */}
-        <div className="d-flex align-items-center gap-2 mb-3 overflow-auto pb-1">
-          <button
-            type="button"
-            onClick={() => setActiveTab("diskusi")}
-            className={`btn nav-pill-batik ${
-              activeTab === "diskusi" ? "active" : ""
-            }`}
+          <h1
+            style={{
+              fontFamily: "var(--font-coolvetica), sans-serif",
+              color: "#f2ece1",
+              letterSpacing: "0.02em",
+            }}
+            className="h3 mb-2"
           >
-            #diskusi
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("pamer-karya")}
-            className={`btn nav-pill-batik ${
-              activeTab === "pamer-karya" ? "active" : ""
-            }`}
+            Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar belakang.
+          </h1>
+          <p
+            className="mb-3"
+            style={{ fontSize: "0.86rem", color: "#b8ad9e", lineHeight: 1.65 }}
           >
-            #pamer-karya
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("tentang")}
-            className={`btn nav-pill-batik ${
-              activeTab === "tentang" ? "active" : ""
-            }`}
+            Tempat bedah error tanpa sungkan, berbagi potongan logika, dan
+            merilis karya bersama developer Indonesia.
+          </p>
+
+          {/* Quote Strip */}
+          <div
+            className="p-2.5 px-3 d-flex align-items-center justify-content-between gap-2"
+            style={{
+              background: "rgba(14, 12, 10, 0.55)",
+              borderLeft: "2.5px solid #c5a059",
+              borderRadius: "0 12px 12px 0",
+            }}
           >
-            #tentang
-          </button>
-        </div>
-
-        {/* Konten Berdasarkan Tab */}
-        {activeTab === "diskusi" && (
-          <div className="d-flex flex-column gap-2">
-            {threads.map((item) => {
-              const liked = likedIds.includes(item.id);
-              return (
-                <article key={item.id} className="api-card p-3">
-                  <div className="d-flex align-items-center justify-content-between mb-1">
-                    <span
-                      style={{
-                        fontSize: "0.78rem",
-                        color: "#e2c285",
-                        fontWeight: 500,
-                      }}
-                    >
-                      @{item.author}
-                    </span>
-                    <span style={{ fontSize: "0.7rem", color: "#8c7f70" }}>
-                      {item.time}
-                    </span>
-                  </div>
-
-                  <Link
-                    href={`/forum/${item.id}`}
-                    className="text-decoration-none"
-                  >
-                    <h2
-                      className="h6 mb-1"
-                      style={{ color: "#f5efe6", lineHeight: 1.4 }}
-                    >
-                      {item.title}
-                    </h2>
-                  </Link>
-
-                  <p
-                    className="mb-2"
-                    style={{ fontSize: "0.82rem", color: "#aba092" }}
-                  >
-                    {item.excerpt}
-                  </p>
-
-                  {item.id === "1" && (
-                    <pre className="code-snippet-box p-2 mb-2 overflow-auto">
-                      {`app.use(cors({ origin: "https://api-community-web.vercel.app" }));`}
-                    </pre>
-                  )}
-
-                  <div
-                    className="d-flex align-items-center justify-content-between pt-2 border-top"
-                    style={{ borderColor: "#241d16", fontSize: "0.76rem" }}
-                  >
-                    <Link
-                      href={`/forum/${item.id}`}
-                      className="text-decoration-none d-inline-flex align-items-center gap-1"
-                      style={{ color: "#9c8f80" }}
-                    >
-                      <ChatCircle weight="duotone" size={16} />
-                      <span>{item.comments?.length || 0} Balasan</span>
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => toggleLike(item.id)}
-                      className="btn btn-sm p-0 border-0 d-inline-flex align-items-center gap-1"
-                      style={{ color: liked ? "#c5a059" : "#9c8f80" }}
-                    >
-                      <Heart weight={liked ? "fill" : "duotone"} size={16} />
-                      <span>{liked ? "Disukai" : "Suka"}</span>
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-
-        {activeTab === "pamer-karya" && (
-          <div className="d-flex flex-column gap-2">
-            {SHOWCASE_ITEMS.map((proj) => (
-              <article key={proj.id} className="api-card p-3">
-                <div className="d-flex align-items-center justify-content-between mb-1">
-                  <span style={{ fontSize: "0.76rem", color: "#c5a059" }}>
-                    @{proj.author}
-                  </span>
-                  <a
-                    href={proj.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-sm btn-batik-outline py-0 px-2"
-                    style={{ fontSize: "0.72rem" }}
-                  >
-                    Lihat <ArrowUpRight weight="bold" />
-                  </a>
-                </div>
-                <h2 className="h6 mb-1" style={{ color: "#f5efe6" }}>
-                  {proj.title}
-                </h2>
-                <p
-                  className="mb-2"
-                  style={{ fontSize: "0.82rem", color: "#aba092" }}
-                >
-                  {proj.desc}
-                </p>
-                <div className="d-flex flex-wrap gap-1">
-                  {proj.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="badge"
-                      style={{
-                        backgroundColor: "#1f1914",
-                        color: "#4ade80",
-                        border: "1px solid #2e251d",
-                        fontWeight: 400,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-
-        {activeTab === "tentang" && (
-          <div className="d-flex flex-column gap-3">
-            <section className="api-card p-3 p-sm-4">
-              <div
-                className="d-flex align-items-center gap-2 mb-2"
-                style={{
-                  fontFamily: "var(--font-roboto), sans-serif",
-                  fontWeight: 300,
-                  fontSize: "0.8rem",
-                  color: "#e2c285",
-                }}
-              >
-                <Info weight="duotone" size={16} />
-                <span>Tentang Anak Programmer Indonesia</span>
-              </div>
+            <div>
               <p
-                className="mb-0"
-                style={{
-                  fontSize: "0.85rem",
-                  color: "#c2b6a7",
-                  lineHeight: 1.65,
-                }}
+                className="fst-italic mb-0"
+                style={{ fontSize: "0.8rem", color: "#e8dfd2" }}
               >
-                Anak Programmer Indonesia hadir sebagai ruang singgah bagi pegiat
-                teknologi Tanah Air—mulai dari pelajar yang baru menulis HTML
-                lewat ponsel, hingga engineer yang membangun aplikasi skala
-                produksi. Tidak ada pertanyaan yang terlalu dasar; setiap bug
-                dibedah bersama.
+                &ldquo;{quote.text}&rdquo;
               </p>
-            </section>
-
-            <section className="api-card p-3 p-sm-4">
-              <div
-                className="d-flex align-items-center gap-2 mb-2"
-                style={{
-                  fontFamily: "var(--font-roboto), sans-serif",
-                  fontWeight: 300,
-                  fontSize: "0.8rem",
-                  color: "#e2c285",
-                }}
-              >
-                <FlagBanner weight="duotone" size={16} />
-                <span>Visi &amp; Misi Anak Programmer Indonesia</span>
-              </div>
-              <p
-                className="mb-3"
-                style={{
-                  fontSize: "0.86rem",
-                  color: "#f3ece1",
-                  fontWeight: 500,
-                }}
-              >
-                Visi: Menjadi wadah kolaborasi programmer Indonesia yang terbuka
-                bagi siapa saja tanpa batasan perangkat.
-              </p>
-              <ul
-                className="ps-3 mb-0 d-flex flex-column gap-2"
-                style={{ fontSize: "0.82rem", color: "#b5a898" }}
-              >
-                <li>Membangun budaya saling bantu memecahkan bug dan error.</li>
-                <li>Mendorong anggota berani merilis side-project sejak dini.</li>
-                <li>
-                  Menghubungkan programmer lintas daerah dalam kolaborasi nyata.
-                </li>
-              </ul>
-            </section>
-          </div>
-        )}
-
-        {/* Input Cepat Tulis Diskusi di Bawah Feed */}
-        <form onSubmit={handleQuickPost} className="mt-4">
-          <div className="input-group">
-            <input
-              type="text"
-              value={quickInput}
-              onChange={(e) => setQuickInput(e.target.value)}
-              placeholder="Tulis diskusi singkat atau tanya error..."
-              className="form-control"
-              style={{
-                backgroundColor: "#161311",
-                borderColor: "#2b231b",
-                color: "#f5efe6",
-                fontSize: "0.84rem",
-              }}
-            />
+              <span style={{ fontSize: "0.7rem", color: "#c5a059" }}>
+                — {quote.author}
+              </span>
+            </div>
             <button
-              type="submit"
-              className="btn btn-batik-gold d-inline-flex align-items-center gap-1 px-3"
+              type="button"
+              onClick={() =>
+                handleCopy(`"${quote.text}" — ${quote.author}`, "quote-home")
+              }
+              className="btn btn-sm btn-glass-subtle px-2 py-1 flex-shrink-0"
+              style={{ fontSize: "0.72rem" }}
             >
-              <PaperPlaneRight weight="bold" />
-              <span>Kirim</span>
+              {copiedId === "quote-home" ? (
+                <Check weight="bold" color="#76a882" />
+              ) : (
+                <Copy weight="duotone" />
+              )}
             </button>
           </div>
-        </form>
-      </main>
+        </motion.section>
 
-      <footer
-        className="border-top py-3 text-center"
-        style={{
-          borderColor: "#2b231b",
-          fontSize: "0.74rem",
-          color: "#8c7f70",
-        }}
-      >
-        © 2026{" "}
-        <span
-          style={{
-            fontFamily: "var(--font-utendo), sans-serif",
-            color: "#c5a059",
-          }}
+        {/* Composer Utas Baru ala Threads */}
+        <motion.form
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.08 }}
+          onSubmit={handleCreatePost}
+          className="smoked-glass p-3 mb-3"
         >
-          Anak Programmer Indonesia
-        </span>{" "}
-        // Built with Bootstrap 5 &amp; Next.js
-      </footer>
+          <div className="d-flex gap-2.5">
+            <div
+              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+              style={{
+                width: "36px",
+                height: "36px",
+                background: "rgba(197, 160, 89, 0.14)",
+                border: "1px solid rgba(197, 160, 89, 0.3)",
+                color: "#c5a059",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+              }}
+            >
+              {(user?.username?.[0] || "A").toUpperCase()}
+            </div>
+
+            <div className="flex-grow-1">
+              <textarea
+                rows={2}
+                value={postText}
+                onChange={(e) => setPostText(e.target.value)}
+                placeholder="Mulai utas baru, bagikan catatan ngoding, atau tanyakan error..."
+                className="form-control border-0 bg-transparent p-0 shadow-none"
+                style={{
+                  color: "#f2ece1",
+                  fontSize: "0.88rem",
+                  resize: "none",
+                }}
+              />
+
+              <AnimatePresence>
+                {showCodeInput && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-2 overflow-hidden"
+                  >
+                    <textarea
+                      rows={3}
+                      value={codeSnippet}
+                      onChange={(e) => setCodeSnippet(e.target.value)}
+                      placeholder="// Tempel potongan kode atau log error di sini..."
+                      className="form-control code-well p-2.5"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div
+                className="d-flex align-items-center justify-content-between pt-2 mt-2 border-top"
+                style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowCodeInput(!showCodeInput)}
+                  className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                  style={{
+                    fontSize: "0.74rem",
+                    color: showCodeInput ? "#c5a059" : "#b8ad9e",
+                  }}
+                >
+                  <CodeSimple weight="bold" size={15} />
+                  <span>{showCodeInput ? "Tutup Kode" : "Sisipkan Kode"}</span>
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1"
+                  style={{ fontSize: "0.76rem" }}
+                >
+                  <span>Terbitkan</span>
+                  <PaperPlaneTilt weight="fill" size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.form>
+
+        {/* Filter Pill */}
+        <div className="d-flex align-items-center gap-2 mb-3">
+          {[
+            { id: "semua", label: "Semua Utas" },
+            { id: "code", label: "Dengan Kode" },
+            { id: "solved", label: "Terpecahkan" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFilter(tab.id)}
+              className="btn btn-sm rounded-pill px-3 py-1"
+              style={{
+                fontSize: "0.76rem",
+                backgroundColor:
+                  filter === tab.id ? "#c5a059" : "rgba(25, 21, 18, 0.7)",
+                color: filter === tab.id ? "#120f0c" : "#b8ad9e",
+                border: "1px solid rgba(197, 160, 89, 0.2)",
+                fontWeight: filter === tab.id ? 600 : 400,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Feed Utas ala Threads */}
+        <div className="d-flex flex-column gap-2.5 mb-4">
+          {visibleThreads.map((item, index) => {
+            const upvoted = upvotedIds.includes(item.id);
+            const snippet =
+              item.code ||
+              (item.id === "1"
+                ? `app.use(cors({ origin: "https://api-community-web.vercel.app" }));`
+                : null);
+
+            return (
+              <motion.article
+                key={item.id}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: index * 0.05 }}
+                className="smoked-glass smoked-glass-interactive p-3"
+              >
+                <div className="d-flex gap-2.5">
+                  {/* Avatar + Garis Utas */}
+                  <div className="d-flex flex-column align-items-center">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                      style={{
+                        width: "34px",
+                        height: "34px",
+                        background: "rgba(184, 107, 67, 0.16)",
+                        border: "1px solid rgba(197, 160, 89, 0.28)",
+                        color: "#e6cfa3",
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {item.author[0].toUpperCase()}
+                    </div>
+                    <div className="thread-spine flex-grow-1 my-1.5" />
+                  </div>
+
+                  {/* Isi Utas */}
+                  <div className="flex-grow-1 min-w-0">
+                    <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
+                      <div className="d-flex align-items-center gap-1.5 flex-wrap">
+                        <span
+                          style={{
+                            fontSize: "0.8rem",
+                            fontWeight: 600,
+                            color: "#e6cfa3",
+                          }}
+                        >
+                          @{item.author}
+                        </span>
+                        <span
+                          className="px-2 py-0.5 rounded-pill"
+                          style={{
+                            fontSize: "0.66rem",
+                            background: "rgba(197, 160, 89, 0.1)",
+                            color: "#c5a059",
+                          }}
+                        >
+                          {item.category}
+                        </span>
+                        {item.solved && (
+                          <span
+                            className="px-2 py-0.5 rounded-pill"
+                            style={{
+                              fontSize: "0.66rem",
+                              background: "rgba(118, 168, 130, 0.14)",
+                              color: "#8fc29b",
+                            }}
+                          >
+                            Terpecahkan
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ fontSize: "0.7rem", color: "#7d7367" }}>
+                        {item.time}
+                      </span>
+                    </div>
+
+                    <Link
+                      href={`/forum/${item.id}`}
+                      className="text-decoration-none"
+                    >
+                      <h2
+                        className="h6 mb-1"
+                        style={{ color: "#f2ece1", lineHeight: 1.4 }}
+                      >
+                        {item.title}
+                      </h2>
+                    </Link>
+
+                    <p
+                      className="mb-2"
+                      style={{ fontSize: "0.83rem", color: "#b8ad9e" }}
+                    >
+                      {item.excerpt}
+                    </p>
+
+                    {snippet && (
+                      <div className="position-relative mb-2">
+                        <pre className="code-well p-2.5 mb-0 overflow-auto">
+                          {snippet}
+                        </pre>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(snippet, `code-${item.id}`)}
+                          className="btn btn-sm btn-glass-subtle position-absolute top-0 end-0 m-1.5 px-2 py-0.5"
+                          style={{ fontSize: "0.68rem" }}
+                        >
+                          {copiedId === `code-${item.id}` ? "Disalin" : "Salin"}
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="d-flex align-items-center gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => toggleUpvote(item.id)}
+                        className="btn btn-sm p-0 border-0 d-inline-flex align-items-center gap-1"
+                        style={{
+                          fontSize: "0.76rem",
+                          color: upvoted ? "#c5a059" : "#8f8578",
+                        }}
+                      >
+                        <ArrowFatUp
+                          weight={upvoted ? "fill" : "regular"}
+                          size={16}
+                        />
+                        <span>{upvoted ? "Terbantu" : "Bantu Naik"}</span>
+                      </button>
+
+                      <Link
+                        href={`/forum/${item.id}`}
+                        className="text-decoration-none d-inline-flex align-items-center gap-1"
+                        style={{ fontSize: "0.76rem", color: "#8f8578" }}
+                      >
+                        <ChatCircleText weight="regular" size={16} />
+                        <span>{item.comments?.length || 0} Balasan</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }

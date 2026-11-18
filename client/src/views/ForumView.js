@@ -1,244 +1,226 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
-  ChatTeardropText,
+  MagnifyingGlass,
   Plus,
+  ChatCircleText,
   CheckCircle,
   Clock,
-  X,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
+import { INITIAL_THREADS } from "../data/threads";
+import { useAuthStore } from "../store/useAuthStore";
 
-const INITIAL_THREADS = [
-  {
-    id: 1,
-    title: "Error CORS saat fetch API Express dari Next.js di Vercel",
-    category: "Bug & Error",
-    author: "rizky_dev",
-    time: "12 menit lalu",
-    replies: 8,
-    solved: true,
-    excerpt:
-      "Sudah pasang cors() di server.js tapi pas deploy ke Railway masih kena blokir origin dari domain Vercel...",
-  },
-  {
-    id: 2,
-    title: "Setup Termux + Acode paling ringan buat ngoding fullstack di HP",
-    category: "Workflow",
-    author: "anak_termux",
-    time: "1 jam lalu",
-    replies: 19,
-    solved: false,
-    excerpt:
-      "Sharing konfigurasi storage link, git credential helper, dan shortcut keyboard Acode biar ngoding di Android sat-set.",
-  },
-  {
-    id: 3,
-    title: "Mending pakai Zustand atau Context API untuk state auth JWT?",
-    category: "Diskusi Tech",
-    author: "nadia.tsx",
-    time: "3 jam lalu",
-    replies: 14,
-    solved: true,
-    excerpt:
-      "Lagi bikin dashboard multi-role, ragu antara simpan token + profile user di Zustand persist atau cukup React Context.",
-  },
-];
-
-const CATEGORIES = ["Semua", "Bug & Error", "Diskusi Tech", "Workflow"];
+const CATEGORIES = ["Semua", "Bug & Error", "Workflow", "Diskusi Tech"];
 
 export default function ForumView() {
+  const user = useAuthStore((s) => s.user);
   const [threads, setThreads] = useState(INITIAL_THREADS);
-  const [activeCategory, setActiveCategory] = useState("Semua");
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("Semua");
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Bug & Error");
-  const [excerpt, setExcerpt] = useState("");
+  const [newCat, setNewCat] = useState("Bug & Error");
+  const [content, setContent] = useState("");
 
-  const filteredThreads =
-    activeCategory === "Semua"
-      ? threads
-      : threads.filter((t) => t.category === activeCategory);
+  const filtered = threads.filter((t) => {
+    const matchCat = category === "Semua" || t.category === category;
+    const matchQuery =
+      t.title.toLowerCase().includes(search.toLowerCase()) ||
+      t.excerpt.toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchQuery;
+  });
 
-  const handleCreateThread = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault();
-    if (!title.trim() || !excerpt.trim()) return;
-    const newItem = {
-      id: Date.now(),
-      title: title.trim(),
-      category,
-      author: "kamu_dev",
-      time: "Baru saja",
-      replies: 0,
-      solved: false,
-      excerpt: excerpt.trim(),
-    };
-    setThreads([newItem, ...threads]);
+    if (!title.trim() || !content.trim()) return;
+    setThreads([
+      {
+        id: String(Date.now()),
+        title: title.trim(),
+        category: newCat,
+        author: user?.username || "member_api",
+        time: "Baru saja",
+        solved: false,
+        excerpt: content.trim().slice(0, 130),
+        content: content.trim(),
+        comments: [],
+      },
+      ...threads,
+    ]);
     setTitle("");
-    setExcerpt("");
+    setContent("");
     setShowForm(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#09050f] text-[#f7f2fa] flex flex-col justify-between selection:bg-orange-500/35">
+    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
-      <motion.main
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-5xl mx-auto w-full px-4 sm:px-5 pt-10 pb-20 flex-1"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-white/[0.08]">
-          <h1
-            style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
-            className="text-3xl sm:text-4xl font-normal tracking-wide text-[#faf5ff]"
-          >
-            Diskusi &amp; Tanya Error
-          </h1>
-
-          <motion.button
+      <main className="container py-4 flex-grow-1" style={{ maxWidth: "740px" }}>
+        <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <h1
+              style={{ fontFamily: "var(--font-coolvetica), sans-serif" }}
+              className="h3 mb-0"
+            >
+              Forum Bedah Kode
+            </h1>
+            <p className="mb-0" style={{ fontSize: "0.8rem", color: "#9a8f80" }}>
+              Diskusi error, arsitektur aplikasi, dan catatan belajar.
+            </p>
+          </div>
+          <button
             type="button"
-            whileHover={{ y: -2, scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
             onClick={() => setShowForm(!showForm)}
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg, #F56A00 0%, #FA8B01 40%, #9D4EDD 82%, #72369D 100%)",
-            }}
-            className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs sm:text-sm font-semibold shadow-[0_6px_20px_rgba(245,106,0,0.25)]"
+            className="btn btn-sm btn-sogan px-3 py-1.5 d-inline-flex align-items-center gap-1"
           >
-            {showForm ? <X weight="bold" /> : <Plus weight="bold" />}
-            <span>{showForm ? "Tutup Form" : "Buat Thread Baru"}</span>
-          </motion.button>
+            <Plus weight="bold" />
+            <span>Buat Utas</span>
+          </button>
         </div>
 
-        <AnimatePresence>
-          {showForm && (
-            <motion.form
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              onSubmit={handleCreateThread}
-              className="overflow-hidden border-b border-white/[0.08]"
+        {showForm && (
+          <motion.form
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleAdd}
+            className="smoked-glass p-3 mb-3 d-flex flex-column gap-2.5"
+          >
+            <input
+              type="text"
+              required
+              placeholder="Judul pertanyaan atau topik..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="form-control bg-transparent border-secondary-subtle text-light"
+              style={{ fontSize: "0.85rem" }}
+            />
+            <select
+              value={newCat}
+              onChange={(e) => setNewCat(e.target.value)}
+              className="form-select bg-dark border-secondary-subtle text-light"
+              style={{ fontSize: "0.82rem" }}
             >
-              <div className="py-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Judul pertanyaan atau topik diskusi..."
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="sm:col-span-2 px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/60 outline-none text-sm text-white placeholder:text-[#7d698f]"
-                  />
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="px-3.5 py-2.5 rounded-xl bg-[#130b1f] border border-white/10 focus:border-orange-400/60 outline-none text-sm text-[#e9d8f5]"
-                  >
-                    <option value="Bug & Error">Bug &amp; Error</option>
-                    <option value="Diskusi Tech">Diskusi Tech</option>
-                    <option value="Workflow">Workflow</option>
-                  </select>
-                </div>
+              <option value="Bug & Error">Bug &amp; Error</option>
+              <option value="Workflow">Workflow</option>
+              <option value="Diskusi Tech">Diskusi Tech</option>
+            </select>
+            <textarea
+              rows={3}
+              required
+              placeholder="Jelaskan kronologi error atau detail diskusi..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="form-control bg-transparent border-secondary-subtle text-light"
+              style={{ fontSize: "0.84rem" }}
+            />
+            <div className="d-flex justify-content-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="btn btn-sm btn-glass-subtle px-3"
+              >
+                Batal
+              </button>
+              <button type="submit" className="btn btn-sm btn-sogan px-3">
+                Terbitkan Utas
+              </button>
+            </div>
+          </motion.form>
+        )}
 
-                <textarea
-                  rows={3}
-                  placeholder="Jelaskan detail error, potongan kode, atau konteks diskusi..."
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 focus:border-orange-400/60 outline-none text-sm text-white placeholder:text-[#7d698f]"
-                />
-
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#F56A00] hover:bg-[#FA8B01] text-white text-xs sm:text-sm font-semibold transition"
-                  >
-                    Posting Diskusi
-                  </button>
-                </div>
-              </div>
-            </motion.form>
-          )}
-        </AnimatePresence>
-
-        <div className="flex items-center gap-2 overflow-x-auto py-5 border-b border-white/[0.08]">
-          {CATEGORIES.map((cat) => {
-            const active = activeCategory === cat;
-            return (
-              <motion.button
+        {/* Search + Category Pills */}
+        <div className="smoked-glass p-2.5 mb-3">
+          <div className="input-group input-group-sm mb-2">
+            <span className="input-group-text bg-transparent border-0 text-secondary">
+              <MagnifyingGlass size={16} />
+            </span>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari error, framework, atau topik..."
+              className="form-control bg-transparent border-0 shadow-none text-light"
+            />
+          </div>
+          <div className="d-flex gap-1.5 overflow-auto pt-1">
+            {CATEGORIES.map((cat) => (
+              <button
                 key={cat}
                 type="button"
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-mono whitespace-nowrap transition ${
-                  active
-                    ? "bg-orange-500/20 text-[#FFCF70] border border-orange-400/40"
-                    : "text-[#9f8bb0] hover:text-white border border-transparent"
-                }`}
+                onClick={() => setCategory(cat)}
+                className="btn btn-sm rounded-pill px-2.5 py-0.5 flex-shrink-0"
+                style={{
+                  fontSize: "0.74rem",
+                  backgroundColor:
+                    category === cat ? "#c5a059" : "rgba(255,255,255,0.04)",
+                  color: category === cat ? "#120f0c" : "#b8ad9e",
+                  fontWeight: category === cat ? 600 : 400,
+                }}
               >
                 {cat}
-              </motion.button>
-            );
-          })}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="divide-y divide-white/[0.08]">
-          {filteredThreads.map((item, index) => (
-            <motion.article
+        {/* Thread List */}
+        <div className="d-flex flex-column gap-2.5">
+          {filtered.map((item) => (
+            <Link
               key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.06 }}
-              className="py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+              href={`/forum/${item.id}`}
+              className="text-decoration-none"
             >
-              <div className="space-y-1.5 max-w-2xl">
-                <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                  <span className="text-[#FA8B01]">[{item.category}]</span>
+              <article className="smoked-glass smoked-glass-interactive p-3">
+                <div className="d-flex align-items-center justify-content-between mb-1">
+                  <span style={{ fontSize: "0.72rem", color: "#c5a059" }}>
+                    [{item.category}] • @{item.author}
+                  </span>
                   {item.solved ? (
-                    <span className="inline-flex items-center gap-1 text-emerald-400">
+                    <span
+                      className="d-inline-flex align-items-center gap-1"
+                      style={{ fontSize: "0.7rem", color: "#76a882" }}
+                    >
                       <CheckCircle weight="fill" /> Terpecahkan
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[#CEA7EE]">
-                      <Clock weight="duotone" /> Terbuka
+                    <span
+                      className="d-inline-flex align-items-center gap-1"
+                      style={{ fontSize: "0.7rem", color: "#9a8f80" }}
+                    >
+                      <Clock /> Terbuka
                     </span>
                   )}
-                  <span className="text-[#7d698f]">
-                    • @{item.author} • {item.time}
-                  </span>
                 </div>
-
-                <h2 className="text-base sm:text-lg font-bold text-[#faf5ff] group-hover:text-[#FFAD03] transition-colors leading-snug">
+                <h2 className="h6 mb-1" style={{ color: "#f2ece1" }}>
                   {item.title}
                 </h2>
-
-                <p className="text-xs sm:text-sm text-[#a894b8] leading-relaxed">
+                <p
+                  className="mb-2"
+                  style={{ fontSize: "0.82rem", color: "#a89d8e" }}
+                >
                   {item.excerpt}
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2 self-start sm:self-center shrink-0 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] text-xs font-mono text-[#cbb6d9]">
-                <ChatTeardropText weight="duotone" className="text-base text-[#FA8B01]" />
-                <span>{item.replies} Balasan</span>
-              </div>
-            </motion.article>
+                <div
+                  className="d-flex align-items-center justify-content-between"
+                  style={{ fontSize: "0.72rem", color: "#7d7367" }}
+                >
+                  <span>{item.time}</span>
+                  <span className="d-inline-flex align-items-center gap-1">
+                    <ChatCircleText size={14} />
+                    {item.comments?.length || 0} balasan
+                  </span>
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
-      </motion.main>
-
-      <footer className="border-t border-white/[0.08] py-6 px-4 text-center text-xs font-mono text-[#887499]">
-        © 2026{" "}
-        <span
-          style={{ fontFamily: "var(--font-utendo), sans-serif" }}
-          className="text-[#cbb6d9]"
-        >
-          Anak Programmer Indonesia
-        </span>
-      </footer>
+      </main>
     </div>
   );
 }

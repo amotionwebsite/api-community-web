@@ -1,75 +1,83 @@
-/* Tema Batik + Code (Subtle & Anti-Norak) */
-.batik-canvas {
-  background-color: #0f0d0c;
-  background-image: radial-gradient(rgba(197, 160, 89, 0.08) 1px, transparent 1px),
-    radial-gradient(rgba(197, 160, 89, 0.05) 1px, #0f0d0c 1px);
-  background-size: 28px 28px;
-  background-position: 0 0, 14px 14px;
+/* === SISTEM DESAIN: BATIK + CODE SMOKED GLASS (NO NEON) === */
+:root {
+  --bg-obsidian: #0e0c0a;
+  --surface-glass: rgba(25, 21, 18, 0.72);
+  --surface-glass-hover: rgba(33, 28, 23, 0.84);
+  --border-hairline: rgba(197, 160, 89, 0.16);
+  --border-strong: rgba(197, 160, 89, 0.34);
+  --accent-sogan: #c5a059;
+  --accent-terracotta: #b86b43;
+  --accent-sage: #76a882;
+  --text-ivory: #f2ece1;
+  --text-sand: #b8ad9e;
+  --text-muted: #7d7367;
 }
 
-.api-card {
-  background-color: #161311;
-  border: 1px solid #2b231b;
-  border-radius: 14px;
+.handcrafted-canvas {
+  background-color: var(--bg-obsidian);
+  background-image: 
+    radial-gradient(ellipse 70% 45% at 15% 0%, rgba(197, 160, 89, 0.08), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 88% 12%, rgba(184, 107, 67, 0.07), transparent 60%),
+    url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c5a059' stroke-opacity='0.045' stroke-width='1'%3E%3Ccircle cx='28' cy='14' r='10'/%3E%3Ccircle cx='28' cy='42' r='10'/%3E%3Ccircle cx='14' cy='28' r='10'/%3E%3Ccircle cx='42' cy='28' r='10'/%3E%3Ccircle cx='28' cy='28' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+  color: var(--text-ivory);
 }
 
-.api-card-subtle {
-  background-color: #13100e;
-  border: 1px solid #241d16;
-  border-radius: 12px;
+.smoked-glass {
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 0 rgba(255, 244, 224, 0.06);
+  border-radius: 18px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
 }
 
-.btn-batik-gold {
-  background-color: #c5a059;
-  color: #120e0b;
+.smoked-glass-interactive:hover {
+  background: var(--surface-glass-hover);
+  border-color: var(--border-strong);
+}
+
+.btn-sogan {
+  background: linear-gradient(180deg, #cfa960 0%, #b38d46 100%);
+  color: #120f0c;
   font-weight: 600;
-  border: 1px solid #d6b36e;
+  border: 1px solid rgba(255, 240, 210, 0.28);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.btn-sogan:hover {
+  filter: brightness(1.06);
+  color: #0e0c0a;
+}
+
+.btn-glass-subtle {
+  background: rgba(255, 248, 235, 0.03);
+  color: var(--text-ivory);
+  border: 1px solid var(--border-hairline);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
   transition: all 0.2s ease;
 }
 
-.btn-batik-gold:hover {
-  background-color: #d6b36e;
-  color: #0f0d0c;
-}
-
-.btn-batik-outline {
-  background-color: transparent;
-  color: #e2c285;
-  border: 1px solid #3d3124;
-  transition: all 0.2s ease;
-}
-
-.btn-batik-outline:hover {
-  background-color: rgba(197, 160, 89, 0.12);
-  border-color: #c5a059;
+.btn-glass-subtle:hover {
+  background: rgba(197, 160, 89, 0.1);
+  border-color: var(--border-strong);
   color: #fff;
 }
 
-.code-snippet-box {
-  background-color: #0b0908;
-  border: 1px solid #241d17;
-  border-radius: 10px;
+.code-well {
+  background: rgba(11, 9, 8, 0.85);
+  border: 1px solid rgba(197, 160, 89, 0.14);
+  border-radius: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.78rem;
-  color: #4ade80;
+  color: #b7d8be;
 }
 
-.nav-pill-batik {
-  color: #a89b8c;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.82rem;
-  transition: all 0.2s ease;
-}
-
-.nav-pill-batik:hover {
-  color: #ede6dc;
-  background-color: rgba(197, 160, 89, 0.08);
-}
-
-.nav-pill-batik.active {
-  background-color: #c5a059;
-  color: #120e0b;
-  font-weight: 600;
+.thread-spine {
+  width: 1.5px;
+  background: linear-gradient(180deg, rgba(197, 160, 89, 0.45) 0%, rgba(197, 160, 89, 0.08) 100%);
 }
