@@ -102,9 +102,10 @@ export default function HomeView() {
               color: "#f5efe6",
               letterSpacing: "0.3px",
             }}
-            className="h3 sm-h2 mb-2"
+            className="h3 mb-2"
           >
-            Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar belakang.
+            Tumbuh dari baris kode pertama, tanpa batas perangkat maupun latar
+            belakang.
           </h1>
           <p
             className="mb-3"
@@ -116,7 +117,7 @@ export default function HomeView() {
 
           {/* Quote Box dengan Border Kiri Emas Batik */}
           <div
-            className="p-2.5 px-3 d-flex align-items-start justify-content-between gap-2"
+            className="p-2 px-3 d-flex align-items-start justify-content-between gap-2"
             style={{
               backgroundColor: "#110e0c",
               borderLeft: "3px solid #c5a059",
@@ -155,7 +156,10 @@ export default function HomeView() {
             </button>
           </div>
 
-          <div className="d-flex flex-wrap gap-2 mt-3 pt-3 border-top" style={{ borderColor: "#261f18" }}>
+          <div
+            className="d-flex flex-wrap gap-2 mt-3 pt-3 border-top"
+            style={{ borderColor: "#261f18" }}
+          >
             <Link
               href="/forum"
               className="btn btn-sm btn-batik-gold rounded-pill px-3 d-inline-flex align-items-center gap-1"
@@ -167,9 +171,14 @@ export default function HomeView() {
               href="https://discord.gg/7A5qtTpYT"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-sm btn-batik-outline rounded-pill px-3 d-inline-flex align-items-center gap-1.5"
+              className="btn btn-sm btn-batik-outline rounded-pill px-3 d-inline-flex align-items-center gap-1"
             >
-              <img src="/discordlogo.png" alt="Discord" width={16} height={16} />
+              <img
+                src="/discordlogo.png"
+                alt="Discord"
+                width={16}
+                height={16}
+              />
               <span>Gabung Discord</span>
             </a>
           </div>
@@ -180,21 +189,27 @@ export default function HomeView() {
           <button
             type="button"
             onClick={() => setActiveTab("diskusi")}
-            className={`btn nav-pill-batik ${activeTab === "diskusi" ? "active" : ""}`}
+            className={`btn nav-pill-batik ${
+              activeTab === "diskusi" ? "active" : ""
+            }`}
           >
             #diskusi
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("pamer-karya")}
-            className={`btn nav-pill-batik ${activeTab === "pamer-karya" ? "active" : ""}`}
+            className={`btn nav-pill-batik ${
+              activeTab === "pamer-karya" ? "active" : ""
+            }`}
           >
             #pamer-karya
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("tentang")}
-            className={`btn nav-pill-batik ${activeTab === "tentang" ? "active" : ""}`}
+            className={`btn nav-pill-batik ${
+              activeTab === "tentang" ? "active" : ""
+            }`}
           >
             #tentang
           </button>
@@ -202,12 +217,12 @@ export default function HomeView() {
 
         {/* Konten Berdasarkan Tab */}
         {activeTab === "diskusi" && (
-          <div className="d-flex flex-column gap-2.5">
+          <div className="d-flex flex-column gap-2">
             {threads.map((item) => {
               const liked = likedIds.includes(item.id);
               return (
                 <article key={item.id} className="api-card p-3">
-                  <div className="d-flex align-items-center justify-content-between mb-1.5">
+                  <div className="d-flex align-items-center justify-content-between mb-1">
                     <span
                       style={{
                         fontSize: "0.78rem",
@@ -227,7 +242,7 @@ export default function HomeView() {
                     className="text-decoration-none"
                   >
                     <h2
-                      className="h6 mb-1.5"
+                      className="h6 mb-1"
                       style={{ color: "#f5efe6", lineHeight: 1.4 }}
                     >
                       {item.title}
@@ -235,14 +250,14 @@ export default function HomeView() {
                   </Link>
 
                   <p
-                    className="mb-2.5"
+                    className="mb-2"
                     style={{ fontSize: "0.82rem", color: "#aba092" }}
                   >
                     {item.excerpt}
                   </p>
 
                   {item.id === "1" && (
-                    <pre className="code-snippet-box p-2.5 mb-2.5 overflow-auto">
+                    <pre className="code-snippet-box p-2 mb-2 overflow-auto">
                       {`app.use(cors({ origin: "https://api-community-web.vercel.app" }));`}
                     </pre>
                   )}
@@ -277,7 +292,7 @@ export default function HomeView() {
         )}
 
         {activeTab === "pamer-karya" && (
-          <div className="d-flex flex-column gap-2.5">
+          <div className="d-flex flex-column gap-2">
             {SHOWCASE_ITEMS.map((proj) => (
               <article key={proj.id} className="api-card p-3">
                 <div className="d-flex align-items-center justify-content-between mb-1">
@@ -288,7 +303,7 @@ export default function HomeView() {
                     href={proj.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-sm btn-batik-outline py-0.5 px-2"
+                    className="btn btn-sm btn-batik-outline py-0 px-2"
                     style={{ fontSize: "0.72rem" }}
                   >
                     Lihat <ArrowUpRight weight="bold" />
@@ -303,7 +318,7 @@ export default function HomeView() {
                 >
                   {proj.desc}
                 </p>
-                <div className="d-flex flex-wrap gap-1.5">
+                <div className="d-flex flex-wrap gap-1">
                   {proj.tags.map((t) => (
                     <span
                       key={t}
@@ -341,7 +356,11 @@ export default function HomeView() {
               </div>
               <p
                 className="mb-0"
-                style={{ fontSize: "0.85rem", color: "#c2b6a7", lineHeight: 1.65 }}
+                style={{
+                  fontSize: "0.85rem",
+                  color: "#c2b6a7",
+                  lineHeight: 1.65,
+                }}
               >
                 Anak Programmer Indonesia hadir sebagai ruang singgah bagi pegiat
                 teknologi Tanah Air—mulai dari pelajar yang baru menulis HTML
@@ -366,7 +385,11 @@ export default function HomeView() {
               </div>
               <p
                 className="mb-3"
-                style={{ fontSize: "0.86rem", color: "#f3ece1", fontWeight: 500 }}
+                style={{
+                  fontSize: "0.86rem",
+                  color: "#f3ece1",
+                  fontWeight: 500,
+                }}
               >
                 Visi: Menjadi wadah kolaborasi programmer Indonesia yang terbuka
                 bagi siapa saja tanpa batasan perangkat.
@@ -377,7 +400,9 @@ export default function HomeView() {
               >
                 <li>Membangun budaya saling bantu memecahkan bug dan error.</li>
                 <li>Mendorong anggota berani merilis side-project sejak dini.</li>
-                <li>Menghubungkan programmer lintas daerah dalam kolaborasi nyata.</li>
+                <li>
+                  Menghubungkan programmer lintas daerah dalam kolaborasi nyata.
+                </li>
               </ul>
             </section>
           </div>
@@ -419,7 +444,12 @@ export default function HomeView() {
         }}
       >
         © 2026{" "}
-        <span style={{ fontFamily: "var(--font-utendo), sans-serif", color: "#c5a059" }}>
+        <span
+          style={{
+            fontFamily: "var(--font-utendo), sans-serif",
+            color: "#c5a059",
+          }}
+        >
           Anak Programmer Indonesia
         </span>{" "}
         // Built with Bootstrap 5 &amp; Next.js
