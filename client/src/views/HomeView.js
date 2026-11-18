@@ -72,10 +72,13 @@ export default function HomeView() {
   });
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
+    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5 overflow-x-hidden">
       <Navbar />
 
-      <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
+      <main
+        className="container py-4 flex-grow-1 mb-4"
+        style={{ maxWidth: "740px" }}
+      >
         {/* Composer Postingan Baru */}
         <motion.form
           initial={{ opacity: 0, y: 12 }}
@@ -100,7 +103,7 @@ export default function HomeView() {
               {(user?.username?.[0] || "A").toUpperCase()}
             </div>
 
-            <div className="flex-grow-1">
+            <div className="flex-grow-1" style={{ minWidth: 0 }}>
               <textarea
                 rows={2}
                 value={postText}
@@ -164,7 +167,7 @@ export default function HomeView() {
         </motion.form>
 
         {/* Filter Pill */}
-        <div className="d-flex align-items-center gap-2 mb-3">
+        <div className="d-flex align-items-center gap-2 mb-3 flex-wrap">
           {[
             { id: "semua", label: "Semua Feed" },
             { id: "code", label: "Dengan Kode" },
@@ -205,13 +208,13 @@ export default function HomeView() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: index * 0.05 }}
-                className="smoked-glass smoked-glass-interactive p-3"
+                className="smoked-glass smoked-glass-interactive p-3 overflow-hidden"
               >
                 <div className="d-flex gap-2.5">
                   {/* Avatar + Garis Alur */}
-                  <div className="d-flex flex-column align-items-center">
+                  <div className="d-flex flex-column align-items-center flex-shrink-0">
                     <div
-                      className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                      className="rounded-circle d-flex align-items-center justify-content-center"
                       style={{
                         width: "34px",
                         height: "34px",
@@ -227,8 +230,8 @@ export default function HomeView() {
                     <div className="thread-spine flex-grow-1 my-1.5" />
                   </div>
 
-                  {/* Isi Postingan */}
-                  <div className="flex-grow-1 min-w-0">
+                  {/* Isi Postingan (minWidth: 0 mencegah overflow flex) */}
+                  <div className="flex-grow-1" style={{ minWidth: 0 }}>
                     <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
                       <div className="d-flex align-items-center gap-1.5 flex-wrap">
                         <span
@@ -263,7 +266,10 @@ export default function HomeView() {
                           </span>
                         )}
                       </div>
-                      <span style={{ fontSize: "0.7rem", color: "#7d7367" }}>
+                      <span
+                        className="flex-shrink-0"
+                        style={{ fontSize: "0.7rem", color: "#7d7367" }}
+                      >
                         {item.time}
                       </span>
                     </div>
@@ -273,7 +279,7 @@ export default function HomeView() {
                       className="text-decoration-none"
                     >
                       <h2
-                        className="h6 mb-1"
+                        className="h6 mb-1 text-break"
                         style={{ color: "#f2ece1", lineHeight: 1.4 }}
                       >
                         {item.title}
@@ -281,15 +287,15 @@ export default function HomeView() {
                     </Link>
 
                     <p
-                      className="mb-2"
+                      className="mb-2 text-break"
                       style={{ fontSize: "0.83rem", color: "#b8ad9e" }}
                     >
                       {item.excerpt}
                     </p>
 
                     {snippet && (
-                      <div className="position-relative mb-2">
-                        <pre className="code-well p-2.5 mb-0 overflow-auto">
+                      <div className="position-relative mb-2 w-100 overflow-hidden">
+                        <pre className="code-well p-2.5 pe-5 mb-0">
                           {snippet}
                         </pre>
                         <button
