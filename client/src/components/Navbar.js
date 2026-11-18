@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
+  SquaresFour,
   Compass,
   ChatsTeardrop,
   Cube,
@@ -14,6 +15,7 @@ import {
 import { useAuthStore } from "../store/useAuthStore";
 
 const NAV_ITEMS = [
+  { href: "/dashboard", label: "Dashboard", icon: SquaresFour },
   { href: "/", label: "Utas", icon: Compass },
   { href: "/forum", label: "Forum", icon: ChatsTeardrop },
   { href: "/showcase", label: "Karya", icon: Cube },
@@ -93,9 +95,9 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="position-relative px-3 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
+                  className="position-relative px-2.5 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
                   style={{
-                    fontSize: "0.78rem",
+                    fontSize: "0.76rem",
                     color: active ? "#120f0c" : "#c7bdb0",
                     fontWeight: active ? 600 : 400,
                     zIndex: 1,
@@ -159,7 +161,7 @@ export default function Navbar() {
 
       {/* Mobile Floating Glass Dock */}
       <nav
-        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-2 py-1.5 smoked-glass d-flex align-items-center gap-1"
+        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-1.5 py-1.5 smoked-glass d-flex align-items-center gap-0.5"
         style={{ zIndex: 50 }}
       >
         {NAV_ITEMS.map((item) => {
@@ -172,10 +174,10 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="position-relative px-3 py-1.5 text-decoration-none d-flex flex-column align-items-center"
+              className="position-relative px-2 py-1.5 text-decoration-none d-flex flex-column align-items-center"
               style={{
                 color: active ? "#120f0c" : "#b8ad9e",
-                fontSize: "0.68rem",
+                fontSize: "0.63rem",
                 fontWeight: active ? 600 : 400,
                 zIndex: 1,
               }}
@@ -188,7 +190,7 @@ export default function Navbar() {
                   style={{ backgroundColor: "#c5a059", zIndex: -1 }}
                 />
               )}
-              <Icon weight={active ? "fill" : "regular"} size={18} />
+              <Icon weight={active ? "fill" : "regular"} size={17} />
               <span className="mt-0.5">{item.label}</span>
             </Link>
           );

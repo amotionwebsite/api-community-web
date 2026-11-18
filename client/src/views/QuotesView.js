@@ -60,6 +60,7 @@ export default function QuotesView() {
           </button>
         </div>
 
+        {/* Featured Quote */}
         <motion.section
           key={featuredIndex}
           initial={{ opacity: 0, scale: 0.98 }}
@@ -98,6 +99,7 @@ export default function QuotesView() {
           </div>
         </motion.section>
 
+        {/* Daftar Semua Quotes */}
         <div className="d-flex flex-column gap-2.5">
           {MOTIVATIONAL_QUOTES.map((q, idx) => (
             <div
