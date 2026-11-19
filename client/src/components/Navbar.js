@@ -3,14 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  Compass,
-  ChatsTeardrop,
-  Cube,
-  Quotes,
-  SignOut,
-  UserCircle,
-} from "@phosphor-icons/react";
+import { SignOut, UserCircle } from "@phosphor-icons/react";
 import { useAuthStore } from "../store/useAuthStore";
 
 const DashboardSvg = ({ size = 18 }) => (
@@ -28,12 +21,72 @@ const DashboardSvg = ({ size = 18 }) => (
   </svg>
 );
 
+const FeedSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M7.741 14.966c-.842-.226-.996-1.396-.241-1.832.175-.101.302-.121.5-.134h3c.451.03.844.288.966.741.176.656-.327 1.217-.966 1.259H8Zm0-5C6.899 9.74 6.745 8.57 7.5 8.134c.175-.101.302-.121.5-.134h5c.451.03.844.288.966.741.176.656-.327 1.217-.966 1.259H8ZM18 10h1.58c.461.037.861.226 1.14.607.205.28.253.482.28.813v7.62c-.038.946-.453 1.817-1.226 2.383-.513.376-1.103.552-1.734.577H4.943c-.593-.034-1.131-.275-1.508-.745-.282-.352-.409-.753-.435-1.198V4.943c.026-.445.153-.846.435-1.198.377-.47.915-.711 1.508-.745h11.114c1.1.063 1.88.843 1.943 1.943Zm-2.006-4.994H5.006v14.988L16 20ZM18 12v7.997c.607-.049.975-.425 1-1.037V12Z"
+    />
+  </svg>
+);
+
+const ForumSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M9.741 15.966c-.842-.226-.996-1.396-.241-1.832.175-.101.302-.121.5-.134h2c.36.024.68.178.866.5.132.228.168.504.1.759-.122.453-.515.711-.966.741h-2Zm0-4c-.842-.226-.996-1.396-.241-1.832.175-.101.302-.121.5-.134h5c.451.03.844.288.966.741.176.656-.327 1.217-.966 1.259h-5ZM5.92 21.997C4.253 21.885 3.051 20.684 3 19v-6.5c.017-.987.146-1.962.453-2.903 1.359-4.17 5.432-6.945 9.827-6.565a9.5 9.5 0 0 1 4.634 1.661c5.681 3.984 5.369 12.434-.587 15.99-1.465.875-3.129 1.288-4.827 1.317H6Zm5.993-16.974c-3.01.233-5.655 2.334-6.565 5.213-.235.744-.333 1.505-.348 2.283v6.441c.016.389.184.741.542.926.159.082.321.107.498.114h6.441c1.155-.022 2.274-.252 3.317-.762a7.57 7.57 0 0 0 3.178-2.954c3.055-5.216-1.053-11.724-7.063-11.261"
+    />
+  </svg>
+);
+
+const ShowcaseSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M16.78 3.03c.585.102 1.047.453 1.369.941l2.424 4.039c.272.491.408.983.427 1.544V19c-.022.535-.202 1.03-.586 1.414s-.879.564-1.414.586H5c-.43-.017-.83-.129-1.181-.386-.526-.385-.793-.973-.819-1.614V9.554a3.3 3.3 0 0 1 .428-1.544l2.423-4.039A2.08 2.08 0 0 1 7.566 3h8.868ZM5 19h14v-9H5Zm8-11h5.234l-1.8-3H13ZM5.766 8H11V5H7.566Z"
+    />
+  </svg>
+);
+
+const PetuahSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M9.741 8.966C8.899 8.74 8.745 7.57 9.5 7.134c.175-.101.302-.121.5-.134h4c.451.03.844.288.966.741.176.656-.327 1.217-.966 1.259h-4ZM6.92 21.997C5.253 21.885 4.051 20.684 4 19V5a3.16 3.16 0 0 1 .536-1.709C5.092 2.471 6.025 2.029 7 2h11c.343.013.675.089.976.258.639.358.997 1.021 1.024 1.742v13c-.037.64-.55 1.124-.722 1.729-.282.992 1.371 2.045.429 2.978-.194.192-.439.276-.707.293H7ZM17.416 20a3 3 0 0 1 0-2H7.05c-.557.022-1.037.411-1.037 1s.48.978 1.037 1ZM6 16.177A3.5 3.5 0 0 1 7.01 16H18l-.006-11.994L17.943 4H7.04c-.622.025-1.015.418-1.04 1.04Z"
+    />
+  </svg>
+);
+
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardSvg },
-  { href: "/", label: "Feed", icon: Compass },
-  { href: "/forum", label: "Forum", icon: ChatsTeardrop },
-  { href: "/showcase", label: "Karya", icon: Cube },
-  { href: "/quotes", label: "Petuah", icon: Quotes },
+  { href: "/", label: "Feed", icon: FeedSvg },
+  { href: "/forum", label: "Forum", icon: ForumSvg },
+  { href: "/showcase", label: "Karya", icon: ShowcaseSvg },
+  { href: "/quotes", label: "Petuah", icon: PetuahSvg },
 ];
 
 export default function Navbar() {
@@ -128,7 +181,7 @@ export default function Navbar() {
                       }}
                     />
                   )}
-                  <Icon weight={active ? "fill" : "regular"} size={15} />
+                  <Icon size={15} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -204,7 +257,7 @@ export default function Navbar() {
                   style={{ backgroundColor: "#c5a059", zIndex: -1 }}
                 />
               )}
-              <Icon weight={active ? "fill" : "regular"} size={17} />
+              <Icon size={17} />
               <span className="mt-0.5">{item.label}</span>
             </Link>
           );
