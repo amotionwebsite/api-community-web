@@ -15,12 +15,21 @@ import Navbar from "../components/Navbar";
 import { INITIAL_THREADS } from "../data/threads";
 import { useAuthStore } from "../store/useAuthStore";
 
+const POST_TAGS = [
+  "Bug & Error",
+  "Workflow",
+  "Diskusi Tech",
+  "Tips & Trik",
+  "Rilis Karya",
+];
+
 export default function HomeView() {
   const user = useAuthStore((s) => s.user);
   const [copiedId, setCopiedId] = useState(null);
   const [threads, setThreads] = useState(INITIAL_THREADS);
   const [upvotedIds, setUpvotedIds] = useState([]);
   const [postText, setPostText] = useState("");
+  const [selectedTag, setSelectedTag] = useState("Diskusi Tech");
   const [codeSnippet, setCodeSnippet] = useState("");
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [postImage, setPostImage] = useState("");
@@ -57,11 +66,12 @@ export default function HomeView() {
   const handleCreatePost = (e) => {
     e.preventDefault();
     if (!postText.trim() && !postImage) return;
-    const contentClean = postText.trim() || "Melampirkan gambar error / tangkapan layar.";
+    const contentClean =
+      postText.trim() || "Melampirkan gambar error / tangkapan layar.";
     const newItem = {
       id: String(Date.now()),
       title: contentClean.slice(0, 72),
-      category: codeSnippet.trim() || postImage ? "Bug & Error" : "Diskusi Tech",
+      category: selectedTag,
       author: user?.username || "pegiat_kode",
       time: "Baru saja",
       solved: false,
@@ -92,13 +102,10 @@ export default function HomeView() {
   });
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5 overflow-x-hidden">
+    <div className="min-vh-100 d-flex flex-column handcrafted-canvas overflow-x-hidden">
       <Navbar />
 
-      <main
-        className="container py-4 flex-grow-1"
-        style={{ maxWidth: "740px", paddingBottom: "190px" }}
-      >
+      <main className="container pt-4 flex-grow-1" style={{ maxWidth: "740px" }}>
         {/* Filter Feed */}
         <div className="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1">
           {[
@@ -132,7 +139,7 @@ export default function HomeView() {
         </div>
 
         {/* Stream Utas Komunitas */}
-        <div className="d-flex flex-column gap-3 mb-4">
+        <div className="d-flex flex-column gap-3">
           {visibleThreads.map((item, index) => {
             const upvoted = upvotedIds.includes(item.id);
             const snippet =
@@ -297,6 +304,9 @@ export default function HomeView() {
             );
           })}
         </div>
+
+        {/* Spacer aman agar postingan paling bawah tidak tertutup composer & dock nav */}
+        <div style={{ height: "235px" }} />
       </main>
 
       {/* Composer Postingan Baru di Bawah (Tepat di atas dock navigasi bawah) */}
@@ -312,7 +322,7 @@ export default function HomeView() {
             onSubmit={handleCreatePost}
             className="p-2.5 rounded-4"
             style={{
-              backgroundColor: "rgba(18, 15, 12, 0.86)",
+              backgroundColor: "rgba(18, 15, 12, 0.88)",
               backdropFilter: "blur(24px) saturate(160%)",
               WebkitBackdropFilter: "blur(24px) saturate(160%)",
               border: "1px solid rgba(197, 160, 89, 0.24)",
@@ -375,7 +385,7 @@ export default function HomeView() {
                   className="form-control border-0 bg-transparent p-0 shadow-none"
                   style={{
                     color: "#f2ece1",
-                    fontSize: "0.85rem",
+                    fontSize: "0.84rem",
                     resize: "none",
                   }}
                 />
@@ -399,8 +409,38 @@ export default function HomeView() {
                   )}
                 </AnimatePresence>
 
+                {/* Pilihan Tag Ringkas & Clean di Atas Tombol Sisipkan Kode */}
+                <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
+                  {POST_TAGS.map((tag) => {
+                    const active = selectedTag === tag;
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setSelectedTag(tag)}
+                        className="btn btn-sm rounded-pill px-2 py-0 flex-shrink-0"
+                        style={{
+                          fontSize: "0.67rem",
+                          lineHeight: 1.55,
+                          backgroundColor: active
+                            ? "rgba(197, 160, 89, 0.18)"
+                            : "rgba(255, 255, 255, 0.03)",
+                          color: active ? "#e6cfa3" : "#8f8578",
+                          border: active
+                            ? "1px solid rgba(197, 160, 89, 0.45)"
+                            : "1px solid rgba(255, 255, 255, 0.06)",
+                          fontWeight: active ? 600 : 400,
+                        }}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Baris Aksi: Sisipkan Kode, Gambar, dan Terbitkan */}
                 <div
-                  className="d-flex align-items-center justify-content-between pt-2 mt-1.5 border-top"
+                  className="d-flex align-items-center justify-content-between pt-1.5 mt-1 border-top"
                   style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
                 >
                   <div className="d-flex align-items-center gap-1.5">
@@ -408,7 +448,7 @@ export default function HomeView() {
                       type="button"
                       onClick={() => setShowCodeInput(!showCodeInput)}
                       className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.73rem" }}
+                      style={{ fontSize: "0.72rem" }}
                     >
                       <Code size={14} />
                       <span>Sisipkan Kode</span>
@@ -425,7 +465,7 @@ export default function HomeView() {
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.73rem" }}
+                      style={{ fontSize: "0.72rem" }}
                     >
                       <ImageSquare size={14} style={{ color: "#c5a059" }} />
                       <span>Gambar</span>
@@ -435,7 +475,7 @@ export default function HomeView() {
                   <button
                     type="submit"
                     className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1"
-                    style={{ fontSize: "0.74rem" }}
+                    style={{ fontSize: "0.73rem" }}
                   >
                     <span>Terbitkan</span>
                     <PaperPlaneTilt weight="fill" size={13} />

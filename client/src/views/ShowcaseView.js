@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown, ImageSquare, X } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 
+const TERMUX_LOGO_URI =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="4" fill="#18181b" stroke="#e4e4e7" stroke-width="1.8"/><path d="M6.8 8.5L10.8 12L6.8 15.5" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><line x1="12.5" y1="15.5" x2="17.2" y2="15.5" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round"/></svg>'
+  );
+
 const TECH_CATALOG = [
   // Frontend & UI
   { name: "HTML5", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
@@ -65,8 +71,8 @@ const TECH_CATALOG = [
   // DevOps, CLI & Tools
   { name: "Docker", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" },
   { name: "Linux", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" },
-  { name: "Bash", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" },
-  { name: "Termux", logo: "https://cdn.simpleicons.org/termux/ffffff" },
+  { name: "Bash", logo: "https://cdn.simpleicons.org/gnubash/ffffff" },
+  { name: "Termux", logo: TERMUX_LOGO_URI },
   { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" },
   { name: "Nginx", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg" },
   { name: "Vercel", logo: "https://cdn.simpleicons.org/vercel/ffffff" },
@@ -565,7 +571,7 @@ export default function ShowcaseView() {
           )}
         </AnimatePresence>
 
-        {/* Daftar Kartu Karya dengan Animasi Saat Rilis & Blur Halus */}
+        {/* Daftar Kartu Karya */}
         <div className="d-flex flex-column gap-3 mb-4">
           <AnimatePresence initial={false}>
             {projects.map((p, idx) => {
@@ -610,7 +616,7 @@ export default function ShowcaseView() {
                     </a>
                   </div>
 
-                  {/* Banner Full-bleed dengan Gradasi Blur Bertahap yang Smooth */}
+                  {/* Banner Full-bleed dengan Gradasi Blur Bertahap */}
                   <div
                     className="position-relative w-100 overflow-hidden"
                     style={{
@@ -646,7 +652,6 @@ export default function ShowcaseView() {
                       </div>
                     )}
 
-                    {/* Lapisan Blur Halus Bertahap */}
                     <div
                       className="position-absolute bottom-0 start-0 w-100"
                       style={{
@@ -661,7 +666,6 @@ export default function ShowcaseView() {
                       }}
                     />
 
-                    {/* Lapisan Fade Warna Menyatu ke Dasar Kartu */}
                     <div
                       className="position-absolute bottom-0 start-0 w-100"
                       style={{
