@@ -140,24 +140,24 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Glass Header (Tetap menempel di atas saat halaman digulir ke bawah) */}
+      {/* Top Glass Header (Fixed agar selalu terkunci di atas saat scroll) */}
       <header
-        className="position-sticky top-0 border-bottom"
+        className="position-fixed top-0 start-0 w-100 border-bottom"
         style={{
-          backgroundColor: "rgba(14, 12, 10, 0.85)",
+          backgroundColor: "rgba(14, 12, 10, 0.88)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
           borderColor: "rgba(197, 160, 89, 0.14)",
-          zIndex: 45,
+          zIndex: 50,
         }}
       >
         <div
-          className="container py-2.5 d-flex align-items-center justify-content-between gap-2"
+          className="container py-2 d-flex align-items-center justify-content-between gap-2"
           style={{ maxWidth: "740px" }}
         >
           <Link
             href="/"
-            className="d-flex align-items-center gap-1.5 text-decoration-none"
+            className="d-flex align-items-center text-decoration-none"
           >
             <img
               src="/logoapi.png"
@@ -171,9 +171,10 @@ export default function Navbar() {
                 fontFamily: "var(--font-utendo), sans-serif",
                 fontWeight: 700,
                 color: "#f2ece1",
-                fontSize: "0.94rem",
+                fontSize: "0.92rem",
                 letterSpacing: "-0.01em",
                 lineHeight: 1.2,
+                marginLeft: "-6px",
               }}
             >
               Anak Programmer Indonesia
@@ -291,6 +292,9 @@ export default function Navbar() {
           </div>
         </div>
       </header>
+
+      {/* Spacer agar konten paling atas tidak tertutup header fixed */}
+      <div style={{ height: "58px" }} />
 
       {/* Mobile Floating Glass Dock */}
       <nav
