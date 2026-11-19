@@ -85,69 +85,79 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan dengan Banner Memanjang & Blur Halus di Bawahnya */}
+        {/* 1. Hero Sambutan dengan Banner Memanjang, Blur Halus & Judul Menimpa Area Blur */}
         <motion.section
           initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
           animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="smoked-glass overflow-hidden mb-3 text-start"
         >
-          {/* Banner Memanjang Full-bleed di Dalam Kapsul */}
+          {/* Area Banner Full-bleed */}
           <div
             className="position-relative w-100 overflow-hidden"
             style={{
-              height: "172px",
+              height: "205px",
               backgroundColor: "#15120f",
             }}
           >
             <img
-              src="/banner.png"
+              src="/banners.png"
               alt="Banner Anak Programmer Indonesia"
               className="w-100 h-100 object-fit-cover"
             />
 
-            {/* Lapisan Blur Halus Bertahap di Bawah Banner */}
+            {/* Lapisan Blur Halus Bertahap (Masking lembut agar tidak kaku) */}
             <div
               className="position-absolute bottom-0 start-0 w-100"
               style={{
-                height: "74px",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
+                height: "130px",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
                 maskImage:
-                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 100%)",
                 WebkitMaskImage:
-                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 100%)",
                 pointerEvents: "none",
+                zIndex: 1,
               }}
             />
 
-            {/* Lapisan Fade Warna Menyatu ke Dasar Kapsul */}
+            {/* Lapisan Gradasi Gelap Halus Menyatu ke Dasar Kapsul */}
             <div
               className="position-absolute bottom-0 start-0 w-100"
               style={{
-                height: "82px",
+                height: "136px",
                 background:
-                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.82) 28%, rgba(21, 18, 15, 0.35) 62%, rgba(21, 18, 15, 0) 100%)",
+                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.88) 32%, rgba(21, 18, 15, 0.45) 68%, rgba(21, 18, 15, 0) 100%)",
                 pointerEvents: "none",
+                zIndex: 2,
               }}
             />
+
+            {/* Judul Selamat Datang Tajam Menimpa Area Blur Bawah Banner */}
+            <div
+              className="position-absolute bottom-0 start-0 w-100 px-4 pb-1"
+              style={{ zIndex: 3 }}
+            >
+              <motion.h1
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  fontFamily: "var(--font-coolvetica), sans-serif",
+                  color: "#f2ece1",
+                  lineHeight: 1.24,
+                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.55)",
+                }}
+                className="h3 mb-0"
+              >
+                Selamat Datang di Website Anak Programmer Indonesia
+              </motion.h1>
+            </div>
           </div>
 
-          <div className="px-4 pb-4 pt-1 position-relative" style={{ zIndex: 2 }}>
-            <motion.h1
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                fontFamily: "var(--font-coolvetica), sans-serif",
-                color: "#f2ece1",
-                lineHeight: 1.25,
-              }}
-              className="h3 mb-2"
-            >
-              Selamat Datang di Website Anak Programmer Indonesia
-            </motion.h1>
-
+          {/* Deskripsi Rapat Tepat di Bawah Judul */}
+          <div className="px-4 pb-4 pt-1.5 position-relative" style={{ zIndex: 3 }}>
             <motion.p
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -158,7 +168,7 @@ export default function DashboardView() {
                 fontWeight: 400,
                 fontSize: "0.88rem",
                 color: "#cfc5b6",
-                lineHeight: 1.68,
+                lineHeight: 1.66,
               }}
             >
               Ruang singgah digital bagi developer Indonesia untuk saling bantu
