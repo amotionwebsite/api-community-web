@@ -170,6 +170,8 @@ const INITIAL_PROJECTS = [
   },
 ];
 
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
 export default function ShowcaseView() {
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
   const [likedIds, setLikedIds] = useState([]);
@@ -227,29 +229,28 @@ export default function ShowcaseView() {
       return;
     }
 
-    setProjects([
-      {
-        id: String(Date.now()),
-        title: title.trim(),
-        author: "builder_api",
-        desc: desc.trim(),
-        stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
-        bannerUrl,
-        demoUrl: demoUrl.trim() || "https://api-community-web.vercel.app",
-        applause: 1,
-        isNew: true,
-      },
-      ...projects,
-    ]);
+    const newProject = {
+      id: String(Date.now()),
+      title: title.trim(),
+      author: "builder_api",
+      desc: desc.trim(),
+      stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
+      bannerUrl,
+      demoUrl: demoUrl.trim() || "https://api-community-web.vercel.app",
+      applause: 1,
+      isNew: true,
+    };
+
+    setTechOpen(false);
+    setShowForm(false);
     setTitle("");
     setDesc("");
     setSelectedStack([]);
     setTechSearch("");
-    setTechOpen(false);
     setDemoUrl("");
     setBannerUrl("");
     setErrors({ title: false, desc: false });
-    setShowForm(false);
+    setProjects((prev) => [newProject, ...prev]);
   };
 
   const filteredTech = TECH_CATALOG.filter((t) =>
@@ -276,8 +277,10 @@ export default function ShowcaseView() {
               Pamerkan web app, bot, CLI, atau eksperimen buatanmu sendiri.
             </p>
           </div>
-          <button
+          <motion.button
             type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => {
               setShowForm(!showForm);
               setTechOpen(false);
@@ -287,291 +290,317 @@ export default function ShowcaseView() {
             className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
             style={{ width: "38px", height: "38px", padding: 0 }}
           >
-            <PlusSvg size={21} />
-          </button>
+            <motion.span
+              animate={{ rotate: showForm ? 45 : 0 }}
+              transition={{ duration: 0.28, ease: SMOOTH_EASE }}
+              className="d-inline-flex align-items-center justify-content-center"
+            >
+              <PlusSvg size={21} />
+            </motion.span>
+          </motion.button>
         </div>
 
-        {/* Form Rilis Karya */}
-        <AnimatePresence>
+        {/* Form Rilis Karya dengan Animasi Buka-Tutup Smooth */}
+        <AnimatePresence initial={false}>
           {showForm && (
-            <motion.form
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              noValidate
-              onSubmit={handleSubmit}
-              className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
+            <motion.div
+              key="showcase-form-wrapper"
+              initial={{ opacity: 0, height: 0, y: -8 }}
+              animate={{
+                opacity: 1,
+                height: "auto",
+                y: 0,
+                transitionEnd: { overflow: "visible" },
+              }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                y: -8,
+                overflow: "hidden",
+              }}
+              transition={{ duration: 0.36, ease: SMOOTH_EASE }}
+              style={{ overflow: "hidden" }}
             >
-              <motion.div
-                key={`proj-title-${shakeTick}`}
-                animate={
-                  errors.title
-                    ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
-                    : { x: 0 }
-                }
-                transition={{ duration: 0.38 }}
+              <form
+                noValidate
+                onSubmit={handleSubmit}
+                className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
               >
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (errors.title) setErrors({ ...errors, title: false });
-                  }}
-                  placeholder="Nama proyek..."
-                  className="form-control form-control-sm"
-                  style={{
-                    background: errors.title
-                      ? "rgba(185, 56, 56, 0.16)"
-                      : "rgba(14,12,10,0.7)",
-                    borderColor: errors.title
-                      ? "#d9534f"
-                      : "rgba(197,160,89,0.22)",
-                    color: "#f2ece1",
-                    transition: "border-color 0.2s ease, background-color 0.2s ease",
-                  }}
-                />
-              </motion.div>
-
-              <motion.div
-                key={`proj-desc-${shakeTick}`}
-                animate={
-                  errors.desc
-                    ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
-                    : { x: 0 }
-                }
-                transition={{ duration: 0.38 }}
-              >
-                <textarea
-                  rows={2}
-                  value={desc}
-                  onChange={(e) => {
-                    setDesc(e.target.value);
-                    if (errors.desc) setErrors({ ...errors, desc: false });
-                  }}
-                  placeholder="Deskripsi singkat fungsi aplikasi..."
-                  className="form-control form-control-sm"
-                  style={{
-                    background: errors.desc
-                      ? "rgba(185, 56, 56, 0.16)"
-                      : "rgba(14,12,10,0.7)",
-                    borderColor: errors.desc
-                      ? "#d9534f"
-                      : "rgba(197,160,89,0.22)",
-                    color: "#f2ece1",
-                    transition: "border-color 0.2s ease, background-color 0.2s ease",
-                  }}
-                />
-              </motion.div>
-
-              {/* Pemilih Tech Stack Lengkap dengan Logo Resmi */}
-              <div className="position-relative">
-                <button
-                  type="button"
-                  onClick={() => setTechOpen(!techOpen)}
-                  className="form-control form-control-sm d-flex align-items-center justify-content-between text-start"
-                  style={{
-                    background: "rgba(14,12,10,0.7)",
-                    borderColor: techOpen ? "#c5a059" : "rgba(197,160,89,0.22)",
-                    color: selectedStack.length > 0 ? "#f2ece1" : "#8f8578",
-                    minHeight: "34px",
-                  }}
+                <motion.div
+                  key={`proj-title-${shakeTick}`}
+                  animate={
+                    errors.title
+                      ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
+                      : { x: 0 }
+                  }
+                  transition={{ duration: 0.38 }}
                 >
-                  <div className="d-flex flex-wrap align-items-center gap-1">
-                    {selectedStack.length === 0 ? (
-                      <span>Pilih Tech Stack (Python, Next.js, Node.js, dll)...</span>
-                    ) : (
-                      selectedStack.map((techName) => (
-                        <span
-                          key={techName}
-                          className="px-2 py-0.5 rounded-pill d-inline-flex align-items-center gap-1"
-                          style={{
-                            fontSize: "0.7rem",
-                            background: "rgba(118, 168, 130, 0.16)",
-                            border: "1px solid rgba(118, 168, 130, 0.3)",
-                            color: "#9fd0aa",
-                          }}
-                        >
-                          <img
-                            src={getTechLogo(techName)}
-                            alt=""
-                            width={12}
-                            height={12}
-                            className="object-fit-contain flex-shrink-0"
-                          />
-                          <span>{techName}</span>
-                        </span>
-                      ))
-                    )}
-                  </div>
-                  <CaretDown
-                    size={14}
-                    className="flex-shrink-0 ms-1"
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (errors.title) setErrors({ ...errors, title: false });
+                    }}
+                    placeholder="Nama proyek..."
+                    className="form-control form-control-sm"
                     style={{
-                      color: "#c5a059",
-                      transform: techOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      transition: "transform 0.2s ease",
+                      background: errors.title
+                        ? "rgba(185, 56, 56, 0.16)"
+                        : "rgba(14,12,10,0.7)",
+                      borderColor: errors.title
+                        ? "#d9534f"
+                        : "rgba(197,160,89,0.22)",
+                      color: "#f2ece1",
+                      transition: "border-color 0.2s ease, background-color 0.2s ease",
                     }}
                   />
-                </button>
+                </motion.div>
 
-                <AnimatePresence>
-                  {techOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.18 }}
-                      className="position-absolute start-0 w-100 mt-1 p-2 rounded-3"
-                      style={{
-                        backgroundColor: "#161310",
-                        border: "1px solid rgba(197, 160, 89, 0.32)",
-                        boxShadow: "0 16px 32px rgba(0, 0, 0, 0.85)",
-                        zIndex: 35,
-                      }}
-                    >
-                      <input
-                        type="text"
-                        value={techSearch}
-                        onChange={(e) => setTechSearch(e.target.value)}
-                        placeholder="Cari bahasa, framework, database, atau tools..."
-                        className="form-control form-control-sm mb-2"
-                        style={{
-                          background: "rgba(10, 9, 8, 0.85)",
-                          borderColor: "rgba(197, 160, 89, 0.2)",
-                          color: "#f2ece1",
-                          fontSize: "0.76rem",
-                        }}
-                      />
+                <motion.div
+                  key={`proj-desc-${shakeTick}`}
+                  animate={
+                    errors.desc
+                      ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
+                      : { x: 0 }
+                  }
+                  transition={{ duration: 0.38 }}
+                >
+                  <textarea
+                    rows={2}
+                    value={desc}
+                    onChange={(e) => {
+                      setDesc(e.target.value);
+                      if (errors.desc) setErrors({ ...errors, desc: false });
+                    }}
+                    placeholder="Deskripsi singkat fungsi aplikasi..."
+                    className="form-control form-control-sm"
+                    style={{
+                      background: errors.desc
+                        ? "rgba(185, 56, 56, 0.16)"
+                        : "rgba(14,12,10,0.7)",
+                      borderColor: errors.desc
+                        ? "#d9534f"
+                        : "rgba(197,160,89,0.22)",
+                      color: "#f2ece1",
+                      transition: "border-color 0.2s ease, background-color 0.2s ease",
+                    }}
+                  />
+                </motion.div>
 
-                      <div
-                        className="d-flex flex-wrap gap-1.5 overflow-auto pe-1"
-                        style={{ maxHeight: "190px" }}
-                      >
-                        {filteredTech.map((tech) => {
-                          const active = selectedStack.includes(tech.name);
-                          return (
-                            <button
-                              key={tech.name}
-                              type="button"
-                              onClick={() => toggleTech(tech.name)}
-                              className="btn btn-sm px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
-                              style={{
-                                fontSize: "0.72rem",
-                                backgroundColor: active
-                                  ? "rgba(197, 160, 89, 0.2)"
-                                  : "rgba(255, 255, 255, 0.04)",
-                                border: active
-                                  ? "1px solid #c5a059"
-                                  : "1px solid rgba(255, 255, 255, 0.08)",
-                                color: active ? "#f2ece1" : "#b8ad9e",
-                              }}
-                            >
-                              <img
-                                src={tech.logo}
-                                alt=""
-                                width={14}
-                                height={14}
-                                className="object-fit-contain flex-shrink-0"
-                              />
-                              <span>{tech.name}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Link Karya */}
-              <input
-                type="url"
-                value={demoUrl}
-                onChange={(e) => setDemoUrl(e.target.value)}
-                placeholder="Link Karya..."
-                className="form-control form-control-sm"
-                style={{
-                  background: "rgba(14,12,10,0.7)",
-                  borderColor: "rgba(197,160,89,0.22)",
-                  color: "#f2ece1",
-                }}
-              />
-
-              {/* Upload Gambar / Banner Karya (Opsional) */}
-              <div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBannerChange}
-                  className="d-none"
-                />
-                {!bannerUrl ? (
+                {/* Pemilih Tech Stack Lengkap dengan Logo Resmi */}
+                <div className="position-relative">
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-100 btn btn-sm btn-glass-subtle py-2 d-flex align-items-center justify-content-center gap-1.5"
+                    onClick={() => setTechOpen(!techOpen)}
+                    className="form-control form-control-sm d-flex align-items-center justify-content-between text-start"
                     style={{
-                      fontSize: "0.76rem",
-                      borderStyle: "dashed",
-                      borderColor: "rgba(197, 160, 89, 0.28)",
-                      color: "#b8ad9e",
+                      background: "rgba(14,12,10,0.7)",
+                      borderColor: techOpen ? "#c5a059" : "rgba(197,160,89,0.22)",
+                      color: selectedStack.length > 0 ? "#f2ece1" : "#8f8578",
+                      minHeight: "34px",
                     }}
                   >
-                    <ImageSquare size={16} style={{ color: "#c5a059" }} />
-                    <span>Unggah Gambar / Banner Karya (Opsional)</span>
-                  </button>
-                ) : (
-                  <div className="position-relative rounded-3 overflow-hidden border border-secondary-subtle">
-                    <img
-                      src={bannerUrl}
-                      alt="Pratinjau Banner Karya"
-                      className="w-100 object-fit-cover"
-                      style={{ height: "130px" }}
+                    <div className="d-flex flex-wrap align-items-center gap-1">
+                      {selectedStack.length === 0 ? (
+                        <span>Pilih Tech Stack (Python, Next.js, Node.js, dll)...</span>
+                      ) : (
+                        selectedStack.map((techName) => (
+                          <span
+                            key={techName}
+                            className="px-2 py-0.5 rounded-pill d-inline-flex align-items-center gap-1"
+                            style={{
+                              fontSize: "0.7rem",
+                              background: "rgba(118, 168, 130, 0.16)",
+                              border: "1px solid rgba(118, 168, 130, 0.3)",
+                              color: "#9fd0aa",
+                            }}
+                          >
+                            <img
+                              src={getTechLogo(techName)}
+                              alt=""
+                              width={12}
+                              height={12}
+                              className="object-fit-contain flex-shrink-0"
+                            />
+                            <span>{techName}</span>
+                          </span>
+                        ))
+                      )}
+                    </div>
+                    <CaretDown
+                      size={14}
+                      className="flex-shrink-0 ms-1"
+                      style={{
+                        color: "#c5a059",
+                        transform: techOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s ease",
+                      }}
                     />
+                  </button>
+
+                  <AnimatePresence>
+                    {techOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                        transition={{ duration: 0.2, ease: SMOOTH_EASE }}
+                        className="position-absolute start-0 w-100 mt-1 p-2 rounded-3"
+                        style={{
+                          backgroundColor: "#161310",
+                          border: "1px solid rgba(197, 160, 89, 0.32)",
+                          boxShadow: "0 16px 32px rgba(0, 0, 0, 0.85)",
+                          zIndex: 35,
+                        }}
+                      >
+                        <input
+                          type="text"
+                          value={techSearch}
+                          onChange={(e) => setTechSearch(e.target.value)}
+                          placeholder="Cari bahasa, framework, database, atau tools..."
+                          className="form-control form-control-sm mb-2"
+                          style={{
+                            background: "rgba(10, 9, 8, 0.85)",
+                            borderColor: "rgba(197, 160, 89, 0.2)",
+                            color: "#f2ece1",
+                            fontSize: "0.76rem",
+                          }}
+                        />
+
+                        <div
+                          className="d-flex flex-wrap gap-1.5 overflow-auto pe-1"
+                          style={{ maxHeight: "190px" }}
+                        >
+                          {filteredTech.map((tech) => {
+                            const active = selectedStack.includes(tech.name);
+                            return (
+                              <button
+                                key={tech.name}
+                                type="button"
+                                onClick={() => toggleTech(tech.name)}
+                                className="btn btn-sm px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+                                style={{
+                                  fontSize: "0.72rem",
+                                  backgroundColor: active
+                                    ? "rgba(197, 160, 89, 0.2)"
+                                    : "rgba(255, 255, 255, 0.04)",
+                                  border: active
+                                    ? "1px solid #c5a059"
+                                    : "1px solid rgba(255, 255, 255, 0.08)",
+                                  color: active ? "#f2ece1" : "#b8ad9e",
+                                }}
+                              >
+                                <img
+                                  src={tech.logo}
+                                  alt=""
+                                  width={14}
+                                  height={14}
+                                  className="object-fit-contain flex-shrink-0"
+                                />
+                                <span>{tech.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Link Karya */}
+                <input
+                  type="url"
+                  value={demoUrl}
+                  onChange={(e) => setDemoUrl(e.target.value)}
+                  placeholder="Link Karya..."
+                  className="form-control form-control-sm"
+                  style={{
+                    background: "rgba(14,12,10,0.7)",
+                    borderColor: "rgba(197,160,89,0.22)",
+                    color: "#f2ece1",
+                  }}
+                />
+
+                {/* Upload Gambar / Banner Karya (Opsional) */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBannerChange}
+                    className="d-none"
+                  />
+                  {!bannerUrl ? (
                     <button
                       type="button"
-                      onClick={() => {
-                        setBannerUrl("");
-                        if (fileInputRef.current) fileInputRef.current.value = "";
-                      }}
-                      className="btn btn-sm position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-100 btn btn-sm btn-glass-subtle py-2 d-flex align-items-center justify-content-center gap-1.5"
                       style={{
-                        backgroundColor: "rgba(12, 10, 9, 0.82)",
-                        color: "#f2ece1",
-                        border: "1px solid rgba(197, 160, 89, 0.35)",
+                        fontSize: "0.76rem",
+                        borderStyle: "dashed",
+                        borderColor: "rgba(197, 160, 89, 0.28)",
+                        color: "#b8ad9e",
                       }}
-                      title="Hapus banner"
                     >
-                      <X size={13} />
+                      <ImageSquare size={16} style={{ color: "#c5a059" }} />
+                      <span>Unggah Gambar / Banner Karya (Opsional)</span>
                     </button>
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <div className="position-relative rounded-3 overflow-hidden border border-secondary-subtle">
+                      <img
+                        src={bannerUrl}
+                        alt="Pratinjau Banner Karya"
+                        className="w-100 object-fit-cover"
+                        style={{ height: "130px" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBannerUrl("");
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                        }}
+                        className="btn btn-sm position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center"
+                        style={{
+                          backgroundColor: "rgba(12, 10, 9, 0.82)",
+                          color: "#f2ece1",
+                          border: "1px solid rgba(197, 160, 89, 0.35)",
+                        }}
+                        title="Hapus banner"
+                      >
+                        <X size={13} />
+                      </button>
+                    </div>
+                  )}
+                </div>
 
-              <div className="d-flex justify-content-end gap-2 mt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setTechOpen(false);
-                    setErrors({ title: false, desc: false });
-                  }}
-                  className="btn btn-sm btn-glass-subtle px-3"
-                >
-                  Batal
-                </button>
-                <button type="submit" className="btn btn-sm btn-sogan px-3">
-                  Tayangkan
-                </button>
-              </div>
-            </motion.form>
+                <div className="d-flex justify-content-end gap-2 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      setTechOpen(false);
+                      setErrors({ title: false, desc: false });
+                    }}
+                    className="btn btn-sm btn-glass-subtle px-3"
+                  >
+                    Batal
+                  </button>
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn btn-sm btn-sogan px-3"
+                  >
+                    Publish
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Daftar Kartu Karya */}
+        {/* Daftar Kartu Karya dengan Animasi Saat Publish Smooth */}
         <div className="d-flex flex-column gap-3 mb-4">
           <AnimatePresence initial={false}>
             {projects.map((p, idx) => {
@@ -579,23 +608,33 @@ export default function ShowcaseView() {
               return (
                 <motion.article
                   key={p.id}
-                  layout
+                  layout="position"
                   initial={
                     p.isNew
-                      ? { opacity: 0, scale: 0.94, y: -18 }
+                      ? {
+                          opacity: 0,
+                          y: -22,
+                          scale: 0.96,
+                          filter: "blur(6px)",
+                        }
                       : { opacity: 0, y: 12 }
                   }
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: "blur(0px)",
+                  }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={
                     p.isNew
-                      ? { type: "spring", stiffness: 360, damping: 26 }
-                      : { duration: 0.35, delay: idx * 0.06 }
+                      ? { duration: 0.52, ease: SMOOTH_EASE }
+                      : { duration: 0.35, delay: idx * 0.05, ease: SMOOTH_EASE }
                   }
                   className="smoked-glass smoked-glass-interactive overflow-hidden"
                   style={
                     p.isNew
-                      ? { boxShadow: "0 10px 30px rgba(197, 160, 89, 0.14)" }
+                      ? { boxShadow: "0 12px 32px rgba(197, 160, 89, 0.16)" }
                       : undefined
                   }
                 >

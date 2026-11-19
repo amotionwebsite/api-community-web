@@ -29,6 +29,7 @@ const PlusSvg = ({ size = 21 }) => (
 );
 
 const CATEGORIES = ["Bug & Error", "Workflow", "Diskusi Tech"];
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
 export default function ForumView() {
   const user = useAuthStore((s) => s.user);
@@ -102,8 +103,10 @@ export default function ForumView() {
               Diskusi error, arsitektur aplikasi, dan catatan belajar.
             </p>
           </div>
-          <button
+          <motion.button
             type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => {
               setShowForm(!showForm);
               setCatOpen(false);
@@ -113,184 +116,205 @@ export default function ForumView() {
             className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
             style={{ width: "38px", height: "38px", padding: 0 }}
           >
-            <PlusSvg size={21} />
-          </button>
+            <motion.span
+              animate={{ rotate: showForm ? 45 : 0 }}
+              transition={{ duration: 0.28, ease: SMOOTH_EASE }}
+              className="d-inline-flex align-items-center justify-content-center"
+            >
+              <PlusSvg size={21} />
+            </motion.span>
+          </motion.button>
         </div>
 
-        {/* Form Tambah Utas */}
-        <AnimatePresence>
+        {/* Form Tambah Utas dengan Animasi Buka-Tutup Smooth */}
+        <AnimatePresence initial={false}>
           {showForm && (
-            <motion.form
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              noValidate
-              onSubmit={handleCreate}
-              className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
+            <motion.div
+              key="forum-form-wrapper"
+              initial={{ opacity: 0, height: 0, y: -8 }}
+              animate={{
+                opacity: 1,
+                height: "auto",
+                y: 0,
+                transitionEnd: { overflow: "visible" },
+              }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                y: -8,
+                overflow: "hidden",
+              }}
+              transition={{ duration: 0.36, ease: SMOOTH_EASE }}
+              style={{ overflow: "hidden" }}
             >
-              {/* Input Judul dengan Efek Merah & Getar jika kosong */}
-              <motion.div
-                key={`title-${shakeTick}`}
-                animate={
-                  errors.title
-                    ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
-                    : { x: 0 }
-                }
-                transition={{ duration: 0.38 }}
+              <form
+                noValidate
+                onSubmit={handleCreate}
+                className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
               >
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (errors.title) setErrors({ ...errors, title: false });
-                  }}
-                  placeholder="Judul pertanyaan atau topik..."
-                  className="form-control form-control-sm"
-                  style={{
-                    background: errors.title
-                      ? "rgba(185, 56, 56, 0.16)"
-                      : "rgba(14, 12, 10, 0.7)",
-                    borderColor: errors.title
-                      ? "#d9534f"
-                      : "rgba(197, 160, 89, 0.22)",
-                    color: "#f2ece1",
-                    transition: "border-color 0.2s ease, background-color 0.2s ease",
-                  }}
-                />
-              </motion.div>
-
-              {/* Custom Dropdown Kategori Buatan Website Sendiri */}
-              <div className="position-relative">
-                <button
-                  type="button"
-                  onClick={() => setCatOpen(!catOpen)}
-                  className="form-control form-control-sm d-flex align-items-center justify-content-between text-start"
-                  style={{
-                    background: "rgba(14, 12, 10, 0.7)",
-                    borderColor: catOpen
-                      ? "#c5a059"
-                      : "rgba(197, 160, 89, 0.22)",
-                    color: "#f2ece1",
-                    cursor: "pointer",
-                  }}
+                {/* Input Judul dengan Efek Merah & Getar jika kosong */}
+                <motion.div
+                  key={`title-${shakeTick}`}
+                  animate={
+                    errors.title
+                      ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
+                      : { x: 0 }
+                  }
+                  transition={{ duration: 0.38 }}
                 >
-                  <span>{category}</span>
-                  <CaretDown
-                    size={14}
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (errors.title) setErrors({ ...errors, title: false });
+                    }}
+                    placeholder="Judul pertanyaan atau topik..."
+                    className="form-control form-control-sm"
                     style={{
-                      color: "#c5a059",
-                      transform: catOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      transition: "transform 0.2s ease",
+                      background: errors.title
+                        ? "rgba(185, 56, 56, 0.16)"
+                        : "rgba(14, 12, 10, 0.7)",
+                      borderColor: errors.title
+                        ? "#d9534f"
+                        : "rgba(197, 160, 89, 0.22)",
+                      color: "#f2ece1",
+                      transition: "border-color 0.2s ease, background-color 0.2s ease",
                     }}
                   />
-                </button>
+                </motion.div>
 
-                <AnimatePresence>
-                  {catOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.18 }}
-                      className="position-absolute start-0 w-100 mt-1 p-1 rounded-3"
+                {/* Custom Dropdown Kategori Buatan Website Sendiri */}
+                <div className="position-relative">
+                  <button
+                    type="button"
+                    onClick={() => setCatOpen(!catOpen)}
+                    className="form-control form-control-sm d-flex align-items-center justify-content-between text-start"
+                    style={{
+                      background: "rgba(14, 12, 10, 0.7)",
+                      borderColor: catOpen
+                        ? "#c5a059"
+                        : "rgba(197, 160, 89, 0.22)",
+                      color: "#f2ece1",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span>{category}</span>
+                    <CaretDown
+                      size={14}
                       style={{
-                        backgroundColor: "#171411",
-                        border: "1px solid rgba(197, 160, 89, 0.32)",
-                        boxShadow: "0 14px 28px rgba(0, 0, 0, 0.75)",
-                        zIndex: 30,
+                        color: "#c5a059",
+                        transform: catOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s ease",
                       }}
-                    >
-                      {CATEGORIES.map((cat) => {
-                        const selected = category === cat;
-                        return (
-                          <button
-                            key={cat}
-                            type="button"
-                            onClick={() => {
-                              setCategory(cat);
-                              setCatOpen(false);
-                            }}
-                            className="w-100 btn btn-sm text-start d-flex align-items-center justify-content-between px-2.5 py-1.5 rounded-2 border-0"
-                            style={{
-                              fontSize: "0.82rem",
-                              backgroundColor: selected
-                                ? "rgba(197, 160, 89, 0.16)"
-                                : "transparent",
-                              color: selected ? "#c5a059" : "#d8cfc2",
-                              fontWeight: selected ? 600 : 400,
-                            }}
-                          >
-                            <span>{cat}</span>
-                            {selected && (
-                              <span
-                                className="rounded-circle"
-                                style={{
-                                  width: "6px",
-                                  height: "6px",
-                                  backgroundColor: "#c5a059",
-                                }}
-                              />
-                            )}
-                          </button>
-                        );
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                    />
+                  </button>
 
-              {/* Input Kronologi/Detail dengan Efek Merah & Getar jika kosong */}
-              <motion.div
-                key={`content-${shakeTick}`}
-                animate={
-                  errors.content
-                    ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
-                    : { x: 0 }
-                }
-                transition={{ duration: 0.38 }}
-              >
-                <textarea
-                  rows={3}
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value);
-                    if (errors.content)
-                      setErrors({ ...errors, content: false });
-                  }}
-                  placeholder="Jelaskan kronologi error atau detail diskusi..."
-                  className="form-control form-control-sm"
-                  style={{
-                    background: errors.content
-                      ? "rgba(185, 56, 56, 0.16)"
-                      : "rgba(14, 12, 10, 0.7)",
-                    borderColor: errors.content
-                      ? "#d9534f"
-                      : "rgba(197, 160, 89, 0.22)",
-                    color: "#f2ece1",
-                    transition: "border-color 0.2s ease, background-color 0.2s ease",
-                  }}
-                />
-              </motion.div>
+                  <AnimatePresence>
+                    {catOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                        transition={{ duration: 0.2, ease: SMOOTH_EASE }}
+                        className="position-absolute start-0 w-100 mt-1 p-1 rounded-3"
+                        style={{
+                          backgroundColor: "#171411",
+                          border: "1px solid rgba(197, 160, 89, 0.32)",
+                          boxShadow: "0 14px 28px rgba(0, 0, 0, 0.75)",
+                          zIndex: 30,
+                        }}
+                      >
+                        {CATEGORIES.map((cat) => {
+                          const selected = category === cat;
+                          return (
+                            <button
+                              key={cat}
+                              type="button"
+                              onClick={() => {
+                                setCategory(cat);
+                                setCatOpen(false);
+                              }}
+                              className="w-100 btn btn-sm text-start d-flex align-items-center justify-content-between px-2.5 py-1.5 rounded-2 border-0"
+                              style={{
+                                fontSize: "0.82rem",
+                                backgroundColor: selected
+                                  ? "rgba(197, 160, 89, 0.16)"
+                                  : "transparent",
+                                color: selected ? "#c5a059" : "#d8cfc2",
+                                fontWeight: selected ? 600 : 400,
+                              }}
+                            >
+                              <span>{cat}</span>
+                              {selected && (
+                                <span
+                                  className="rounded-circle"
+                                  style={{
+                                    width: "6px",
+                                    height: "6px",
+                                    backgroundColor: "#c5a059",
+                                  }}
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-              <div className="d-flex justify-content-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setCatOpen(false);
-                    setErrors({ title: false, content: false });
-                  }}
-                  className="btn btn-sm btn-glass-subtle px-3"
+                {/* Input Kronologi/Detail dengan Efek Merah & Getar jika kosong */}
+                <motion.div
+                  key={`content-${shakeTick}`}
+                  animate={
+                    errors.content
+                      ? { x: [0, -7, 7, -5, 5, -2, 2, 0] }
+                      : { x: 0 }
+                  }
+                  transition={{ duration: 0.38 }}
                 >
-                  Batal
-                </button>
-                <button type="submit" className="btn btn-sm btn-sogan px-3">
-                  Terbitkan Utas
-                </button>
-              </div>
-            </motion.form>
+                  <textarea
+                    rows={3}
+                    value={content}
+                    onChange={(e) => {
+                      setContent(e.target.value);
+                      if (errors.content)
+                        setErrors({ ...errors, content: false });
+                    }}
+                    placeholder="Jelaskan kronologi error atau detail diskusi..."
+                    className="form-control form-control-sm"
+                    style={{
+                      background: errors.content
+                        ? "rgba(185, 56, 56, 0.16)"
+                        : "rgba(14, 12, 10, 0.7)",
+                      borderColor: errors.content
+                        ? "#d9534f"
+                        : "rgba(197, 160, 89, 0.22)",
+                      color: "#f2ece1",
+                      transition: "border-color 0.2s ease, background-color 0.2s ease",
+                    }}
+                  />
+                </motion.div>
+
+                <div className="d-flex justify-content-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      setCatOpen(false);
+                      setErrors({ title: false, content: false });
+                    }}
+                    className="btn btn-sm btn-glass-subtle px-3"
+                  >
+                    Batal
+                  </button>
+                  <button type="submit" className="btn btn-sm btn-sogan px-3">
+                    Terbitkan Utas
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           )}
         </AnimatePresence>
 
