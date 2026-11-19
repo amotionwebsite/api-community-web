@@ -140,15 +140,15 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Glass Header (Tidak sticky agar ikut tergulir saat scroll) */}
+      {/* Top Glass Header (Tetap menempel di atas saat halaman digulir ke bawah) */}
       <header
-        className="border-bottom"
+        className="position-sticky top-0 border-bottom"
         style={{
-          backgroundColor: "rgba(14, 12, 10, 0.78)",
+          backgroundColor: "rgba(14, 12, 10, 0.85)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
           borderColor: "rgba(197, 160, 89, 0.14)",
-          zIndex: 40,
+          zIndex: 45,
         }}
       >
         <div
@@ -157,7 +157,7 @@ export default function Navbar() {
         >
           <Link
             href="/"
-            className="d-flex align-items-center gap-2.5 text-decoration-none"
+            className="d-flex align-items-center gap-1.5 text-decoration-none"
           >
             <img
               src="/logoapi.png"
@@ -171,7 +171,7 @@ export default function Navbar() {
                 fontFamily: "var(--font-utendo), sans-serif",
                 fontWeight: 700,
                 color: "#f2ece1",
-                fontSize: "0.95rem",
+                fontSize: "0.94rem",
                 letterSpacing: "-0.01em",
                 lineHeight: 1.2,
               }}
