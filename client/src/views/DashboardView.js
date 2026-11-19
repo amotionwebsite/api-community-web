@@ -85,7 +85,7 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan dengan Banner Memanjang, Blur Halus & Judul Menimpa Area Blur */}
+        {/* 1. Hero Sambutan dengan Banner Memanjang & Blur Tipis Halus di Bawah agar Logo Tajam */}
         <motion.section
           initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
           animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
@@ -106,35 +106,35 @@ export default function DashboardView() {
               className="w-100 h-100 object-fit-cover"
             />
 
-            {/* Lapisan Blur Halus Bertahap (Masking lembut agar tidak kaku) */}
+            {/* Blur tipis dan halus hanya di bagian paling bawah agar logo-logo banner tetap jelas */}
             <div
               className="position-absolute bottom-0 start-0 w-100"
               style={{
-                height: "130px",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
+                height: "66px",
+                backdropFilter: "blur(5px)",
+                WebkitBackdropFilter: "blur(5px)",
                 maskImage:
-                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 100%)",
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0) 100%)",
                 WebkitMaskImage:
-                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 100%)",
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0) 100%)",
                 pointerEvents: "none",
                 zIndex: 1,
               }}
             />
 
-            {/* Lapisan Gradasi Gelap Halus Menyatu ke Dasar Kapsul */}
+            {/* Lapisan Fade Gelap Halus Menyatu ke Dasar Kapsul */}
             <div
               className="position-absolute bottom-0 start-0 w-100"
               style={{
-                height: "136px",
+                height: "74px",
                 background:
-                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.88) 32%, rgba(21, 18, 15, 0.45) 68%, rgba(21, 18, 15, 0) 100%)",
+                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.78) 34%, rgba(21, 18, 15, 0.25) 70%, rgba(21, 18, 15, 0) 100%)",
                 pointerEvents: "none",
                 zIndex: 2,
               }}
             />
 
-            {/* Judul Selamat Datang Tajam Menimpa Area Blur Bawah Banner */}
+            {/* Judul Selamat Datang Tajam Menimpa Bagian Bawah Banner */}
             <div
               className="position-absolute bottom-0 start-0 w-100 px-4 pb-1"
               style={{ zIndex: 3 }}
@@ -147,7 +147,7 @@ export default function DashboardView() {
                   fontFamily: "var(--font-coolvetica), sans-serif",
                   color: "#f2ece1",
                   lineHeight: 1.24,
-                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.55)",
+                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.65)",
                 }}
                 className="h3 mb-0"
               >

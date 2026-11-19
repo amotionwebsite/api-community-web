@@ -242,7 +242,7 @@ export default function Navbar() {
                 })}
               </nav>
 
-              {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) */}
+              {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) - Font Tommy Medium */}
               <div className="d-flex align-items-center gap-2">
                 {user ? (
                   <div className="d-flex align-items-center gap-1.5">
@@ -278,7 +278,7 @@ export default function Navbar() {
                       WebkitBackdropFilter: "blur(20px) saturate(150%)",
                       border: "1px solid rgba(197, 160, 89, 0.34)",
                       boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
-                      fontFamily: "var(--font-body), sans-serif",
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
                       fontSize: "0.74rem",
                     }}
                   >
@@ -288,7 +288,6 @@ export default function Navbar() {
                       style={{
                         backgroundColor: "rgba(52, 48, 43, 0.55)",
                         color: "#e8e2d9",
-                        fontWeight: 500,
                       }}
                     >
                       Daftar
@@ -300,7 +299,6 @@ export default function Navbar() {
                         background:
                           "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
                         color: "#120f0c",
-                        fontWeight: 600,
                       }}
                     >
                       Masuk
