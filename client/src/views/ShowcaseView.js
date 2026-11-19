@@ -1,9 +1,91 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { GithubLogo } from "@phosphor-icons/react";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { CaretDown, ImageSquare, X } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
+
+const TECH_CATALOG = [
+  // Frontend & UI
+  { name: "HTML5", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
+  { name: "CSS3", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" },
+  { name: "JavaScript", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" },
+  { name: "TypeScript", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" },
+  { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
+  { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" },
+  { name: "Vue.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg" },
+  { name: "Nuxt.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nuxtjs/nuxtjs-original.svg" },
+  { name: "Svelte", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg" },
+  { name: "Angular", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg" },
+  { name: "Vite", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" },
+  { name: "Tailwind CSS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" },
+  { name: "Bootstrap", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" },
+  { name: "Sass", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sass/sass-original.svg" },
+  { name: "Framer Motion", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/framermotion/framermotion-original.svg" },
+  // Backend & Runtime
+  { name: "Node.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
+  { name: "Express.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" },
+  { name: "NestJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg" },
+  { name: "Bun", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg" },
+  { name: "Deno", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/denojs/denojs-original.svg" },
+  { name: "Python", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+  { name: "Django", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg" },
+  { name: "Flask", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flask/flask-original.svg" },
+  { name: "FastAPI", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg" },
+  { name: "PHP", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" },
+  { name: "Laravel", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" },
+  { name: "Go", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original-wordmark.svg" },
+  { name: "Rust", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" },
+  { name: "Java", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" },
+  { name: "Spring Boot", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg" },
+  { name: "C", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" },
+  { name: "C++", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" },
+  { name: "C#", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" },
+  { name: ".NET", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dot-net/dot-net-original.svg" },
+  { name: "Ruby", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg" },
+  { name: "GraphQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" },
+  { name: "Socket.io", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg" },
+  // Mobile & Game
+  { name: "React Native", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
+  { name: "Flutter", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+  { name: "Dart", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" },
+  { name: "Kotlin", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg" },
+  { name: "Swift", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
+  { name: "Android", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/android/android-original.svg" },
+  { name: "Unity", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/unity/unity-original.svg" },
+  // Database & BaaS
+  { name: "MongoDB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" },
+  { name: "PostgreSQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" },
+  { name: "MySQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
+  { name: "SQLite", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" },
+  { name: "Redis", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg" },
+  { name: "Prisma", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg" },
+  { name: "Supabase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg" },
+  { name: "Firebase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg" },
+  // DevOps, CLI & Tools
+  { name: "Docker", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" },
+  { name: "Linux", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" },
+  { name: "Bash", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" },
+  { name: "Termux", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" },
+  { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" },
+  { name: "Nginx", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg" },
+  { name: "Vercel", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg" },
+  { name: "Railway", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/railway/railway-original.svg" },
+  { name: "Cloudflare", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cloudflare/cloudflare-original.svg" },
+  { name: "Baileys", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
+  { name: "PM2", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
+  { name: "Figma", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" },
+];
+
+const getTechLogo = (name) => {
+  const found = TECH_CATALOG.find(
+    (t) => t.name.toLowerCase() === name.toLowerCase()
+  );
+  return (
+    found?.logo ||
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/devicon/devicon-original.svg"
+  );
+};
 
 const PlusSvg = ({ size = 16 }) => (
   <svg
@@ -64,8 +146,8 @@ const INITIAL_PROJECTS = [
     author: "jason_franklin",
     desc: "Platform komunitas dan streaming terpadu dengan ruang Circle, Reels, dan pemutar musik tersinkronisasi.",
     stack: ["Next.js", "Node.js", "MongoDB"],
+    bannerUrl: "",
     demoUrl: "https://api-community-web.vercel.app",
-    repoUrl: "https://github.com/amotionwebsite",
     applause: 24,
   },
   {
@@ -74,8 +156,8 @@ const INITIAL_PROJECTS = [
     author: "apigroup_official",
     desc: "Otomasi moderasi grup developer berbasis Baileys & PM2 yang ringan dijalankan langsung di Termux.",
     stack: ["Node.js", "Baileys", "Termux"],
+    bannerUrl: "",
     demoUrl: "https://discord.gg/7A5qtTpYT",
-    repoUrl: "https://github.com/amotionwebsite",
     applause: 19,
   },
 ];
@@ -84,10 +166,15 @@ export default function ShowcaseView() {
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
   const [likedIds, setLikedIds] = useState([]);
   const [showForm, setShowForm] = useState(false);
+
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [stack, setStack] = useState("");
+  const [selectedStack, setSelectedStack] = useState([]);
+  const [techOpen, setTechOpen] = useState(false);
+  const [techSearch, setTechSearch] = useState("");
   const [demoUrl, setDemoUrl] = useState("");
+  const [bannerUrl, setBannerUrl] = useState("");
+  const fileInputRef = useRef(null);
 
   const toggleApplause = (id) => {
     const liked = likedIds.includes(id);
@@ -99,6 +186,26 @@ export default function ShowcaseView() {
     );
   };
 
+  const toggleTech = (techName) => {
+    if (selectedStack.includes(techName)) {
+      setSelectedStack(selectedStack.filter((t) => t !== techName));
+    } else {
+      setSelectedStack([...selectedStack, techName]);
+    }
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setBannerUrl(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim() || !desc.trim()) return;
@@ -108,22 +215,26 @@ export default function ShowcaseView() {
         title: title.trim(),
         author: "builder_api",
         desc: desc.trim(),
-        stack: stack
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-        demoUrl: demoUrl.trim() || "https://github.com/amotionwebsite",
-        repoUrl: "https://github.com/amotionwebsite",
+        stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
+        bannerUrl,
+        demoUrl: demoUrl.trim() || "https://api-community-web.vercel.app",
         applause: 1,
       },
       ...projects,
     ]);
     setTitle("");
     setDesc("");
-    setStack("");
+    setSelectedStack([]);
+    setTechSearch("");
+    setTechOpen(false);
     setDemoUrl("");
+    setBannerUrl("");
     setShowForm(false);
   };
+
+  const filteredTech = TECH_CATALOG.filter((t) =>
+    t.name.toLowerCase().includes(techSearch.toLowerCase())
+  );
 
   return (
     <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
@@ -147,7 +258,10 @@ export default function ShowcaseView() {
           </div>
           <button
             type="button"
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => {
+              setShowForm(!showForm);
+              setTechOpen(false);
+            }}
             className="btn btn-sm btn-sogan px-3 py-1.5 d-inline-flex align-items-center gap-1"
           >
             <PlusSvg size={16} />
@@ -155,10 +269,11 @@ export default function ShowcaseView() {
           </button>
         </div>
 
+        {/* Form Rilis Karya */}
         {showForm && (
           <form
             onSubmit={handleSubmit}
-            className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2"
+            className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
           >
             <input
               type="text"
@@ -173,6 +288,7 @@ export default function ShowcaseView() {
                 color: "#f2ece1",
               }}
             />
+
             <textarea
               rows={2}
               required
@@ -186,40 +302,200 @@ export default function ShowcaseView() {
                 color: "#f2ece1",
               }}
             />
-            <div className="row g-2">
-              <div className="col-6">
-                <input
-                  type="text"
-                  value={stack}
-                  onChange={(e) => setStack(e.target.value)}
-                  placeholder="Tech stack (misal: Next.js, Express)"
-                  className="form-control form-control-sm"
+
+            {/* Pemilih Tech Stack Lengkap dengan Logo Resmi */}
+            <div className="position-relative">
+              <button
+                type="button"
+                onClick={() => setTechOpen(!techOpen)}
+                className="form-control form-control-sm d-flex align-items-center justify-content-between text-start"
+                style={{
+                  background: "rgba(14,12,10,0.7)",
+                  borderColor: techOpen ? "#c5a059" : "rgba(197,160,89,0.22)",
+                  color: selectedStack.length > 0 ? "#f2ece1" : "#8f8578",
+                  minHeight: "34px",
+                }}
+              >
+                <div className="d-flex flex-wrap align-items-center gap-1">
+                  {selectedStack.length === 0 ? (
+                    <span>Pilih Tech Stack (Python, Next.js, Node.js, dll)...</span>
+                  ) : (
+                    selectedStack.map((techName) => (
+                      <span
+                        key={techName}
+                        className="px-2 py-0.5 rounded-pill d-inline-flex align-items-center gap-1"
+                        style={{
+                          fontSize: "0.7rem",
+                          background: "rgba(118, 168, 130, 0.16)",
+                          border: "1px solid rgba(118, 168, 130, 0.3)",
+                          color: "#9fd0aa",
+                        }}
+                      >
+                        <img
+                          src={getTechLogo(techName)}
+                          alt={techName}
+                          width={12}
+                          height={12}
+                          className="object-fit-contain"
+                        />
+                        <span>{techName}</span>
+                      </span>
+                    ))
+                  )}
+                </div>
+                <CaretDown
+                  size={14}
+                  className="flex-shrink-0 ms-1"
                   style={{
-                    background: "rgba(14,12,10,0.7)",
-                    borderColor: "rgba(197,160,89,0.22)",
-                    color: "#f2ece1",
+                    color: "#c5a059",
+                    transform: techOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.2s ease",
                   }}
                 />
-              </div>
-              <div className="col-6">
-                <input
-                  type="url"
-                  value={demoUrl}
-                  onChange={(e) => setDemoUrl(e.target.value)}
-                  placeholder="Link demo / GitHub..."
-                  className="form-control form-control-sm"
-                  style={{
-                    background: "rgba(14,12,10,0.7)",
-                    borderColor: "rgba(197,160,89,0.22)",
-                    color: "#f2ece1",
-                  }}
-                />
-              </div>
+              </button>
+
+              <AnimatePresence>
+                {techOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18 }}
+                    className="position-absolute start-0 w-100 mt-1 p-2 rounded-3"
+                    style={{
+                      backgroundColor: "#161310",
+                      border: "1px solid rgba(197, 160, 89, 0.32)",
+                      boxShadow: "0 16px 32px rgba(0, 0, 0, 0.85)",
+                      zIndex: 35,
+                    }}
+                  >
+                    <input
+                      type="text"
+                      value={techSearch}
+                      onChange={(e) => setTechSearch(e.target.value)}
+                      placeholder="Cari bahasa, framework, database, atau tools..."
+                      className="form-control form-control-sm mb-2"
+                      style={{
+                        background: "rgba(10, 9, 8, 0.85)",
+                        borderColor: "rgba(197, 160, 89, 0.2)",
+                        color: "#f2ece1",
+                        fontSize: "0.76rem",
+                      }}
+                    />
+
+                    <div
+                      className="d-flex flex-wrap gap-1.5 overflow-auto pe-1"
+                      style={{ maxHeight: "190px" }}
+                    >
+                      {filteredTech.map((tech) => {
+                        const active = selectedStack.includes(tech.name);
+                        return (
+                          <button
+                            key={tech.name}
+                            type="button"
+                            onClick={() => toggleTech(tech.name)}
+                            className="btn btn-sm px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+                            style={{
+                              fontSize: "0.72rem",
+                              backgroundColor: active
+                                ? "rgba(197, 160, 89, 0.2)"
+                                : "rgba(255, 255, 255, 0.04)",
+                              border: active
+                                ? "1px solid #c5a059"
+                                : "1px solid rgba(255, 255, 255, 0.08)",
+                              color: active ? "#f2ece1" : "#b8ad9e",
+                            }}
+                          >
+                            <img
+                              src={tech.logo}
+                              alt={tech.name}
+                              width={14}
+                              height={14}
+                              className="object-fit-contain"
+                            />
+                            <span>{tech.name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+
+            {/* Link Karya (Dipindah ke bawah Tech Stack) */}
+            <input
+              type="url"
+              value={demoUrl}
+              onChange={(e) => setDemoUrl(e.target.value)}
+              placeholder="Link Karya..."
+              className="form-control form-control-sm"
+              style={{
+                background: "rgba(14,12,10,0.7)",
+                borderColor: "rgba(197,160,89,0.22)",
+                color: "#f2ece1",
+              }}
+            />
+
+            {/* Upload Gambar / Banner Karya (Opsional) */}
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleBannerChange}
+                className="d-none"
+              />
+              {!bannerUrl ? (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-100 btn btn-sm btn-glass-subtle py-2 d-flex align-items-center justify-content-center gap-1.5"
+                  style={{
+                    fontSize: "0.76rem",
+                    borderStyle: "dashed",
+                    borderColor: "rgba(197, 160, 89, 0.28)",
+                    color: "#b8ad9e",
+                  }}
+                >
+                  <ImageSquare size={16} style={{ color: "#c5a059" }} />
+                  <span>Unggah Gambar / Banner Karya (Opsional)</span>
+                </button>
+              ) : (
+                <div className="position-relative rounded-3 overflow-hidden border border-secondary-subtle">
+                  <img
+                    src={bannerUrl}
+                    alt="Pratinjau Banner Karya"
+                    className="w-100 object-fit-cover"
+                    style={{ height: "130px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBannerUrl("");
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="btn btn-sm position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: "rgba(12, 10, 9, 0.82)",
+                      color: "#f2ece1",
+                      border: "1px solid rgba(197, 160, 89, 0.35)",
+                    }}
+                    title="Hapus banner"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="d-flex justify-content-end gap-2 mt-1">
               <button
                 type="button"
-                onClick={() => setShowForm(false)}
+                onClick={() => {
+                  setShowForm(false);
+                  setTechOpen(false);
+                }}
                 className="btn btn-sm btn-glass-subtle px-3"
               >
                 Batal
@@ -231,6 +507,7 @@ export default function ShowcaseView() {
           </form>
         )}
 
+        {/* Daftar Kartu Karya */}
         <div className="d-flex flex-column gap-3 mb-4">
           {projects.map((p, idx) => {
             const liked = likedIds.includes(p.id);
@@ -242,36 +519,77 @@ export default function ShowcaseView() {
                 transition={{ duration: 0.35, delay: idx * 0.06 }}
                 className="smoked-glass smoked-glass-interactive p-3.5"
               >
-                <div className="d-flex align-items-start justify-content-between gap-2 mb-1.5">
-                  <div>
-                    <span style={{ fontSize: "0.74rem", color: "#c5a059" }}>
-                      Karya @{p.author}
-                    </span>
-                    <h2 className="h5 mb-0" style={{ color: "#f2ece1" }}>
-                      {p.title}
-                    </h2>
-                  </div>
-                  <div className="d-flex gap-1.5">
-                    <a
-                      href={p.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-glass-subtle px-2 py-1"
-                    >
-                      <GithubLogo size={16} />
-                    </a>
-                    <a
-                      href={p.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.75rem" }}
-                    >
-                      <span>Kunjungi</span>
-                      <VisitArrowSvg size={15} />
-                    </a>
-                  </div>
+                {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
+                <div className="d-flex align-items-center justify-content-between gap-2 mb-2.5">
+                  <span style={{ fontSize: "0.76rem", color: "#c5a059", fontWeight: 500 }}>
+                    Karya @{p.author}
+                  </span>
+                  <a
+                    href={p.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                    style={{ fontSize: "0.75rem" }}
+                  >
+                    <span>Kunjungi</span>
+                    <VisitArrowSvg size={15} />
+                  </a>
                 </div>
+
+                {/* Banner Karya + Efek Blur di Bawah Banner */}
+                <div
+                  className="position-relative rounded-3 overflow-hidden mb-3"
+                  style={{
+                    height: "156px",
+                    backgroundColor: "#14110e",
+                    border: "1px solid rgba(197, 160, 89, 0.16)",
+                  }}
+                >
+                  {p.bannerUrl ? (
+                    <img
+                      src={p.bannerUrl}
+                      alt={p.title}
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
+                      style={{
+                        background:
+                          "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.18), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-utendo), sans-serif",
+                          fontWeight: 700,
+                          fontSize: "1.1rem",
+                          color: "rgba(242, 236, 225, 0.22)",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {p.title}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Lapisan Blur Halus di Bagian Bawah Banner */}
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
+                    style={{
+                      height: "46px",
+                      background:
+                        "linear-gradient(to top, rgba(16, 13, 11, 0.94) 15%, rgba(16, 13, 11, 0) 100%)",
+                      backdropFilter: "blur(6px)",
+                      WebkitBackdropFilter: "blur(6px)",
+                    }}
+                  />
+                </div>
+
+                {/* Bagian Bawah Banner: Nama Karya & Deskripsi Karya */}
+                <h2 className="h5 mb-1" style={{ color: "#f2ece1" }}>
+                  {p.title}
+                </h2>
 
                 <p
                   className="mb-2.5"
@@ -280,12 +598,13 @@ export default function ShowcaseView() {
                   {p.desc}
                 </p>
 
+                {/* Kapsul Tech Stack dengan Logo Asli + Tombol Apresiasi */}
                 <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
                   <div className="d-flex flex-wrap gap-1.5">
                     {p.stack.map((tag) => (
                       <span
                         key={tag}
-                        className="px-2.5 py-0.5 rounded-pill"
+                        className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
                         style={{
                           fontSize: "0.7rem",
                           background: "rgba(118, 168, 130, 0.12)",
@@ -293,7 +612,14 @@ export default function ShowcaseView() {
                           color: "#9fd0aa",
                         }}
                       >
-                        {tag}
+                        <img
+                          src={getTechLogo(tag)}
+                          alt={tag}
+                          width={13}
+                          height={13}
+                          className="object-fit-contain"
+                        />
+                        <span>{tag}</span>
                       </span>
                     ))}
                   </div>

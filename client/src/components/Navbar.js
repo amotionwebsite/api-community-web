@@ -137,53 +137,190 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
+  const isDashboard = pathname.startsWith("/dashboard");
 
   return (
     <>
-      {/* Top Glass Header */}
-      <header
-        className="position-fixed top-0 start-0 w-100 border-bottom"
-        style={{
-          backgroundColor: "rgba(14, 12, 10, 0.88)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          borderColor: "rgba(197, 160, 89, 0.14)",
-          zIndex: 50,
-        }}
-      >
-        <div
-          className="container py-2 d-flex align-items-center justify-content-between gap-2"
-          style={{ maxWidth: "740px" }}
-        >
-          <Link
-            href="/"
-            className="d-flex align-items-center text-decoration-none"
+      {/* Top Glass Header: Muncul hanya saat di halaman /dashboard */}
+      {isDashboard ? (
+        <>
+          <header
+            className="position-fixed top-0 start-0 w-100 border-bottom"
+            style={{
+              backgroundColor: "rgba(14, 12, 10, 0.88)",
+              backdropFilter: "blur(18px)",
+              WebkitBackdropFilter: "blur(18px)",
+              borderColor: "rgba(197, 160, 89, 0.14)",
+              zIndex: 50,
+            }}
           >
-            <img
-              src="/logoapi.png"
-              alt="Anak Programmer Indonesia"
-              width={42}
-              height={42}
-              className="object-fit-contain flex-shrink-0"
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-utendo), sans-serif",
-                fontWeight: 700,
-                color: "#f2ece1",
-                fontSize: "0.92rem",
-                letterSpacing: "-0.01em",
-                lineHeight: 1.2,
-                marginLeft: "-6px",
-              }}
+            <div
+              className="container py-2 d-flex align-items-center justify-content-between gap-2"
+              style={{ maxWidth: "740px" }}
             >
-              Anak Programmer Indonesia
-            </span>
-          </Link>
+              <Link
+                href="/"
+                className="d-flex align-items-center text-decoration-none"
+              >
+                <img
+                  src="/logoapi.png"
+                  alt="Anak Programmer Indonesia"
+                  width={42}
+                  height={42}
+                  className="object-fit-contain flex-shrink-0"
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-utendo), sans-serif",
+                    fontWeight: 700,
+                    color: "#f2ece1",
+                    fontSize: "0.92rem",
+                    letterSpacing: "-0.01em",
+                    lineHeight: 1.2,
+                    marginLeft: "-6px",
+                  }}
+                >
+                  Anak Programmer Indonesia
+                </span>
+              </Link>
 
-          {/* Desktop Center Nav */}
+              {/* Desktop Center Nav */}
+              <nav
+                className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+                style={{
+                  backgroundColor: "rgba(16, 14, 11, 0.72)",
+                  backdropFilter: "blur(24px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(24px) saturate(160%)",
+                  border: "1px solid rgba(197, 160, 89, 0.22)",
+                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+                }}
+              >
+                {NAV_ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  const active =
+                    item.href === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
+                      style={{
+                        fontSize: "0.78rem",
+                        color: active ? "#f2ece1" : "#b8ad9e",
+                        fontWeight: active ? 600 : 400,
+                      }}
+                    >
+                      <motion.span
+                        animate={
+                          active
+                            ? { scale: [1, 1.2, 1.08], y: [0, -2, 0] }
+                            : { scale: 1, y: 0 }
+                        }
+                        transition={{ type: "spring", stiffness: 450, damping: 24 }}
+                        className="d-inline-flex align-items-center"
+                      >
+                        <Icon size={17} active={active} />
+                      </motion.span>
+                      <span>{item.label}</span>
+                      {active && (
+                        <motion.span
+                          layoutId="desktop-nav-dot"
+                          transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                          className="position-absolute bottom-0 start-50 translate-middle-x rounded-circle"
+                          style={{
+                            width: "4px",
+                            height: "4px",
+                            backgroundColor: "#c5a059",
+                          }}
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) */}
+              <div className="d-flex align-items-center gap-2">
+                {user ? (
+                  <div className="d-flex align-items-center gap-1.5">
+                    <span
+                      className="px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1"
+                      style={{
+                        background: "rgba(197, 160, 89, 0.14)",
+                        backdropFilter: "blur(18px)",
+                        WebkitBackdropFilter: "blur(18px)",
+                        border: "1px solid rgba(197, 160, 89, 0.25)",
+                        color: "#e6cfa3",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      <UserCircle weight="duotone" size={15} />
+                      <span>{user.username}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={logout}
+                      className="btn btn-sm btn-glass-subtle px-2 py-1"
+                      title="Keluar"
+                    >
+                      <SignOut weight="regular" size={15} />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
+                    style={{
+                      backgroundColor: "rgba(38, 35, 31, 0.65)",
+                      backdropFilter: "blur(20px) saturate(150%)",
+                      WebkitBackdropFilter: "blur(20px) saturate(150%)",
+                      border: "1px solid rgba(197, 160, 89, 0.34)",
+                      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
+                      fontFamily: "var(--font-body), sans-serif",
+                      fontSize: "0.74rem",
+                    }}
+                  >
+                    <Link
+                      href="/register"
+                      className="px-2.5 py-1 text-decoration-none"
+                      style={{
+                        backgroundColor: "rgba(52, 48, 43, 0.55)",
+                        color: "#e8e2d9",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Daftar
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="px-2.5 py-1 text-decoration-none"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
+                        color: "#120f0c",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Masuk
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
+
+          {/* Spacer khusus ketika header dashboard tampil */}
+          <div style={{ height: "58px" }} />
+        </>
+      ) : (
+        /* Desktop Center Nav mengambang saat di Feed, Forum, Karya, Petuah */
+        <div
+          className="d-none d-md-flex justify-content-center pt-3"
+          style={{ zIndex: 45 }}
+        >
           <nav
-            className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+            className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
             style={{
               backgroundColor: "rgba(16, 14, 11, 0.72)",
               backdropFilter: "blur(24px) saturate(160%)",
@@ -237,80 +374,10 @@ export default function Navbar() {
               );
             })}
           </nav>
-
-          {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) */}
-          <div className="d-flex align-items-center gap-2">
-            {user ? (
-              <div className="d-flex align-items-center gap-1.5">
-                <span
-                  className="px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1"
-                  style={{
-                    background: "rgba(197, 160, 89, 0.14)",
-                    backdropFilter: "blur(18px)",
-                    WebkitBackdropFilter: "blur(18px)",
-                    border: "1px solid rgba(197, 160, 89, 0.25)",
-                    color: "#e6cfa3",
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  <UserCircle weight="duotone" size={15} />
-                  <span>{user.username}</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="btn btn-sm btn-glass-subtle px-2 py-1"
-                  title="Keluar"
-                >
-                  <SignOut weight="regular" size={15} />
-                </button>
-              </div>
-            ) : (
-              <div
-                className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
-                style={{
-                  backgroundColor: "rgba(38, 35, 31, 0.65)",
-                  backdropFilter: "blur(20px) saturate(150%)",
-                  WebkitBackdropFilter: "blur(20px) saturate(150%)",
-                  border: "1px solid rgba(197, 160, 89, 0.34)",
-                  boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
-                  fontFamily: "var(--font-body), sans-serif",
-                  fontSize: "0.74rem",
-                }}
-              >
-                <Link
-                  href="/register"
-                  className="px-2.5 py-1 text-decoration-none"
-                  style={{
-                    backgroundColor: "rgba(52, 48, 43, 0.55)",
-                    color: "#e8e2d9",
-                    fontWeight: 500,
-                  }}
-                >
-                  Daftar
-                </Link>
-                <Link
-                  href="/login"
-                  className="px-2.5 py-1 text-decoration-none"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
-                    color: "#120f0c",
-                    fontWeight: 600,
-                  }}
-                >
-                  Masuk
-                </Link>
-              </div>
-            )}
-          </div>
         </div>
-      </header>
+      )}
 
-      {/* Spacer agar konten paling atas tidak tertutup header fixed */}
-      <div style={{ height: "58px" }} />
-
-      {/* Mobile Floating Glass Dock (Backdrop blur tebal agar teks di belakang tidak tembus) */}
+      {/* Mobile Floating Glass Dock */}
       <nav
         className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3 py-1.5 rounded-4 d-flex align-items-center gap-1"
         style={{
