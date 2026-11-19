@@ -108,6 +108,21 @@ const PlusSvg = ({ size = 21 }) => (
   </svg>
 );
 
+const SearchSvg = ({ size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="m17.176 15.762 3.652 3.652c.359.41.405 1.01 0 1.414-.404.405-1.004.359-1.414 0l-3.652-3.652c-1.145.85-2.399 1.459-3.814 1.702C5.871 19.921.72 14.327 2.272 8.355a8.5 8.5 0 0 1 1.979-3.618A8.55 8.55 0 0 1 7.68 2.478c6.112-2.146 12.292 3.095 11.198 9.47-.243 1.415-.852 2.669-1.702 3.814M9.938 4.025a6.5 6.5 0 0 0-3.844 1.697 6.5 6.5 0 0 0-1.727 2.622c-1.558 4.436 2.021 9.03 6.695 8.631a6.5 6.5 0 0 0 3.844-1.697 6.5 6.5 0 0 0 1.727-2.622c1.558-4.436-2.021-9.03-6.695-8.631"
+    />
+  </svg>
+);
+
 const VisitArrowSvg = ({ size = 15 }) => (
   <svg
     width={size}
@@ -619,19 +634,31 @@ export default function ShowcaseView() {
                           zIndex: 35,
                         }}
                       >
-                        <input
-                          type="text"
-                          value={techSearch}
-                          onChange={(e) => setTechSearch(e.target.value)}
-                          placeholder="Cari bahasa, framework, database, atau tools..."
-                          className="form-control form-control-sm mb-2"
-                          style={{
-                            background: "rgba(10, 9, 8, 0.85)",
-                            borderColor: "rgba(197, 160, 89, 0.2)",
-                            color: "#f2ece1",
-                            fontSize: "0.76rem",
-                          }}
-                        />
+                        <div className="input-group input-group-sm mb-2">
+                          <span
+                            className="input-group-text border-end-0"
+                            style={{
+                              background: "rgba(10, 9, 8, 0.85)",
+                              borderColor: "rgba(197, 160, 89, 0.2)",
+                              color: "#9a8f80",
+                            }}
+                          >
+                            <SearchSvg size={14} />
+                          </span>
+                          <input
+                            type="text"
+                            value={techSearch}
+                            onChange={(e) => setTechSearch(e.target.value)}
+                            placeholder="Cari bahasa, framework, database, atau tools..."
+                            className="form-control border-start-0 shadow-none"
+                            style={{
+                              background: "rgba(10, 9, 8, 0.85)",
+                              borderColor: "rgba(197, 160, 89, 0.2)",
+                              color: "#f2ece1",
+                              fontSize: "0.76rem",
+                            }}
+                          />
+                        </div>
 
                         <div
                           className="d-flex flex-wrap gap-1.5 overflow-auto pe-1"

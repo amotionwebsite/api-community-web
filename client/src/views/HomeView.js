@@ -16,6 +16,73 @@ const POST_TAGS = [
   "Rilis Karya",
 ];
 
+const getCategoryBadgeStyle = (cat, isSelected = true) => {
+  const lower = (cat || "").toLowerCase();
+  if (lower.includes("bug") || lower.includes("error")) {
+    return isSelected
+      ? {
+          backgroundColor: "rgba(217, 83, 79, 0.2)",
+          border: "1px solid rgba(217, 83, 79, 0.45)",
+          color: "#f28b82",
+        }
+      : {
+          backgroundColor: "rgba(217, 83, 79, 0.08)",
+          border: "1px solid rgba(217, 83, 79, 0.22)",
+          color: "#e07a74",
+        };
+  }
+  if (lower.includes("workflow")) {
+    return isSelected
+      ? {
+          backgroundColor: "rgba(118, 168, 130, 0.2)",
+          border: "1px solid rgba(118, 168, 130, 0.42)",
+          color: "#9fd0aa",
+        }
+      : {
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid rgba(255, 255, 255, 0.06)",
+          color: "#8f8578",
+        };
+  }
+  if (lower.includes("tips")) {
+    return isSelected
+      ? {
+          backgroundColor: "rgba(114, 159, 207, 0.18)",
+          border: "1px solid rgba(114, 159, 207, 0.4)",
+          color: "#9ec5f0",
+        }
+      : {
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid rgba(255, 255, 255, 0.06)",
+          color: "#8f8578",
+        };
+  }
+  if (lower.includes("rilis")) {
+    return isSelected
+      ? {
+          backgroundColor: "rgba(184, 107, 67, 0.2)",
+          border: "1px solid rgba(184, 107, 67, 0.45)",
+          color: "#e8a882",
+        }
+      : {
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid rgba(255, 255, 255, 0.06)",
+          color: "#8f8578",
+        };
+  }
+  return isSelected
+    ? {
+        backgroundColor: "rgba(197, 160, 89, 0.18)",
+        border: "1px solid rgba(197, 160, 89, 0.45)",
+        color: "#e6cfa3",
+      }
+    : {
+        backgroundColor: "rgba(255, 255, 255, 0.03)",
+        border: "1px solid rgba(255, 255, 255, 0.06)",
+        color: "#8f8578",
+      };
+};
+
 const UpvoteSvg = ({ size = 16, active = false }) => (
   <svg
     width={size}
@@ -55,6 +122,28 @@ const ReplySvg = ({ size = 16, active = false }) => (
       <path
         fill="currentColor"
         d="m21.319 19.142.39 1.326c.101.451-.046.913-.464 1.151a1 1 0 0 1-.513.131l-.264-.041-1.326-.39a5.55 5.55 0 0 1-2.582.679c-3.528.083-6.123-3.218-5.443-6.624a5.4 5.4 0 0 1 1.335-2.596c3.4-3.645 9.461-1.311 9.547 3.668a5.4 5.4 0 0 1-.68 2.696m-2.043.134c-.111-.735.257-.897.5-1.545.192-.513.261-1.07.202-1.614-.304-2.816-3.721-4.112-5.822-2.215-2.222 2.007-1.019 5.754 1.961 6.076a3.5 3.5 0 0 0 1.614-.202c.648-.243.81-.611 1.545-.5M4.921 18.079l1.34-.394.276-.041c.401-.002.687.263 1.018.451l.477.246q.491.23 1.012.381l.532.132c.569.118 1.12.095 1.36.732l.059.254c.026.263-.055.529-.222.733a1 1 0 0 1-.675.36c-.231.023-.762-.087-.887-.112a8.5 8.5 0 0 1-2.814-1.091l-2.67.785c-.803.179-1.421-.439-1.242-1.242l.786-2.671a8.6 8.6 0 0 1-1.144-3.091c-.668-4.12 1.501-8.123 5.334-9.787 3.862-1.677 8.382-.359 10.843 3.018.277.379.517.784.731 1.201.262.512.582 1.102.196 1.64a1 1 0 0 1-1.166.352c-.484-.182-.59-.639-.801-1.062l-.265-.48a7 7 0 0 0-1-1.292c-2.126-2.169-5.516-2.718-8.215-1.32-2.69 1.394-4.198 4.446-3.679 7.43a7 7 0 0 0 .519 1.68l.261.517c.191.341.474.642.471 1.056l-.041.275Z"
+      />
+    )}
+  </svg>
+);
+
+const CopySvg = ({ size = 14, copied = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {copied ? (
+      <path
+        fill="currentColor"
+        d="M15.324 7.026C16.308 7.186 16.961 8.031 17 9v11c-.022.535-.202 1.03-.586 1.414s-.879.564-1.414.586H4c-.535-.022-1.03-.202-1.414-.586S2.022 20.535 2 20V9c.046-1.146.854-1.954 2-2h11ZM18 17v-2h2V4H9v2H7V4c.026-.641.293-1.229.819-1.614C8.17 2.129 8.57 2.017 9 2h11c.535.022 1.03.202 1.414.586S21.978 3.465 22 4v11c-.022.535-.202 1.03-.586 1.414s-.879.564-1.414.586Z"
+      />
+    ) : (
+      <path
+        fill="currentColor"
+        d="M17 20.057c-.063 1.1-.843 1.88-1.943 1.943H3.943c-.445-.026-.846-.153-1.198-.435-.47-.377-.711-.915-.745-1.508V8.943c.026-.445.153-.846.435-1.198.377-.47.915-.711 1.508-.745h11.114c1.1.063 1.88.843 1.943 1.943ZM4.006 9.006v10.988h10.988V9.006ZM18 17v-2l1.994-.006V4.006H9.006L9 6H7V3.943c.034-.593.275-1.131.745-1.508.352-.282.753-.409 1.198-.435h11.114c.445.026.846.153 1.198.435.47.377.711.915.745 1.508v11.114c-.026.445-.153.846-.435 1.198-.377.47-.915.711-1.508.745Z"
       />
     )}
   </svg>
@@ -210,7 +299,6 @@ export default function HomeView() {
       category: selectedTag,
       author: user?.username || "pegiat_kode",
       time: "Baru saja",
-      solved: false,
       excerpt: contentClean,
       content: contentClean,
       code: codeSnippet.trim() || null,
@@ -232,7 +320,6 @@ export default function HomeView() {
   };
 
   const visibleThreads = threads.filter((t) => {
-    if (filter === "solved") return t.solved;
     if (filter === "code") return Boolean(t.code || t.id === "1");
     return true;
   });
@@ -247,7 +334,6 @@ export default function HomeView() {
           {[
             { id: "semua", label: "Semua Feed" },
             { id: "code", label: "Dengan Kode" },
-            { id: "solved", label: "Terpecahkan" },
           ].map((tab) => {
             const active = filter === tab.id;
             return (
@@ -279,6 +365,8 @@ export default function HomeView() {
           {visibleThreads.map((item, index) => {
             const upvoted = upvotedIds.includes(item.id);
             const replyActive = activeReplyId === item.id;
+            const isCopied = copiedId === `code-${item.id}`;
+            const badgeStyle = getCategoryBadgeStyle(item.category, true);
             const snippet =
               item.code ||
               (item.id === "1"
@@ -330,25 +418,13 @@ export default function HomeView() {
                         <span
                           className="px-2 py-0.5 rounded-pill"
                           style={{
+                            fontFamily: "var(--font-tommy-medium), sans-serif",
                             fontSize: "0.68rem",
-                            background: "rgba(197, 160, 89, 0.1)",
-                            color: "#c5a059",
+                            ...badgeStyle,
                           }}
                         >
                           {item.category}
                         </span>
-                        {item.solved && (
-                          <span
-                            className="px-2 py-0.5 rounded-pill"
-                            style={{
-                              fontSize: "0.68rem",
-                              background: "rgba(118, 168, 130, 0.14)",
-                              color: "#8fc29b",
-                            }}
-                          >
-                            Terpecahkan
-                          </span>
-                        )}
                       </div>
                       <span
                         className="flex-shrink-0"
@@ -364,7 +440,11 @@ export default function HomeView() {
                     >
                       <h2
                         className="h6 mb-1 text-break"
-                        style={{ color: "#f2ece1", lineHeight: 1.4 }}
+                        style={{
+                          fontFamily: "var(--font-tommy-extra), sans-serif",
+                          color: "#f2ece1",
+                          lineHeight: 1.4,
+                        }}
                       >
                         {item.title}
                       </h2>
@@ -372,7 +452,11 @@ export default function HomeView() {
 
                     <p
                       className="mb-2 text-break"
-                      style={{ fontSize: "0.83rem", color: "#b8ad9e" }}
+                      style={{
+                        fontFamily: "var(--font-tommy-regular), sans-serif",
+                        fontSize: "0.83rem",
+                        color: "#b8ad9e",
+                      }}
                     >
                       {item.excerpt}
                     </p>
@@ -423,10 +507,16 @@ export default function HomeView() {
                         <button
                           type="button"
                           onClick={() => handleCopy(snippet, `code-${item.id}`)}
-                          className="btn btn-sm btn-glass-subtle position-absolute top-0 end-0 m-1.5 px-2 py-0.5"
-                          style={{ fontSize: "0.68rem" }}
+                          title={isCopied ? "Tersalin" : "Salin kode"}
+                          className="btn btn-sm btn-glass-subtle position-absolute top-0 end-0 m-1.5 p-1.5 d-inline-flex align-items-center justify-content-center"
+                          style={{
+                            color: isCopied ? "#c5a059" : "#d8cfc2",
+                            borderColor: isCopied
+                              ? "rgba(197, 160, 89, 0.45)"
+                              : undefined,
+                          }}
                         >
-                          {copiedId === `code-${item.id}` ? "Disalin" : "Salin"}
+                          <CopySvg size={14} copied={isCopied} />
                         </button>
                       </div>
                     )}
@@ -700,6 +790,7 @@ export default function HomeView() {
                 <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
                   {POST_TAGS.map((tag) => {
                     const active = selectedTag === tag;
+                    const tagStyle = getCategoryBadgeStyle(tag, active);
                     return (
                       <button
                         key={tag}
@@ -707,16 +798,10 @@ export default function HomeView() {
                         onClick={() => setSelectedTag(tag)}
                         className="btn btn-sm rounded-pill px-2 py-0 flex-shrink-0"
                         style={{
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
                           fontSize: "0.67rem",
                           lineHeight: 1.55,
-                          backgroundColor: active
-                            ? "rgba(197, 160, 89, 0.18)"
-                            : "rgba(255, 255, 255, 0.03)",
-                          color: active ? "#e6cfa3" : "#8f8578",
-                          border: active
-                            ? "1px solid rgba(197, 160, 89, 0.45)"
-                            : "1px solid rgba(255, 255, 255, 0.06)",
-                          fontWeight: active ? 600 : 400,
+                          ...tagStyle,
                         }}
                       >
                         {tag}
