@@ -123,6 +123,65 @@ const VisitArrowSvg = ({ size = 15 }) => (
   </svg>
 );
 
+const EditSvg = ({ size = 16, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="currentColor"
+        d="M12.068 19H20c1.32.076 1.32 1.924 0 2H9.288l-.049.001H3.996a1.06 1.06 0 0 1-.625-.22c-.246-.197-.357-.473-.375-.78v-5.243c.022-.55.213-1.01.586-1.414L13.896 3.03c.526-.481 1.217-.705 1.921-.521.354.093.64.277.907.521l4.243 4.243c.778.851.778 1.977 0 2.828Z"
+      />
+    ) : (
+      <path
+        fill="currentColor"
+        d="M12.068 19H20c1.322.087 1.322 1.914 0 2H9.251l-.012.001H3.996c-.271-.018-.51-.097-.707-.293-.196-.197-.275-.436-.293-.707v-5.243a2.13 2.13 0 0 1 .586-1.414L13.896 3.03c.487-.45 1.135-.673 1.795-.545.394.077.74.274 1.033.545l4.243 4.243c.771.834.771 1.994 0 2.828Zm-7.067-4.24-.005 4.241 4.241-.005L19.541 8.687 15.31 4.456Z"
+      />
+    )}
+  </svg>
+);
+
+const ReplySvg = ({ size = 16, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="currentColor"
+        d="m21.321 19.148.386 1.311.04.226c.018.285-.093.567-.294.768-.27.27-.631.339-.994.254l-1.311-.386c-.669.327-1.332.573-2.08.65-3.445.353-6.371-2.554-6.043-6.001a5.52 5.52 0 0 1 1.414-3.18 5.53 5.53 0 0 1 3.016-1.691c3.374-.648 6.551 1.959 6.545 5.401-.002.952-.266 1.802-.679 2.648m-1.613-9.429c-.821-.346-1.633-.608-2.527-.688-3.871-.348-7.414 2.353-8.072 6.19a7.55 7.55 0 0 0 .401 4.004c.25.64.594 1.195.979 1.761-1.636-.159-2.656-.468-4.098-1.255l-2.65.78c-.802.188-1.44-.451-1.252-1.252l.78-2.649c-.681-1.244-1.129-2.471-1.241-3.896-.502-6.395 5.685-11.273 11.79-9.264a9 9 0 0 1 3.497 2.137c1.212 1.194 1.904 2.519 2.393 4.132"
+      />
+    ) : (
+      <path
+        fill="currentColor"
+        d="m21.319 19.142.39 1.326c.101.451-.046.913-.464 1.151a1 1 0 0 1-.513.131l-.264-.041-1.326-.39a5.55 5.55 0 0 1-2.582.679c-3.528.083-6.123-3.218-5.443-6.624a5.4 5.4 0 0 1 1.335-2.596c3.4-3.645 9.461-1.311 9.547 3.668a5.4 5.4 0 0 1-.68 2.696m-2.043.134c-.111-.735.257-.897.5-1.545.192-.513.261-1.07.202-1.614-.304-2.816-3.721-4.112-5.822-2.215-2.222 2.007-1.019 5.754 1.961 6.076a3.5 3.5 0 0 0 1.614-.202c.648-.243.81-.611 1.545-.5M4.921 18.079l1.34-.394.276-.041c.401-.002.687.263 1.018.451l.477.246q.491.23 1.012.381l.532.132c.569.118 1.12.095 1.36.732l.059.254c.026.263-.055.529-.222.733a1 1 0 0 1-.675.36c-.231.023-.762-.087-.887-.112a8.5 8.5 0 0 1-2.814-1.091l-2.67.785c-.803.179-1.421-.439-1.242-1.242l.786-2.671a8.6 8.6 0 0 1-1.144-3.091c-.668-4.12 1.501-8.123 5.334-9.787 3.862-1.677 8.382-.359 10.843 3.018.277.379.517.784.731 1.201.262.512.582 1.102.196 1.64a1 1 0 0 1-1.166.352c-.484-.182-.59-.639-.801-1.062l-.265-.48a7 7 0 0 0-1-1.292c-2.126-2.169-5.516-2.718-8.215-1.32-2.69 1.394-4.198 4.446-3.679 7.43a7 7 0 0 0 .519 1.68l.261.517c.191.341.474.642.471 1.056l-.041.275Z"
+      />
+    )}
+  </svg>
+);
+
+const SendSvg = ({ size = 14 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="m9.53 15.846.177-.139 5-5c.359-.409.405-1.009 0-1.414-.404-.405-1.004-.358-1.414 0l-5 5-.14.176-5.15-2.981c-.521-.34-.772-.956-.532-1.554.137-.342.401-.562.733-.703l15.611-5.647c.468-.144.954-.063 1.309.292s.435.841.291 1.309l-5.646 15.61c-.141.333-.361.597-.704.734-.597.24-1.213-.011-1.553-.532Z"
+    />
+  </svg>
+);
+
 const ApplauseSvg = ({ size = 17, active = false }) => (
   <svg
     width={size}
@@ -155,6 +214,9 @@ const INITIAL_PROJECTS = [
     bannerUrl: "",
     demoUrl: "https://api-community-web.vercel.app",
     applause: 24,
+    replies: [
+      { id: "r1", author: "rizky_dev", text: "UI glassmorphism-nya halus banget bang!" },
+    ],
     isNew: false,
   },
   {
@@ -166,6 +228,7 @@ const INITIAL_PROJECTS = [
     bannerUrl: "",
     demoUrl: "https://discord.gg/7A5qtTpYT",
     applause: 19,
+    replies: [],
     isNew: false,
   },
 ];
@@ -176,6 +239,10 @@ export default function ShowcaseView() {
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
   const [likedIds, setLikedIds] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  const [openReplyId, setOpenReplyId] = useState(null);
+  const [replyInputs, setReplyInputs] = useState({});
 
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -188,6 +255,37 @@ export default function ShowcaseView() {
   const [shakeTick, setShakeTick] = useState(0);
   const fileInputRef = useRef(null);
 
+  const resetFormState = () => {
+    setTitle("");
+    setDesc("");
+    setSelectedStack([]);
+    setTechSearch("");
+    setTechOpen(false);
+    setDemoUrl("");
+    setBannerUrl("");
+    setErrors({ title: false, desc: false });
+    setEditingId(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleStartEdit = (project) => {
+    if (editingId === project.id && showForm) {
+      setShowForm(false);
+      resetFormState();
+      return;
+    }
+    setEditingId(project.id);
+    setTitle(project.title);
+    setDesc(project.desc);
+    setSelectedStack(project.stack || []);
+    setDemoUrl(project.demoUrl || "");
+    setBannerUrl(project.bannerUrl || "");
+    setErrors({ title: false, desc: false });
+    setTechOpen(false);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const toggleApplause = (id) => {
     const liked = likedIds.includes(id);
     setLikedIds(liked ? likedIds.filter((x) => x !== id) : [...likedIds, id]);
@@ -196,6 +294,30 @@ export default function ShowcaseView() {
         p.id === id ? { ...p, applause: p.applause + (liked ? -1 : 1) } : p
       )
     );
+  };
+
+  const handleAddReply = (e, projectId) => {
+    e.preventDefault();
+    const text = (replyInputs[projectId] || "").trim();
+    if (!text) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === projectId
+          ? {
+              ...p,
+              replies: [
+                ...(p.replies || []),
+                {
+                  id: String(Date.now()),
+                  author: "member_api",
+                  text,
+                },
+              ],
+            }
+          : p
+      )
+    );
+    setReplyInputs((prev) => ({ ...prev, [projectId]: "" }));
   };
 
   const toggleTech = (techName) => {
@@ -229,6 +351,26 @@ export default function ShowcaseView() {
       return;
     }
 
+    if (editingId) {
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === editingId
+            ? {
+                ...p,
+                title: title.trim(),
+                desc: desc.trim(),
+                stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
+                bannerUrl,
+                demoUrl: demoUrl.trim() || "https://api-community-web.vercel.app",
+              }
+            : p
+        )
+      );
+      setShowForm(false);
+      resetFormState();
+      return;
+    }
+
     const newProject = {
       id: String(Date.now()),
       title: title.trim(),
@@ -238,18 +380,12 @@ export default function ShowcaseView() {
       bannerUrl,
       demoUrl: demoUrl.trim() || "https://api-community-web.vercel.app",
       applause: 1,
+      replies: [],
       isNew: true,
     };
 
-    setTechOpen(false);
     setShowForm(false);
-    setTitle("");
-    setDesc("");
-    setSelectedStack([]);
-    setTechSearch("");
-    setDemoUrl("");
-    setBannerUrl("");
-    setErrors({ title: false, desc: false });
+    resetFormState();
     setProjects((prev) => [newProject, ...prev]);
   };
 
@@ -282,9 +418,13 @@ export default function ShowcaseView() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.92 }}
             onClick={() => {
-              setShowForm(!showForm);
-              setTechOpen(false);
-              setErrors({ title: false, desc: false });
+              if (showForm) {
+                setShowForm(false);
+                resetFormState();
+              } else {
+                resetFormState();
+                setShowForm(true);
+              }
             }}
             title="Rilis Karya"
             className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
@@ -300,7 +440,7 @@ export default function ShowcaseView() {
           </motion.button>
         </div>
 
-        {/* Form Rilis Karya dengan Animasi Buka-Tutup Smooth */}
+        {/* Form Rilis / Edit Karya dengan Animasi Buka-Tutup Smooth */}
         <AnimatePresence initial={false}>
           {showForm && (
             <motion.div
@@ -326,6 +466,31 @@ export default function ShowcaseView() {
                 onSubmit={handleSubmit}
                 className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
               >
+                {editingId && (
+                  <div
+                    className="d-flex align-items-center justify-content-between px-2.5 py-1 rounded-2"
+                    style={{
+                      backgroundColor: "rgba(197, 160, 89, 0.12)",
+                      border: "1px solid rgba(197, 160, 89, 0.28)",
+                      fontSize: "0.74rem",
+                      color: "#e6cfa3",
+                    }}
+                  >
+                    <span>Mode Edit Karya</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForm(false);
+                        resetFormState();
+                      }}
+                      className="btn btn-sm p-0 border-0 text-warning"
+                      style={{ fontSize: "0.72rem" }}
+                    >
+                      Batal Edit
+                    </button>
+                  </div>
+                )}
+
                 <motion.div
                   key={`proj-title-${shakeTick}`}
                   animate={
@@ -579,8 +744,7 @@ export default function ShowcaseView() {
                     type="button"
                     onClick={() => {
                       setShowForm(false);
-                      setTechOpen(false);
-                      setErrors({ title: false, desc: false });
+                      resetFormState();
                     }}
                     className="btn btn-sm btn-glass-subtle px-3"
                   >
@@ -592,7 +756,7 @@ export default function ShowcaseView() {
                     whileTap={{ scale: 0.95 }}
                     className="btn btn-sm btn-sogan px-3"
                   >
-                    Publish
+                    {editingId ? "Simpan Perubahan" : "Publish"}
                   </motion.button>
                 </div>
               </form>
@@ -605,6 +769,10 @@ export default function ShowcaseView() {
           <AnimatePresence initial={false}>
             {projects.map((p, idx) => {
               const liked = likedIds.includes(p.id);
+              const isEditingThis = editingId === p.id && showForm;
+              const isReplyOpen = openReplyId === p.id;
+              const replies = p.replies || [];
+
               return (
                 <motion.article
                   key={p.id}
@@ -665,7 +833,7 @@ export default function ShowcaseView() {
                     </a>
                   </div>
 
-                  {/* Banner Full-bleed dengan Gradasi Blur Bertahap */}
+                  {/* Banner Full-bleed + Tombol Edit di Pojok Kanan Atas Banner */}
                   <div
                     className="position-relative w-100 overflow-hidden"
                     style={{
@@ -673,6 +841,26 @@ export default function ShowcaseView() {
                       backgroundColor: "#15120f",
                     }}
                   >
+                    {/* Ikon Edit Pojok Kanan Atas Banner */}
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(p)}
+                      title="Edit Karya"
+                      className="btn btn-sm position-absolute top-0 end-0 m-2.5 rounded-circle p-1.5 d-flex align-items-center justify-content-center"
+                      style={{
+                        backgroundColor: isEditingThis
+                          ? "#c5a059"
+                          : "rgba(16, 13, 11, 0.78)",
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                        border: "1px solid rgba(197, 160, 89, 0.35)",
+                        color: isEditingThis ? "#120f0c" : "#f2ece1",
+                        zIndex: 4,
+                      }}
+                    >
+                      <EditSvg size={16} active={isEditingThis} />
+                    </button>
+
                     {p.bannerUrl ? (
                       <img
                         src={p.bannerUrl}
@@ -725,7 +913,7 @@ export default function ShowcaseView() {
                     />
                   </div>
 
-                  {/* Bagian Bawah Banner: Judul Proyek (Tommy Extra), Deskripsi (Tommy Regular), Tech Stack & Apresiasi */}
+                  {/* Bagian Bawah Banner: Judul Proyek, Deskripsi, Tech Stack, Apresiasi & Balasan */}
                   <div className="px-3.5 pb-3.5 pt-2 position-relative" style={{ zIndex: 2 }}>
                     <h2
                       className="h5 mb-1.5 text-break"
@@ -776,22 +964,131 @@ export default function ShowcaseView() {
                         ))}
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => toggleApplause(p.id)}
-                        className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
-                        style={{
-                          fontSize: "0.76rem",
-                          color: liked ? "#c5a059" : "#b8ad9e",
-                          borderColor: liked
-                            ? "rgba(197, 160, 89, 0.45)"
-                            : undefined,
-                        }}
-                      >
-                        <ApplauseSvg size={17} active={liked} />
-                        <span>{p.applause} Apresiasi</span>
-                      </button>
+                      <div className="d-inline-flex align-items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleApplause(p.id)}
+                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
+                          style={{
+                            fontSize: "0.76rem",
+                            color: liked ? "#c5a059" : "#b8ad9e",
+                            borderColor: liked
+                              ? "rgba(197, 160, 89, 0.45)"
+                              : undefined,
+                          }}
+                        >
+                          <ApplauseSvg size={17} active={liked} />
+                          <span>{p.applause} Apresiasi</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenReplyId(isReplyOpen ? null : p.id)
+                          }
+                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
+                          style={{
+                            fontSize: "0.76rem",
+                            color: isReplyOpen ? "#c5a059" : "#b8ad9e",
+                            borderColor: isReplyOpen
+                              ? "rgba(197, 160, 89, 0.45)"
+                              : undefined,
+                          }}
+                        >
+                          <ReplySvg size={16} active={isReplyOpen} />
+                          <span>{replies.length} Balasan</span>
+                        </button>
+                      </div>
                     </div>
+
+                    {/* Panel Balasan Karya */}
+                    <AnimatePresence>
+                      {isReplyOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.24, ease: SMOOTH_EASE }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="mt-3 pt-2.5 border-top d-flex flex-column gap-2"
+                            style={{ borderColor: "rgba(197, 160, 89, 0.14)" }}
+                          >
+                            {replies.length === 0 ? (
+                              <span
+                                style={{ fontSize: "0.75rem", color: "#8f8578" }}
+                              >
+                                Belum ada balasan. Beri masukan untuk karya ini!
+                              </span>
+                            ) : (
+                              replies.map((rep) => (
+                                <div
+                                  key={rep.id}
+                                  className="px-2.5 py-1.5 rounded-3"
+                                  style={{
+                                    backgroundColor: "rgba(12, 10, 9, 0.55)",
+                                    border: "1px solid rgba(197, 160, 89, 0.1)",
+                                  }}
+                                >
+                                  <span
+                                    className="d-block"
+                                    style={{
+                                      fontFamily: "var(--font-caviar), sans-serif",
+                                      fontSize: "0.72rem",
+                                      color: "#c5a059",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    @{rep.author}
+                                  </span>
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      fontSize: "0.78rem",
+                                      color: "#d8cfc2",
+                                    }}
+                                  >
+                                    {rep.text}
+                                  </p>
+                                </div>
+                              ))
+                            )}
+
+                            <form
+                              onSubmit={(e) => handleAddReply(e, p.id)}
+                              className="d-flex gap-1.5 mt-1"
+                            >
+                              <input
+                                type="text"
+                                value={replyInputs[p.id] || ""}
+                                onChange={(e) =>
+                                  setReplyInputs((prev) => ({
+                                    ...prev,
+                                    [p.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder="Tulis balasan atau masukan..."
+                                className="form-control form-control-sm"
+                                style={{
+                                  backgroundColor: "rgba(14, 12, 10, 0.72)",
+                                  borderColor: "rgba(197, 160, 89, 0.22)",
+                                  color: "#f2ece1",
+                                  fontSize: "0.76rem",
+                                }}
+                              />
+                              <button
+                                type="submit"
+                                className="btn btn-sm btn-sogan px-2.5 d-inline-flex align-items-center justify-content-center"
+                                title="Kirim balasan"
+                              >
+                                <SendSvg size={14} />
+                              </button>
+                            </form>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </motion.article>
               );
