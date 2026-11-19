@@ -13,7 +13,7 @@ import Navbar from "../components/Navbar";
 import { INITIAL_THREADS } from "../data/threads";
 import { useAuthStore } from "../store/useAuthStore";
 
-const PlusSvg = ({ size = 16 }) => (
+const PlusSvg = ({ size = 21 }) => (
   <svg
     width={size}
     height={size}
@@ -109,10 +109,11 @@ export default function ForumView() {
               setCatOpen(false);
               setErrors({ title: false, content: false });
             }}
-            className="btn btn-sm btn-sogan px-3 py-1.5 d-inline-flex align-items-center gap-1"
+            title="Buat Utas"
+            className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
+            style={{ width: "38px", height: "38px", padding: 0 }}
           >
-            <PlusSvg size={16} />
-            <span>Buat Utas</span>
+            <PlusSvg size={21} />
           </button>
         </div>
 

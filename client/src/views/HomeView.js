@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChatCircleText,
   ArrowFatUp,
-  CodeSimple,
+  Code,
   PaperPlaneTilt,
+  ImageSquare,
+  X,
 } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 import { INITIAL_THREADS } from "../data/threads";
@@ -21,7 +23,9 @@ export default function HomeView() {
   const [postText, setPostText] = useState("");
   const [codeSnippet, setCodeSnippet] = useState("");
   const [showCodeInput, setShowCodeInput] = useState(false);
+  const [postImage, setPostImage] = useState("");
   const [filter, setFilter] = useState("semua");
+  const fileInputRef = useRef(null);
 
   const handleCopy = async (text, id) => {
     try {
@@ -38,24 +42,40 @@ export default function HomeView() {
     setTimeout(() => setCopiedId(null), 1800);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPostImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleCreatePost = (e) => {
     e.preventDefault();
-    if (!postText.trim()) return;
+    if (!postText.trim() && !postImage) return;
+    const contentClean = postText.trim() || "Melampirkan gambar error / tangkapan layar.";
     const newItem = {
       id: String(Date.now()),
-      title: postText.trim(),
-      category: codeSnippet.trim() ? "Bug & Error" : "Diskusi Tech",
+      title: contentClean.slice(0, 72),
+      category: codeSnippet.trim() || postImage ? "Bug & Error" : "Diskusi Tech",
       author: user?.username || "pegiat_kode",
       time: "Baru saja",
       solved: false,
-      excerpt: postText.trim(),
-      content: postText.trim(),
+      excerpt: contentClean,
+      content: contentClean,
       code: codeSnippet.trim() || null,
+      image: postImage || null,
       comments: [],
     };
     setThreads([newItem, ...threads]);
     setPostText("");
     setCodeSnippet("");
+    setPostImage("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setShowCodeInput(false);
   };
 
@@ -76,124 +96,43 @@ export default function HomeView() {
       <Navbar />
 
       <main
-        className="container py-4 flex-grow-1 mb-4"
-        style={{ maxWidth: "740px" }}
+        className="container py-4 flex-grow-1"
+        style={{ maxWidth: "740px", paddingBottom: "190px" }}
       >
-        {/* Composer Postingan Baru */}
-        <motion.form
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          onSubmit={handleCreatePost}
-          className="smoked-glass p-3 mb-3"
-        >
-          <div className="d-flex gap-2.5">
-            <div
-              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-              style={{
-                width: "36px",
-                height: "36px",
-                background: "rgba(197, 160, 89, 0.14)",
-                border: "1px solid rgba(197, 160, 89, 0.3)",
-                color: "#c5a059",
-                fontWeight: 600,
-                fontSize: "0.85rem",
-              }}
-            >
-              {(user?.username?.[0] || "A").toUpperCase()}
-            </div>
-
-            <div className="flex-grow-1" style={{ minWidth: 0 }}>
-              <textarea
-                rows={2}
-                value={postText}
-                onChange={(e) => setPostText(e.target.value)}
-                placeholder="Tulis postingan baru, bagikan catatan ngoding, atau tanyakan error..."
-                className="form-control border-0 bg-transparent p-0 shadow-none"
-                style={{
-                  color: "#f2ece1",
-                  fontSize: "0.88rem",
-                  resize: "none",
-                }}
-              />
-
-              <AnimatePresence>
-                {showCodeInput && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-2 overflow-hidden"
-                  >
-                    <textarea
-                      rows={3}
-                      value={codeSnippet}
-                      onChange={(e) => setCodeSnippet(e.target.value)}
-                      placeholder="// Tempel potongan kode atau log error di sini..."
-                      className="form-control code-well p-2.5"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div
-                className="d-flex align-items-center justify-content-between pt-2 mt-2 border-top"
-                style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setShowCodeInput(!showCodeInput)}
-                  className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                  style={{
-                    fontSize: "0.74rem",
-                    color: showCodeInput ? "#c5a059" : "#b8ad9e",
-                  }}
-                >
-                  <CodeSimple weight="bold" size={15} />
-                  <span>{showCodeInput ? "Tutup Kode" : "Sisipkan Kode"}</span>
-                </button>
-
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1"
-                  style={{ fontSize: "0.76rem" }}
-                >
-                  <span>Terbitkan</span>
-                  <PaperPlaneTilt weight="fill" size={14} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.form>
-
-        {/* Filter Pill */}
-        <div className="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        {/* Filter Feed */}
+        <div className="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1">
           {[
             { id: "semua", label: "Semua Feed" },
             { id: "code", label: "Dengan Kode" },
             { id: "solved", label: "Terpecahkan" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setFilter(tab.id)}
-              className="btn btn-sm rounded-pill px-3 py-1"
-              style={{
-                fontSize: "0.76rem",
-                backgroundColor:
-                  filter === tab.id ? "#c5a059" : "rgba(25, 21, 18, 0.7)",
-                color: filter === tab.id ? "#120f0c" : "#b8ad9e",
-                border: "1px solid rgba(197, 160, 89, 0.2)",
-                fontWeight: filter === tab.id ? 600 : 400,
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
+          ].map((tab) => {
+            const active = filter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setFilter(tab.id)}
+                className="btn btn-sm rounded-pill px-3 py-1 flex-shrink-0"
+                style={{
+                  fontSize: "0.75rem",
+                  backgroundColor: active
+                    ? "#c5a059"
+                    : "rgba(255, 255, 255, 0.04)",
+                  color: active ? "#120f0c" : "#b8ad9e",
+                  border: active
+                    ? "1px solid #c5a059"
+                    : "1px solid rgba(197, 160, 89, 0.14)",
+                  fontWeight: active ? 600 : 400,
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Feed Diskusi */}
-        <div className="d-flex flex-column gap-2.5 mb-4">
+        {/* Stream Utas Komunitas */}
+        <div className="d-flex flex-column gap-3 mb-4">
           {visibleThreads.map((item, index) => {
             const upvoted = upvotedIds.includes(item.id);
             const snippet =
@@ -230,7 +169,7 @@ export default function HomeView() {
                     <div className="thread-spine flex-grow-1 my-1.5" />
                   </div>
 
-                  {/* Isi Postingan (minWidth: 0 mencegah overflow flex) */}
+                  {/* Isi Postingan */}
                   <div className="flex-grow-1" style={{ minWidth: 0 }}>
                     <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
                       <div className="d-flex align-items-center gap-1.5 flex-wrap">
@@ -246,7 +185,7 @@ export default function HomeView() {
                         <span
                           className="px-2 py-0.5 rounded-pill"
                           style={{
-                            fontSize: "0.66rem",
+                            fontSize: "0.68rem",
                             background: "rgba(197, 160, 89, 0.1)",
                             color: "#c5a059",
                           }}
@@ -257,7 +196,7 @@ export default function HomeView() {
                           <span
                             className="px-2 py-0.5 rounded-pill"
                             style={{
-                              fontSize: "0.66rem",
+                              fontSize: "0.68rem",
                               background: "rgba(118, 168, 130, 0.14)",
                               color: "#8fc29b",
                             }}
@@ -292,6 +231,23 @@ export default function HomeView() {
                     >
                       {item.excerpt}
                     </p>
+
+                    {item.image && (
+                      <div
+                        className="mb-2.5 rounded-3 overflow-hidden"
+                        style={{
+                          border: "1px solid rgba(197, 160, 89, 0.2)",
+                          backgroundColor: "#110e0c",
+                        }}
+                      >
+                        <img
+                          src={item.image}
+                          alt="Lampiran postingan"
+                          className="w-100 object-fit-cover"
+                          style={{ maxHeight: "240px" }}
+                        />
+                      </div>
+                    )}
 
                     {snippet && (
                       <div className="position-relative mb-2 w-100 overflow-hidden">
@@ -342,6 +298,154 @@ export default function HomeView() {
           })}
         </div>
       </main>
+
+      {/* Composer Postingan Baru di Bawah (Tepat di atas dock navigasi bawah) */}
+      <div
+        className="position-fixed start-0 w-100 px-3"
+        style={{ bottom: "76px", zIndex: 42 }}
+      >
+        <div className="container px-0" style={{ maxWidth: "740px" }}>
+          <motion.form
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            onSubmit={handleCreatePost}
+            className="p-2.5 rounded-4"
+            style={{
+              backgroundColor: "rgba(18, 15, 12, 0.86)",
+              backdropFilter: "blur(24px) saturate(160%)",
+              WebkitBackdropFilter: "blur(24px) saturate(160%)",
+              border: "1px solid rgba(197, 160, 89, 0.24)",
+              boxShadow: "0 10px 28px rgba(0, 0, 0, 0.65)",
+            }}
+          >
+            {/* Pratinjau Gambar Error / Lampiran jika diunggah */}
+            {postImage && (
+              <div
+                className="position-relative mb-2 rounded-3 overflow-hidden d-inline-block"
+                style={{ border: "1px solid rgba(197, 160, 89, 0.3)" }}
+              >
+                <img
+                  src={postImage}
+                  alt="Pratinjau gambar"
+                  className="object-fit-cover"
+                  style={{ maxHeight: "96px", maxWidth: "180px" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPostImage("");
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  className="btn btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0.5 d-flex align-items-center justify-content-center"
+                  style={{
+                    backgroundColor: "rgba(12, 10, 9, 0.85)",
+                    color: "#f2ece1",
+                    border: "1px solid rgba(197, 160, 89, 0.35)",
+                  }}
+                  title="Hapus gambar"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            )}
+
+            <div className="d-flex gap-2">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  background: "rgba(197, 160, 89, 0.14)",
+                  border: "1px solid rgba(197, 160, 89, 0.3)",
+                  color: "#c5a059",
+                  fontWeight: 600,
+                  fontSize: "0.82rem",
+                }}
+              >
+                {(user?.username?.[0] || "A").toUpperCase()}
+              </div>
+
+              <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                <textarea
+                  rows={1}
+                  value={postText}
+                  onChange={(e) => setPostText(e.target.value)}
+                  placeholder="Tulis postingan baru, bagikan catatan ngoding, atau tanyakan error..."
+                  className="form-control border-0 bg-transparent p-0 shadow-none"
+                  style={{
+                    color: "#f2ece1",
+                    fontSize: "0.85rem",
+                    resize: "none",
+                  }}
+                />
+
+                <AnimatePresence>
+                  {showCodeInput && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-2 overflow-hidden"
+                    >
+                      <textarea
+                        rows={2}
+                        value={codeSnippet}
+                        onChange={(e) => setCodeSnippet(e.target.value)}
+                        placeholder="// Tempel potongan kode atau log error di sini..."
+                        className="form-control code-well p-2"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div
+                  className="d-flex align-items-center justify-content-between pt-2 mt-1.5 border-top"
+                  style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
+                >
+                  <div className="d-flex align-items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowCodeInput(!showCodeInput)}
+                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                      style={{ fontSize: "0.73rem" }}
+                    >
+                      <Code size={14} />
+                      <span>Sisipkan Kode</span>
+                    </button>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="d-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                      style={{ fontSize: "0.73rem" }}
+                    >
+                      <ImageSquare size={14} style={{ color: "#c5a059" }} />
+                      <span>Gambar</span>
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1"
+                    style={{ fontSize: "0.74rem" }}
+                  >
+                    <span>Terbitkan</span>
+                    <PaperPlaneTilt weight="fill" size={13} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.form>
+        </div>
+      </div>
     </div>
   );
 }

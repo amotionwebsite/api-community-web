@@ -127,7 +127,7 @@ const PetuahSvg = ({ size = 19, active = false }) => (
 );
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: DashboardSvg },
+  { href: "/dashboard", label: "Home", icon: DashboardSvg },
   { href: "/", label: "Feed", icon: FeedSvg },
   { href: "/forum", label: "Forum", icon: ForumSvg },
   { href: "/showcase", label: "Karya", icon: ShowcaseSvg },
