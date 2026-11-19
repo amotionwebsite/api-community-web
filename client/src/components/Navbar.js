@@ -140,7 +140,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Glass Header (Fixed agar selalu terkunci di atas saat scroll) */}
+      {/* Top Glass Header */}
       <header
         className="position-fixed top-0 start-0 w-100 border-bottom"
         style={{
@@ -182,7 +182,16 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Center Nav */}
-          <nav className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill smoked-glass">
+          <nav
+            className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+            style={{
+              backgroundColor: "rgba(16, 14, 11, 0.72)",
+              backdropFilter: "blur(24px) saturate(160%)",
+              WebkitBackdropFilter: "blur(24px) saturate(160%)",
+              border: "1px solid rgba(197, 160, 89, 0.22)",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+            }}
+          >
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active =
@@ -229,14 +238,16 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Auth Action: Kapsul Gabungan Daftar (Abu-abu) / Masuk (Emas Sogan) */}
+          {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) */}
           <div className="d-flex align-items-center gap-2">
             {user ? (
               <div className="d-flex align-items-center gap-1.5">
                 <span
                   className="px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1"
                   style={{
-                    background: "rgba(197, 160, 89, 0.1)",
+                    background: "rgba(197, 160, 89, 0.14)",
+                    backdropFilter: "blur(18px)",
+                    WebkitBackdropFilter: "blur(18px)",
                     border: "1px solid rgba(197, 160, 89, 0.25)",
                     color: "#e6cfa3",
                     fontSize: "0.75rem",
@@ -258,8 +269,11 @@ export default function Navbar() {
               <div
                 className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
                 style={{
-                  border: "1px solid rgba(197, 160, 89, 0.3)",
-                  boxShadow: "0 4px 14px rgba(0, 0, 0, 0.35)",
+                  backgroundColor: "rgba(38, 35, 31, 0.65)",
+                  backdropFilter: "blur(20px) saturate(150%)",
+                  WebkitBackdropFilter: "blur(20px) saturate(150%)",
+                  border: "1px solid rgba(197, 160, 89, 0.34)",
+                  boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
                   fontFamily: "var(--font-body), sans-serif",
                   fontSize: "0.74rem",
                 }}
@@ -268,8 +282,8 @@ export default function Navbar() {
                   href="/register"
                   className="px-2.5 py-1 text-decoration-none"
                   style={{
-                    backgroundColor: "#2b2825",
-                    color: "#dcd5cb",
+                    backgroundColor: "rgba(52, 48, 43, 0.55)",
+                    color: "#e8e2d9",
                     fontWeight: 500,
                   }}
                 >
@@ -296,10 +310,17 @@ export default function Navbar() {
       {/* Spacer agar konten paling atas tidak tertutup header fixed */}
       <div style={{ height: "58px" }} />
 
-      {/* Mobile Floating Glass Dock */}
+      {/* Mobile Floating Glass Dock (Backdrop blur tebal agar teks di belakang tidak tembus) */}
       <nav
-        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-2.5 py-1.5 smoked-glass d-flex align-items-center gap-1"
-        style={{ zIndex: 50 }}
+        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3 py-1.5 rounded-4 d-flex align-items-center gap-1"
+        style={{
+          backgroundColor: "rgba(18, 15, 12, 0.76)",
+          backdropFilter: "blur(26px) saturate(170%)",
+          WebkitBackdropFilter: "blur(26px) saturate(170%)",
+          border: "1px solid rgba(197, 160, 89, 0.24)",
+          boxShadow: "0 12px 32px rgba(0, 0, 0, 0.68)",
+          zIndex: 50,
+        }}
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -313,7 +334,7 @@ export default function Navbar() {
               href={item.href}
               className="position-relative px-2 py-1 text-decoration-none d-flex flex-column align-items-center"
               style={{
-                color: active ? "#f2ece1" : "#b8ad9e",
+                color: active ? "#f2ece1" : "#c7bdb0",
                 fontSize: "0.63rem",
                 fontWeight: active ? 600 : 400,
               }}
