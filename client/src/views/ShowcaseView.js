@@ -600,7 +600,7 @@ export default function ShowcaseView() {
           )}
         </AnimatePresence>
 
-        {/* Daftar Kartu Karya dengan Animasi Saat Publish Smooth */}
+        {/* Daftar Kartu Karya */}
         <div className="d-flex flex-column gap-3 mb-4">
           <AnimatePresence initial={false}>
             {projects.map((p, idx) => {
@@ -638,9 +638,16 @@ export default function ShowcaseView() {
                       : undefined
                   }
                 >
-                  {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
+                  {/* Bagian Atas Banner: Nama Pembuat (Caviar) & Tombol Kunjungi (Tommy Medium) */}
                   <div className="px-3.5 pt-3 pb-2.5 d-flex align-items-center justify-content-between gap-2">
-                    <span style={{ fontSize: "0.76rem", color: "#c5a059", fontWeight: 500 }}>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-caviar), sans-serif",
+                        fontSize: "0.8rem",
+                        color: "#c5a059",
+                        fontWeight: 600,
+                      }}
+                    >
                       Karya @{p.author}
                     </span>
                     <a
@@ -648,7 +655,10 @@ export default function ShowcaseView() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.75rem" }}
+                      style={{
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        fontSize: "0.75rem",
+                      }}
                     >
                       <span>Kunjungi</span>
                       <VisitArrowSvg size={15} />
@@ -679,8 +689,7 @@ export default function ShowcaseView() {
                       >
                         <span
                           style={{
-                            fontFamily: "var(--font-utendo), sans-serif",
-                            fontWeight: 700,
+                            fontFamily: "var(--font-tommy-extra), sans-serif",
                             fontSize: "1.1rem",
                             color: "rgba(242, 236, 225, 0.22)",
                             letterSpacing: "0.02em",
@@ -716,15 +725,25 @@ export default function ShowcaseView() {
                     />
                   </div>
 
-                  {/* Bagian Bawah Banner: Nama Karya, Deskripsi, Tech Stack & Apresiasi */}
+                  {/* Bagian Bawah Banner: Judul Proyek (Tommy Extra), Deskripsi (Tommy Regular), Tech Stack & Apresiasi */}
                   <div className="px-3.5 pb-3.5" style={{ marginTop: "-6px" }}>
-                    <h2 className="h5 mb-1" style={{ color: "#f2ece1" }}>
+                    <h2
+                      className="h5 mb-1"
+                      style={{
+                        fontFamily: "var(--font-tommy-extra), sans-serif",
+                        color: "#f2ece1",
+                      }}
+                    >
                       {p.title}
                     </h2>
 
                     <p
                       className="mb-2.5"
-                      style={{ fontSize: "0.85rem", color: "#b8ad9e" }}
+                      style={{
+                        fontFamily: "var(--font-tommy-regular), sans-serif",
+                        fontSize: "0.85rem",
+                        color: "#b8ad9e",
+                      }}
                     >
                       {p.desc}
                     </p>

@@ -193,6 +193,7 @@ export default function Navbar() {
                   WebkitBackdropFilter: "blur(24px) saturate(160%)",
                   border: "1px solid rgba(197, 160, 89, 0.22)",
                   boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+                  fontFamily: "var(--font-tommy-personal), sans-serif",
                 }}
               >
                 {NAV_ITEMS.map((item) => {
@@ -327,6 +328,7 @@ export default function Navbar() {
               WebkitBackdropFilter: "blur(24px) saturate(160%)",
               border: "1px solid rgba(197, 160, 89, 0.22)",
               boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+              fontFamily: "var(--font-tommy-personal), sans-serif",
             }}
           >
             {NAV_ITEMS.map((item) => {
@@ -386,6 +388,7 @@ export default function Navbar() {
           WebkitBackdropFilter: "blur(26px) saturate(170%)",
           border: "1px solid rgba(197, 160, 89, 0.24)",
           boxShadow: "0 12px 32px rgba(0, 0, 0, 0.68)",
+          fontFamily: "var(--font-tommy-personal), sans-serif",
           zIndex: 50,
         }}
       >
