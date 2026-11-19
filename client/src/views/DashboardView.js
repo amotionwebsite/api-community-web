@@ -112,7 +112,7 @@ export default function DashboardView() {
             transition={{ duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="mb-0"
             style={{
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-tommy-personal), sans-serif",
               fontWeight: 400,
               fontSize: "0.88rem",
               color: "#cfc5b6",
@@ -135,7 +135,8 @@ export default function DashboardView() {
           <div
             className="d-flex align-items-center gap-2 mb-2"
             style={{
-              fontSize: "0.75rem",
+              fontFamily: "var(--font-tommy-medium), sans-serif",
+              fontSize: "0.76rem",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "#c5a059",
@@ -148,7 +149,7 @@ export default function DashboardView() {
           <p
             className="mb-0"
             style={{
-              fontFamily: "var(--font-body), sans-serif",
+              fontFamily: "var(--font-tommy-personal), sans-serif",
               fontWeight: 400,
               fontSize: "0.86rem",
               color: "#b8ad9e",
@@ -173,7 +174,8 @@ export default function DashboardView() {
           <div
             className="d-flex align-items-center gap-2 mb-3"
             style={{
-              fontSize: "0.75rem",
+              fontFamily: "var(--font-tommy-medium), sans-serif",
+              fontSize: "0.76rem",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "#c5a059",
@@ -192,13 +194,22 @@ export default function DashboardView() {
           >
             <span
               className="d-block mb-1"
-              style={{ fontSize: "0.72rem", color: "#c5a059", fontWeight: 600 }}
+              style={{
+                fontFamily: "var(--font-tommy-medium), sans-serif",
+                fontSize: "0.73rem",
+                color: "#c5a059",
+              }}
             >
               VISI UTAMA
             </span>
             <p
               className="mb-0"
-              style={{ fontSize: "0.86rem", color: "#f2ece1", lineHeight: 1.6 }}
+              style={{
+                fontFamily: "var(--font-tommy-personal), sans-serif",
+                fontSize: "0.86rem",
+                color: "#f2ece1",
+                lineHeight: 1.6,
+              }}
             >
               Menjadi wadah kolaborasi programmer Indonesia yang inklusif dan
               terbuka bagi siapa saja—membuktikan bahwa keterbatasan perangkat
@@ -208,7 +219,11 @@ export default function DashboardView() {
 
           <span
             className="d-block mb-2"
-            style={{ fontSize: "0.72rem", color: "#c5a059", fontWeight: 600 }}
+            style={{
+              fontFamily: "var(--font-tommy-medium), sans-serif",
+              fontSize: "0.73rem",
+              color: "#c5a059",
+            }}
           >
             MISI KOMUNITAS
           </span>
@@ -221,7 +236,12 @@ export default function DashboardView() {
               <li
                 key={i}
                 className="d-flex align-items-start gap-2"
-                style={{ fontSize: "0.84rem", color: "#b8ad9e", lineHeight: 1.6 }}
+                style={{
+                  fontFamily: "var(--font-tommy-personal), sans-serif",
+                  fontSize: "0.84rem",
+                  color: "#b8ad9e",
+                  lineHeight: 1.6,
+                }}
               >
                 <CheckCircle
                   weight="duotone"
@@ -245,7 +265,8 @@ export default function DashboardView() {
           <div
             className="d-flex align-items-center gap-2 mb-2"
             style={{
-              fontSize: "0.75rem",
+              fontFamily: "var(--font-tommy-medium), sans-serif",
+              fontSize: "0.76rem",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "#c5a059",
@@ -257,7 +278,12 @@ export default function DashboardView() {
 
           <p
             className="mb-3"
-            style={{ fontSize: "0.84rem", color: "#b8ad9e", lineHeight: 1.6 }}
+            style={{
+              fontFamily: "var(--font-tommy-personal), sans-serif",
+              fontSize: "0.84rem",
+              color: "#b8ad9e",
+              lineHeight: 1.6,
+            }}
           >
             Dukung keberlangsungan server, bot komunitas, dan event belajar
             bareng API dengan bergabung ke kanal resmi atau ikut berkontribusi

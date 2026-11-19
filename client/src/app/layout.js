@@ -38,6 +38,18 @@ const utendoFont = localFont({
   display: "swap",
 });
 
+const tommyPersonalFont = localFont({
+  src: "../fonts/Tommy_Personal.otf",
+  variable: "--font-tommy-personal",
+  display: "swap",
+});
+
+const tommyMediumFont = localFont({
+  src: "../fonts/Tommy_Medium.otf",
+  variable: "--font-tommy-medium",
+  display: "swap",
+});
+
 export const metadata = {
   title: "Anak Programmer Indonesia",
   description:
@@ -49,7 +61,7 @@ export default function RootLayout({ children }) {
     <html
       lang="id"
       data-bs-theme="dark"
-      className={`${utendoFont.variable} ${coolveticaFont.variable} ${jakartaSans.variable} ${jetbrainsMono.variable}`}
+      className={`${utendoFont.variable} ${coolveticaFont.variable} ${tommyPersonalFont.variable} ${tommyMediumFont.variable} ${jakartaSans.variable} ${jetbrainsMono.variable}`}
     >
       <body
         style={{
