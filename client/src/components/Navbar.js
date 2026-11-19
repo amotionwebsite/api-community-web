@@ -140,9 +140,9 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Glass Header */}
+      {/* Top Glass Header (Tidak sticky agar ikut tergulir saat scroll) */}
       <header
-        className="sticky-top border-bottom"
+        className="border-bottom"
         style={{
           backgroundColor: "rgba(14, 12, 10, 0.78)",
           backdropFilter: "blur(18px)",
@@ -169,6 +169,7 @@ export default function Navbar() {
             <span
               style={{
                 fontFamily: "var(--font-utendo), sans-serif",
+                fontWeight: 700,
                 color: "#f2ece1",
                 fontSize: "0.95rem",
                 letterSpacing: "-0.01em",
@@ -227,7 +228,7 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Auth Action */}
+          {/* Auth Action: Kapsul Gabungan Daftar (Abu-abu) / Masuk (Emas Sogan) */}
           <div className="d-flex align-items-center gap-2">
             {user ? (
               <div className="d-flex align-items-center gap-1.5">
@@ -253,13 +254,39 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="btn btn-sm btn-sogan px-3 py-1"
-                style={{ fontSize: "0.76rem" }}
+              <div
+                className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
+                style={{
+                  border: "1px solid rgba(197, 160, 89, 0.3)",
+                  boxShadow: "0 4px 14px rgba(0, 0, 0, 0.35)",
+                  fontFamily: "var(--font-body), sans-serif",
+                  fontSize: "0.74rem",
+                }}
               >
-                Masuk
-              </Link>
+                <Link
+                  href="/register"
+                  className="px-2.5 py-1 text-decoration-none"
+                  style={{
+                    backgroundColor: "#2b2825",
+                    color: "#dcd5cb",
+                    fontWeight: 500,
+                  }}
+                >
+                  Daftar
+                </Link>
+                <Link
+                  href="/login"
+                  className="px-2.5 py-1 text-decoration-none"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
+                    color: "#120f0c",
+                    fontWeight: 600,
+                  }}
+                >
+                  Masuk
+                </Link>
+              </div>
             )}
           </div>
         </div>
