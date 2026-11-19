@@ -85,44 +85,87 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan Rata Kiri dengan Animasi Pembuka Halus */}
+        {/* 1. Hero Sambutan dengan Banner Memanjang & Blur Halus di Bawahnya */}
         <motion.section
           initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
           animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="smoked-glass p-4 mb-3 text-start"
+          className="smoked-glass overflow-hidden mb-3 text-start"
         >
-          <motion.h1
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          {/* Banner Memanjang Full-bleed di Dalam Kapsul */}
+          <div
+            className="position-relative w-100 overflow-hidden"
             style={{
-              fontFamily: "var(--font-coolvetica), sans-serif",
-              color: "#f2ece1",
-              lineHeight: 1.25,
+              height: "172px",
+              backgroundColor: "#15120f",
             }}
-            className="h3 mb-2"
           >
-            Selamat Datang di Website Anak Programmer Indonesia
-          </motion.h1>
+            <img
+              src="/banner.png"
+              alt="Banner Anak Programmer Indonesia"
+              className="w-100 h-100 object-fit-cover"
+            />
 
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-0"
-            style={{
-              fontFamily: "var(--font-tommy-personal), sans-serif",
-              fontWeight: 400,
-              fontSize: "0.88rem",
-              color: "#cfc5b6",
-              lineHeight: 1.68,
-            }}
-          >
-            Ruang singgah digital bagi developer Indonesia untuk saling bantu
-            bedah error, berbagi catatan ngoding lintas perangkat, dan merilis
-            karya teknologi bersama-sama tanpa batasan latar belakang.
-          </motion.p>
+            {/* Lapisan Blur Halus Bertahap di Bawah Banner */}
+            <div
+              className="position-absolute bottom-0 start-0 w-100"
+              style={{
+                height: "74px",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                maskImage:
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Lapisan Fade Warna Menyatu ke Dasar Kapsul */}
+            <div
+              className="position-absolute bottom-0 start-0 w-100"
+              style={{
+                height: "82px",
+                background:
+                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.82) 28%, rgba(21, 18, 15, 0.35) 62%, rgba(21, 18, 15, 0) 100%)",
+                pointerEvents: "none",
+              }}
+            />
+          </div>
+
+          <div className="px-4 pb-4 pt-1 position-relative" style={{ zIndex: 2 }}>
+            <motion.h1
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                fontFamily: "var(--font-coolvetica), sans-serif",
+                color: "#f2ece1",
+                lineHeight: 1.25,
+              }}
+              className="h3 mb-2"
+            >
+              Selamat Datang di Website Anak Programmer Indonesia
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-0"
+              style={{
+                fontFamily: "var(--font-tommy-personal), sans-serif",
+                fontWeight: 400,
+                fontSize: "0.88rem",
+                color: "#cfc5b6",
+                lineHeight: 1.68,
+              }}
+            >
+              Ruang singgah digital bagi developer Indonesia untuk saling bantu
+              bedah error, berbagi catatan ngoding lintas perangkat, dan merilis
+              karya teknologi bersama-sama tanpa batasan latar belakang.
+            </motion.p>
+          </div>
         </motion.section>
 
         {/* 2. Tentang Anak Programmer Indonesia */}
