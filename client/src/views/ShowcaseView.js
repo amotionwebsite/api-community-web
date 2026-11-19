@@ -423,7 +423,7 @@ export default function ShowcaseView() {
               </AnimatePresence>
             </div>
 
-            {/* Link Karya (Dipindah ke bawah Tech Stack) */}
+            {/* Link Karya */}
             <input
               type="url"
               value={demoUrl}
@@ -507,7 +507,7 @@ export default function ShowcaseView() {
           </form>
         )}
 
-        {/* Daftar Kartu Karya */}
+        {/* Daftar Kartu Karya (Full-bleed Banner seperti gambar 1) */}
         <div className="d-flex flex-column gap-3 mb-4">
           {projects.map((p, idx) => {
             const liked = likedIds.includes(p.id);
@@ -517,10 +517,10 @@ export default function ShowcaseView() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: idx * 0.06 }}
-                className="smoked-glass smoked-glass-interactive p-3.5"
+                className="smoked-glass smoked-glass-interactive overflow-hidden"
               >
                 {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
-                <div className="d-flex align-items-center justify-content-between gap-2 mb-2.5">
+                <div className="px-3.5 pt-3 pb-2.5 d-flex align-items-center justify-content-between gap-2">
                   <span style={{ fontSize: "0.76rem", color: "#c5a059", fontWeight: 500 }}>
                     Karya @{p.author}
                   </span>
@@ -536,13 +536,12 @@ export default function ShowcaseView() {
                   </a>
                 </div>
 
-                {/* Banner Karya + Efek Blur di Bawah Banner */}
+                {/* Banner Full-bleed Menyentuh Sisi Kiri-Kanan + Blur Bawah Menyatu */}
                 <div
-                  className="position-relative rounded-3 overflow-hidden mb-3"
+                  className="position-relative w-100 overflow-hidden"
                   style={{
-                    height: "156px",
+                    height: "190px",
                     backgroundColor: "#14110e",
-                    border: "1px solid rgba(197, 160, 89, 0.16)",
                   }}
                 >
                   {p.bannerUrl ? (
@@ -573,72 +572,73 @@ export default function ShowcaseView() {
                     </div>
                   )}
 
-                  {/* Lapisan Blur Halus di Bagian Bawah Banner */}
+                  {/* Gradasi Blur Bawah Banner Menyatu ke Kartu */}
                   <div
                     className="position-absolute bottom-0 start-0 w-100"
                     style={{
-                      height: "46px",
+                      height: "52px",
                       background:
-                        "linear-gradient(to top, rgba(16, 13, 11, 0.94) 15%, rgba(16, 13, 11, 0) 100%)",
+                        "linear-gradient(to top, #15120f 12%, rgba(21, 18, 15, 0.65) 55%, rgba(21, 18, 15, 0) 100%)",
                       backdropFilter: "blur(6px)",
                       WebkitBackdropFilter: "blur(6px)",
                     }}
                   />
                 </div>
 
-                {/* Bagian Bawah Banner: Nama Karya & Deskripsi Karya */}
-                <h2 className="h5 mb-1" style={{ color: "#f2ece1" }}>
-                  {p.title}
-                </h2>
+                {/* Bagian Bawah Banner: Nama Karya, Deskripsi, Tech Stack & Apresiasi */}
+                <div className="px-3.5 pb-3.5 pt-1">
+                  <h2 className="h5 mb-1" style={{ color: "#f2ece1" }}>
+                    {p.title}
+                  </h2>
 
-                <p
-                  className="mb-2.5"
-                  style={{ fontSize: "0.85rem", color: "#b8ad9e" }}
-                >
-                  {p.desc}
-                </p>
-
-                {/* Kapsul Tech Stack dengan Logo Asli + Tombol Apresiasi */}
-                <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                  <div className="d-flex flex-wrap gap-1.5">
-                    {p.stack.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
-                        style={{
-                          fontSize: "0.7rem",
-                          background: "rgba(118, 168, 130, 0.12)",
-                          border: "1px solid rgba(118, 168, 130, 0.25)",
-                          color: "#9fd0aa",
-                        }}
-                      >
-                        <img
-                          src={getTechLogo(tag)}
-                          alt={tag}
-                          width={13}
-                          height={13}
-                          className="object-fit-contain"
-                        />
-                        <span>{tag}</span>
-                      </span>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => toggleApplause(p.id)}
-                    className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
-                    style={{
-                      fontSize: "0.76rem",
-                      color: liked ? "#c5a059" : "#b8ad9e",
-                      borderColor: liked
-                        ? "rgba(197, 160, 89, 0.45)"
-                        : undefined,
-                    }}
+                  <p
+                    className="mb-2.5"
+                    style={{ fontSize: "0.85rem", color: "#b8ad9e" }}
                   >
-                    <ApplauseSvg size={17} active={liked} />
-                    <span>{p.applause} Apresiasi</span>
-                  </button>
+                    {p.desc}
+                  </p>
+
+                  <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div className="d-flex flex-wrap gap-1.5">
+                      {p.stack.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
+                          style={{
+                            fontSize: "0.7rem",
+                            background: "rgba(118, 168, 130, 0.12)",
+                            border: "1px solid rgba(118, 168, 130, 0.25)",
+                            color: "#9fd0aa",
+                          }}
+                        >
+                          <img
+                            src={getTechLogo(tag)}
+                            alt={tag}
+                            width={13}
+                            height={13}
+                            className="object-fit-contain"
+                          />
+                          <span>{tag}</span>
+                        </span>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => toggleApplause(p.id)}
+                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
+                      style={{
+                        fontSize: "0.76rem",
+                        color: liked ? "#c5a059" : "#b8ad9e",
+                        borderColor: liked
+                          ? "rgba(197, 160, 89, 0.45)"
+                          : undefined,
+                      }}
+                    >
+                      <ApplauseSvg size={17} active={liked} />
+                      <span>{p.applause} Apresiasi</span>
+                    </button>
+                  </div>
                 </div>
               </motion.article>
             );
