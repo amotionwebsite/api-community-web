@@ -15,30 +15,49 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-code",
 });
 
-const coolvetica = localFont({
-  src: "../fonts/Coolvetica.otf",
+const coolveticaFont = localFont({
+  src: "../fonts/Coolvetica Rg.otf",
   variable: "--font-coolvetica",
   display: "swap",
 });
 
-const utendo = localFont({
-  src: "../fonts/Utendo.ttf",
+const utendoFont = localFont({
+  src: [
+    {
+      path: "../fonts/Utendo-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Utendo-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-utendo",
   display: "swap",
 });
 
 export const metadata = {
   title: "Anak Programmer Indonesia",
-  description: "Ruang kolaborasi, diskusi kode, dan etalase karya programmer Indonesia.",
+  description:
+    "Rumah kolaborasi programmer Indonesia. Bedah error bareng, rilis karya, dan satu frekuensi.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html
       lang="id"
-      className={`${jakartaSans.variable} ${jetbrainsMono.variable} ${coolvetica.variable} ${utendo.variable}`}
+      data-bs-theme="dark"
+      className={`${utendoFont.variable} ${coolveticaFont.variable} ${jakartaSans.variable} ${jetbrainsMono.variable}`}
     >
-      <body style={{ fontFamily: "var(--font-body), sans-serif" }}>
+      <body
+        style={{
+          backgroundColor: "#0f0d0c",
+          color: "#ede6dc",
+          fontFamily: "var(--font-body), sans-serif",
+        }}
+      >
         {children}
       </body>
     </html>
