@@ -1,40 +1,44 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
-import { Roboto } from "next/font/google";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 
-const utendoFont = localFont({
-  src: "../fonts/Utendo-Bold.ttf",
-  variable: "--font-utendo",
-  display: "swap",
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
 });
 
-const coolveticaFont = localFont({
-  src: "../fonts/Coolvetica Rg.otf",
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-code",
+});
+
+const coolvetica = localFont({
+  src: "../fonts/Coolvetica.otf",
   variable: "--font-coolvetica",
   display: "swap",
 });
 
-const robotoFont = Roboto({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-roboto",
+const utendo = localFont({
+  src: "../fonts/Utendo.ttf",
+  variable: "--font-utendo",
   display: "swap",
 });
 
 export const metadata = {
   title: "Anak Programmer Indonesia",
-  description: "Rumah kolaborasi programmer Indonesia. Bedah error bareng, rilis karya, dan satu frekuensi.",
+  description: "Ruang kolaborasi, diskusi kode, dan etalase karya programmer Indonesia.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html
       lang="id"
-      data-bs-theme="dark"
-      className={`${utendoFont.variable} ${coolveticaFont.variable} ${robotoFont.variable}`}
+      className={`${jakartaSans.variable} ${jetbrainsMono.variable} ${coolvetica.variable} ${utendo.variable}`}
     >
-      <body style={{ backgroundColor: "#0f0d0c", color: "#ede6dc" }}>
+      <body style={{ fontFamily: "var(--font-body), sans-serif" }}>
         {children}
       </body>
     </html>

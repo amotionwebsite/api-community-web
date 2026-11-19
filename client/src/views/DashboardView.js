@@ -47,56 +47,52 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan + Logo Polos + Deskripsi Roboto Regular */}
+        {/* 1. Hero Sambutan Rata Kiri dengan Animasi Pembuka Halus */}
         <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="smoked-glass p-4 mb-3"
+          initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="smoked-glass p-4 mb-3 text-start"
         >
-          <div className="d-flex align-items-center gap-3 mb-3">
-            <img
-              src="/logoapi.png"
-              alt="Logo Anak Programmer Indonesia"
-              width={58}
-              height={58}
-              className="object-fit-contain flex-shrink-0"
-            />
+          <motion.h1
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontFamily: "var(--font-coolvetica), sans-serif",
+              color: "#f2ece1",
+              lineHeight: 1.25,
+            }}
+            className="h3 mb-2"
+          >
+            Selamat Datang di Website Anak Programmer Indonesia
+          </motion.h1>
 
-            <h1
-              style={{
-                fontFamily: "var(--font-coolvetica), sans-serif",
-                color: "#f2ece1",
-                lineHeight: 1.25,
-              }}
-              className="h4 mb-0"
-            >
-              Selamat Datang di Website Anak Programmer Indonesia
-            </h1>
-          </div>
-
-          <p
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="mb-0"
             style={{
-              fontFamily: "var(--font-roboto), sans-serif",
+              fontFamily: "var(--font-body), sans-serif",
               fontWeight: 400,
               fontSize: "0.88rem",
               color: "#cfc5b6",
-              lineHeight: 1.65,
+              lineHeight: 1.68,
             }}
           >
             Ruang singgah digital bagi developer Indonesia untuk saling bantu
             bedah error, berbagi catatan ngoding lintas perangkat, dan merilis
             karya teknologi bersama-sama tanpa batasan latar belakang.
-          </p>
+          </motion.p>
         </motion.section>
 
         {/* 2. Tentang Anak Programmer Indonesia */}
         <motion.section
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.08 }}
-          className="smoked-glass p-4 mb-3"
+          transition={{ duration: 0.5, delay: 0.18 }}
+          className="smoked-glass p-4 mb-3 text-start"
         >
           <div
             className="d-flex align-items-center gap-2 mb-2"
@@ -114,7 +110,7 @@ export default function DashboardView() {
           <p
             className="mb-0"
             style={{
-              fontFamily: "var(--font-roboto), sans-serif",
+              fontFamily: "var(--font-body), sans-serif",
               fontWeight: 400,
               fontSize: "0.86rem",
               color: "#b8ad9e",
@@ -133,8 +129,8 @@ export default function DashboardView() {
         <motion.section
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.16 }}
-          className="smoked-glass p-4 mb-3"
+          transition={{ duration: 0.5, delay: 0.26 }}
+          className="smoked-glass p-4 mb-3 text-start"
         >
           <div
             className="d-flex align-items-center gap-2 mb-3"
@@ -205,8 +201,8 @@ export default function DashboardView() {
         <motion.section
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.24 }}
-          className="smoked-glass p-4"
+          transition={{ duration: 0.5, delay: 0.34 }}
+          className="smoked-glass p-4 text-start"
         >
           <div
             className="d-flex align-items-center gap-2 mb-2"
