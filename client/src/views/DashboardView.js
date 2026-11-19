@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowUpRight } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
 
 const InfoSvg = ({ size = 18 }) => (
@@ -30,6 +29,23 @@ const FlagSvg = ({ size = 18 }) => (
     <path
       fill="currentColor"
       d="M6 15.618V21c-.013.198-.033.325-.134.5a1 1 0 0 1-.607.466C4.603 22.142 4.042 21.639 4 21V5.236c.025-.82.331-1.618.943-2.181.416-.383.901-.61 1.424-.813 1.653-.643 3.522-.544 5.138.154.411.178.784.433 1.191.62.466.215.967.354 1.477.41.704.077 1.384-.019 2.058-.224l3.453-1.151c.827-.213 1.478.438 1.265 1.265l-1.885 5.653 1.864 4.66.066.262c.053.487-.244.879-.678 1.058l-3.478 1.159c-1.418.437-2.94.479-4.351-.023-.625-.222-1.159-.572-1.76-.846a4.8 4.8 0 0 0-3.62-.139c-.371.136-.757.343-1.107.518M18.419 4.581c-1.851.617-3.268 1.173-5.232.704a6.8 6.8 0 0 1-1.378-.475l-1.082-.571a4.8 4.8 0 0 0-3.62-.139c-.625.229-1.078.464-1.107 1.176V13.4c1.779-.767 3.842-.804 5.607.043.37.177.716.402 1.089.573.466.215.967.354 1.477.41.704.077 1.384-.019 2.058-.224l2.447-.815-1.538-3.846a1.65 1.65 0 0 1-.031-1.031Z"
+    />
+  </svg>
+);
+
+const CheckMisiSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className="flex-shrink-0 mt-0.5"
+    style={{ color: "#76a882" }}
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M14.523 4.407a8.06 8.06 0 0 0-4.358-.195 8 8 0 0 0-3.168 1.546c-3.975 3.189-3.975 9.295 0 12.484 3.255 2.612 8.023 2.257 10.863-.796a8 8 0 0 0 2.044-4.207c.066-.428.093-.812.095-1.245.003-.447-.156-1.001.042-1.421.322-.683 1.295-.764 1.726-.143.207.299.201.693.219 1.039a10.2 10.2 0 0 1-.688 4.217c-1.895 4.849-7.399 7.452-12.352 5.838-6.653-2.168-9.111-10.25-4.771-15.75 2.221-2.815 5.946-4.248 9.481-3.637a10 10 0 0 1 2.264.662c.099.042.665.279.851.436a.999.999 0 0 1-.304 1.705c-.506.183-.909-.123-1.36-.314Zm-2.852 8.547 8.486-8.485c.409-.359 1.01-.405 1.414 0 .404.404.359 1.004 0 1.414l-9.193 9.192c-.204.179-.429.293-.707.293s-.503-.114-.707-.293L7.429 11.54c-.298-.34-.394-.801-.159-1.207.339-.589 1.091-.63 1.573-.208Z"
     />
   </svg>
 );
@@ -85,7 +101,7 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan dengan Banner Memanjang & Blur Tipis Halus di Bawah agar Logo Tajam */}
+        {/* 1. Hero Sambutan dengan Banner, Blur Bawah Halus, dan Judul Turun Menimpa Blur */}
         <motion.section
           initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
           animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
@@ -96,7 +112,7 @@ export default function DashboardView() {
           <div
             className="position-relative w-100 overflow-hidden"
             style={{
-              height: "205px",
+              height: "242px",
               backgroundColor: "#15120f",
             }}
           >
@@ -104,13 +120,14 @@ export default function DashboardView() {
               src="/banners.png"
               alt="Banner Anak Programmer Indonesia"
               className="w-100 h-100 object-fit-cover"
+              style={{ objectPosition: "center 26%" }}
             />
 
-            {/* Blur tipis dan halus hanya di bagian paling bawah agar logo-logo banner tetap jelas */}
+            {/* Blur tipis dan halus hanya di bagian bawah banner agar logo banner tetap jelas */}
             <div
               className="position-absolute bottom-0 start-0 w-100"
               style={{
-                height: "66px",
+                height: "64px",
                 backdropFilter: "blur(5px)",
                 WebkitBackdropFilter: "blur(5px)",
                 maskImage:
@@ -128,36 +145,33 @@ export default function DashboardView() {
               style={{
                 height: "74px",
                 background:
-                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.78) 34%, rgba(21, 18, 15, 0.25) 70%, rgba(21, 18, 15, 0) 100%)",
+                  "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.84) 36%, rgba(21, 18, 15, 0.25) 72%, rgba(21, 18, 15, 0) 100%)",
                 pointerEvents: "none",
                 zIndex: 2,
               }}
             />
-
-            {/* Judul Selamat Datang Tajam Menimpa Bagian Bawah Banner */}
-            <div
-              className="position-absolute bottom-0 start-0 w-100 px-4 pb-1"
-              style={{ zIndex: 3 }}
-            >
-              <motion.h1
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: "var(--font-coolvetica), sans-serif",
-                  color: "#f2ece1",
-                  lineHeight: 1.24,
-                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.65)",
-                }}
-                className="h3 mb-0"
-              >
-                Selamat Datang di Website Anak Programmer Indonesia
-              </motion.h1>
-            </div>
           </div>
 
-          {/* Deskripsi Rapat Tepat di Bawah Judul */}
-          <div className="px-4 pb-4 pt-1.5 position-relative" style={{ zIndex: 3 }}>
+          {/* Judul (Turun menimpa blur bawah banner tanpa ikut blur) + Deskripsi Rapat */}
+          <div
+            className="px-4 pb-4 position-relative"
+            style={{ marginTop: "-30px", zIndex: 3 }}
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                fontFamily: "var(--font-coolvetica), sans-serif",
+                color: "#f2ece1",
+                lineHeight: 1.24,
+                textShadow: "0 2px 12px rgba(0, 0, 0, 0.7)",
+              }}
+              className="h3 mb-1.5"
+            >
+              Selamat Datang di Website Anak Programmer Indonesia
+            </motion.h1>
+
             <motion.p
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -296,12 +310,7 @@ export default function DashboardView() {
                   lineHeight: 1.6,
                 }}
               >
-                <CheckCircle
-                  weight="duotone"
-                  size={18}
-                  className="flex-shrink-0 mt-0.5"
-                  style={{ color: "#76a882" }}
-                />
+                <CheckMisiSvg size={18} />
                 <span>{misi}</span>
               </li>
             ))}
@@ -343,23 +352,25 @@ export default function DashboardView() {
             di repositori terbuka kami.
           </p>
 
-          <div className="d-flex flex-wrap gap-2">
+          <div
+            className="d-flex flex-column gap-2"
+            style={{ maxWidth: "235px" }}
+          >
             <a
               href="https://discord.gg/7A5qtTpYT"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-sm btn-sogan px-3 py-1.5 d-inline-flex align-items-center gap-1.5"
+              className="btn btn-sm btn-sogan w-100 px-3 py-1.5 d-inline-flex align-items-center justify-content-center gap-2"
             >
-              <span>Gabung Komunitas</span>
               <DiscordSvg size={17} />
-              <ArrowUpRight weight="bold" size={14} />
+              <span>Gabung Komunitas</span>
             </a>
 
             <a
               href="https://saweria.co/apicommunity"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-sm btn-glass-subtle px-3 py-1.5 d-inline-flex align-items-center gap-1.5"
+              className="btn btn-sm btn-glass-subtle w-100 px-3 py-1.5 d-inline-flex align-items-center justify-content-center gap-2"
             >
               <SupportHandSvg size={17} />
               <span>Support Komunitas</span>
