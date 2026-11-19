@@ -112,42 +112,28 @@ export default function Navbar() {
         >
           <Link
             href="/"
-            className="d-flex align-items-center gap-2 text-decoration-none"
+            className="d-flex align-items-center gap-2.5 text-decoration-none"
           >
-            <img
+            <motion.img
               src="/logoapi.png"
               alt="Anak Programmer Indonesia"
-              width={28}
-              height={28}
-              className="object-fit-contain"
+              width={36}
+              height={36}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="object-fit-contain flex-shrink-0"
             />
-            <div>
-              <div
-                style={{
-                  fontFamily: "var(--font-utendo), sans-serif",
-                  color: "#f2ece1",
-                  fontSize: "0.86rem",
-                  letterSpacing: "-0.01em",
-                  lineHeight: 1.15,
-                }}
-              >
-                Anak Programmer Indonesia
-              </div>
-              <div
-                className="d-flex align-items-center gap-1"
-                style={{ fontSize: "0.68rem", color: "#9a8f80" }}
-              >
-                <span
-                  className="rounded-circle d-inline-block"
-                  style={{
-                    width: "6px",
-                    height: "6px",
-                    backgroundColor: "#76a882",
-                  }}
-                />
-                <span>Ruang Kolaborasi &amp; Feed Kode</span>
-              </div>
-            </div>
+            <span
+              style={{
+                fontFamily: "var(--font-utendo), sans-serif",
+                color: "#f2ece1",
+                fontSize: "0.94rem",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.2,
+              }}
+            >
+              Anak Programmer Indonesia
+            </span>
           </Link>
 
           {/* Desktop Center Nav */}
@@ -165,7 +151,7 @@ export default function Navbar() {
                   className="position-relative px-2.5 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
                   style={{
                     fontSize: "0.76rem",
-                    color: active ? "#120f0c" : "#c7bdb0",
+                    color: active ? "#f2ece1" : "#b8ad9e",
                     fontWeight: active ? 600 : 400,
                     zIndex: 1,
                   }}
@@ -173,15 +159,27 @@ export default function Navbar() {
                   {active && (
                     <motion.span
                       layoutId="desktop-nav-pill"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      transition={{ type: "spring", stiffness: 420, damping: 28 }}
                       className="position-absolute top-0 start-0 w-100 h-100 rounded-pill"
                       style={{
-                        backgroundColor: "#c5a059",
+                        backgroundColor: "#0a0908",
+                        border: "1px solid rgba(197, 160, 89, 0.35)",
                         zIndex: -1,
                       }}
                     />
                   )}
-                  <Icon size={15} />
+                  <motion.span
+                    animate={
+                      active
+                        ? { scale: [1, 1.22, 1], rotate: [0, -8, 8, 0] }
+                        : { scale: 1, rotate: 0 }
+                    }
+                    transition={{ duration: 0.45 }}
+                    className="d-inline-flex align-items-center"
+                    style={{ color: active ? "#c5a059" : "inherit" }}
+                  >
+                    <Icon size={15} />
+                  </motion.span>
                   <span>{item.label}</span>
                 </Link>
               );
@@ -243,7 +241,7 @@ export default function Navbar() {
               href={item.href}
               className="position-relative px-2 py-1.5 text-decoration-none d-flex flex-column align-items-center"
               style={{
-                color: active ? "#120f0c" : "#b8ad9e",
+                color: active ? "#f2ece1" : "#b8ad9e",
                 fontSize: "0.63rem",
                 fontWeight: active ? 600 : 400,
                 zIndex: 1,
@@ -252,12 +250,27 @@ export default function Navbar() {
               {active && (
                 <motion.span
                   layoutId="mobile-dock-pill"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 420, damping: 28 }}
                   className="position-absolute top-0 start-0 w-100 h-100 rounded-3"
-                  style={{ backgroundColor: "#c5a059", zIndex: -1 }}
+                  style={{
+                    backgroundColor: "#0a0908",
+                    border: "1px solid rgba(197, 160, 89, 0.35)",
+                    zIndex: -1,
+                  }}
                 />
               )}
-              <Icon size={17} />
+              <motion.span
+                animate={
+                  active
+                    ? { scale: [1, 1.25, 1], y: [0, -2, 0] }
+                    : { scale: 1, y: 0 }
+                }
+                transition={{ duration: 0.45 }}
+                className="d-inline-flex align-items-center"
+                style={{ color: active ? "#c5a059" : "inherit" }}
+              >
+                <Icon size={17} />
+              </motion.span>
               <span className="mt-0.5">{item.label}</span>
             </Link>
           );
