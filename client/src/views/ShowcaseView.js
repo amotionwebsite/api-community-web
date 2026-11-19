@@ -726,12 +726,15 @@ export default function ShowcaseView() {
                   </div>
 
                   {/* Bagian Bawah Banner: Judul Proyek (Tommy Extra), Deskripsi (Tommy Regular), Tech Stack & Apresiasi */}
-                  <div className="px-3.5 pb-3.5" style={{ marginTop: "-6px" }}>
+                  <div className="px-3.5 pb-3.5 pt-2 position-relative" style={{ zIndex: 2 }}>
                     <h2
-                      className="h5 mb-1"
+                      className="h5 mb-1.5 text-break"
                       style={{
                         fontFamily: "var(--font-tommy-extra), sans-serif",
                         color: "#f2ece1",
+                        lineHeight: 1.38,
+                        paddingTop: "2px",
+                        paddingBottom: "2px",
                       }}
                     >
                       {p.title}
