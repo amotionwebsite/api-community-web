@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  SquaresFour,
   Compass,
   ChatsTeardrop,
   Cube,
@@ -14,8 +13,23 @@ import {
 } from "@phosphor-icons/react";
 import { useAuthStore } from "../store/useAuthStore";
 
+const DashboardSvg = ({ size = 18 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M4 11h-.997l-.246-.031a1.01 1.01 0 0 1-.67-1.374c.077-.174.161-.262.301-.386l8.384-6.521a2.13 2.13 0 0 1 1.098-.413c.494-.032.96.128 1.358.413l8.384 6.521c.14.124.224.211.3.385a1.01 1.01 0 0 1-.668 1.375l-.247.031H20v8a2.1 2.1 0 0 1-.376 1.162c-.38.531-.979.814-1.624.838H6c-1.135-.042-1.958-.865-2-2Zm1.622-1.772c.24.219.356.442.378.772v8.943l.006.051h11.988l.006-.051V10c.022-.33.138-.553.378-.772L12 4.277Z"
+    />
+  </svg>
+);
+
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: SquaresFour },
+  { href: "/dashboard", label: "Dashboard", icon: DashboardSvg },
   { href: "/", label: "Feed", icon: Compass },
   { href: "/forum", label: "Forum", icon: ChatsTeardrop },
   { href: "/showcase", label: "Karya", icon: Cube },
