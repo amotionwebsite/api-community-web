@@ -84,7 +84,7 @@ const CARD_THEMES = [
 
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
-export default function QuotesView() {
+export default function TopView() {
   const router = useRouter();
   const {
     user,

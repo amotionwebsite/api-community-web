@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MagnifyingGlassPlus, MagnifyingGlassMinus, ArrowsClockwise } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
-import { INITIAL_THREADS } from "../data/threads";
 import { useAuthStore } from "../store/useAuthStore";
 
 const POST_TAGS = [
@@ -15,6 +14,24 @@ const POST_TAGS = [
   "Tips & Trik",
   "Rilis Karya",
 ];
+
+const TOP_CARD_THEMES = {
+  sogan: {
+    bg: "linear-gradient(135deg, #241c13 0%, #130f0c 55%, #1d160e 100%)",
+    border: "rgba(197, 160, 89, 0.42)",
+    accent: "#c5a059",
+  },
+  emerald: {
+    bg: "linear-gradient(135deg, #132119 0%, #0d1410 55%, #14221a 100%)",
+    border: "rgba(118, 168, 130, 0.42)",
+    accent: "#8fc29b",
+  },
+  obsidian: {
+    bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
+    border: "rgba(176, 146, 224, 0.4)",
+    accent: "#c8b2eb",
+  },
+};
 
 const getCategoryBadgeStyle = (cat, isSelected = true) => {
   const lower = (cat || "").toLowerCase();
@@ -195,9 +212,8 @@ const CodeSvg = ({ size = 15 }) => (
 );
 
 export default function HomeView() {
-  const user = useAuthStore((s) => s.user);
+  const { user, feedPosts, addFeedPost } = useAuthStore();
   const [copiedId, setCopiedId] = useState(null);
-  const [threads, setThreads] = useState(INITIAL_THREADS);
   const [upvotedIds, setUpvotedIds] = useState([]);
   const [activeReplyId, setActiveReplyId] = useState(null);
   const [postText, setPostText] = useState("");
@@ -293,7 +309,7 @@ export default function HomeView() {
     if (!postText.trim() && !postImage) return;
     const contentClean =
       postText.trim() || "Melampirkan gambar error / tangkapan layar.";
-    const newItem = {
+    addFeedPost({
       id: String(Date.now()),
       title: contentClean.slice(0, 72),
       category: selectedTag,
@@ -304,8 +320,7 @@ export default function HomeView() {
       code: codeSnippet.trim() || null,
       image: postImage || null,
       comments: [],
-    };
-    setThreads([newItem, ...threads]);
+    });
     setPostText("");
     setCodeSnippet("");
     setPostImage("");
@@ -319,7 +334,7 @@ export default function HomeView() {
     );
   };
 
-  const visibleThreads = threads.filter((t) => {
+  const visibleThreads = feedPosts.filter((t) => {
     if (filter === "code") return Boolean(t.code || t.id === "1");
     return true;
   });
@@ -372,6 +387,10 @@ export default function HomeView() {
               (item.id === "1"
                 ? `app.use(cors({ origin: "https://api-community-web.vercel.app" }));`
                 : null);
+
+            const cardTheme = item.topCard
+              ? TOP_CARD_THEMES[item.topCard.themeId] || TOP_CARD_THEMES.sogan
+              : null;
 
             return (
               <motion.article
@@ -434,32 +453,112 @@ export default function HomeView() {
                       </span>
                     </div>
 
-                    <Link
-                      href={`/forum/${item.id}`}
-                      className="text-decoration-none"
-                    >
-                      <h2
-                        className="h6 mb-1 text-break"
-                        style={{
-                          fontFamily: "var(--font-tommy-extra), sans-serif",
-                          color: "#f2ece1",
-                          lineHeight: 1.4,
-                        }}
+                    {item.topCard && cardTheme ? (
+                      <Link
+                        href="/top"
+                        className="text-decoration-none d-block my-2"
                       >
-                        {item.title}
-                      </h2>
-                    </Link>
+                        <div
+                          className="p-3 rounded-4"
+                          style={{
+                            background: cardTheme.bg,
+                            border: `1px solid ${cardTheme.border}`,
+                            boxShadow: "0 10px 24px rgba(0, 0, 0, 0.45)",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5">
+                            <span
+                              className="px-2.5 py-0.5 rounded-pill"
+                              style={{
+                                fontFamily: "var(--font-tommy-medium), sans-serif",
+                                fontSize: "0.68rem",
+                                backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                color: cardTheme.accent,
+                              }}
+                            >
+                              {item.topCard.rank}
+                            </span>
+                            <span
+                              style={{
+                                fontFamily: "var(--font-caviar), sans-serif",
+                                fontSize: "0.74rem",
+                                color: cardTheme.accent,
+                                fontWeight: 600,
+                              }}
+                            >
+                              Karya @{item.topCard.author}
+                            </span>
+                          </div>
 
-                    <p
-                      className="mb-2 text-break"
-                      style={{
-                        fontFamily: "var(--font-tommy-regular), sans-serif",
-                        fontSize: "0.83rem",
-                        color: "#b8ad9e",
-                      }}
-                    >
-                      {item.excerpt}
-                    </p>
+                          <h2
+                            className="h5 mb-1 text-break"
+                            style={{
+                              fontFamily: "var(--font-tommy-extra), sans-serif",
+                              color: "#f2ece1",
+                              lineHeight: 1.35,
+                            }}
+                          >
+                            {item.topCard.projectTitle}
+                          </h2>
+
+                          <p
+                            className="mb-2 text-break"
+                            style={{
+                              fontFamily: "var(--font-tommy-regular), sans-serif",
+                              fontSize: "0.82rem",
+                              color: "#cfc5b6",
+                            }}
+                          >
+                            {item.topCard.note}
+                          </p>
+
+                          <div className="d-flex flex-wrap gap-1">
+                            {(item.topCard.stack || []).map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-2 py-0 rounded-pill"
+                                style={{
+                                  fontSize: "0.66rem",
+                                  backgroundColor: "rgba(255,255,255,0.06)",
+                                  color: cardTheme.accent,
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          href={`/forum/${item.id}`}
+                          className="text-decoration-none"
+                        >
+                          <h2
+                            className="h6 mb-1 text-break"
+                            style={{
+                              fontFamily: "var(--font-tommy-extra), sans-serif",
+                              color: "#f2ece1",
+                              lineHeight: 1.4,
+                            }}
+                          >
+                            {item.title}
+                          </h2>
+                        </Link>
+
+                        <p
+                          className="mb-2 text-break"
+                          style={{
+                            fontFamily: "var(--font-tommy-regular), sans-serif",
+                            fontSize: "0.83rem",
+                            color: "#b8ad9e",
+                          }}
+                        >
+                          {item.excerpt}
+                        </p>
+                      </>
+                    )}
 
                     {item.image && (
                       <div
@@ -536,7 +635,7 @@ export default function HomeView() {
                       </button>
 
                       <Link
-                        href={`/forum/${item.id}`}
+                        href={item.topCard ? "/top" : `/forum/${item.id}`}
                         onClick={() => setActiveReplyId(item.id)}
                         className="text-decoration-none d-inline-flex align-items-center gap-1"
                         style={{
