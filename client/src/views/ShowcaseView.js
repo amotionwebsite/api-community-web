@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown, ImageSquare, X } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
+import { useAuthStore } from "../store/useAuthStore";
 
 const TERMUX_LOGO_URI =
   "data:image/svg+xml;utf8," +
@@ -219,40 +220,16 @@ const ApplauseSvg = ({ size = 17, active = false }) => (
   </svg>
 );
 
-const INITIAL_PROJECTS = [
-  {
-    id: "p1",
-    title: "aMotion / Loopin Project",
-    author: "jason_franklin",
-    desc: "Platform komunitas dan streaming terpadu dengan ruang Circle, Reels, dan pemutar musik tersinkronisasi.",
-    stack: ["Next.js", "Node.js", "MongoDB"],
-    bannerUrl: "",
-    demoUrl: "https://api-community-web.vercel.app",
-    applause: 24,
-    replies: [
-      { id: "r1", author: "rizky_dev", text: "UI glassmorphism-nya halus banget bang!" },
-    ],
-    isNew: false,
-  },
-  {
-    id: "p2",
-    title: "Bot Guard WhatsApp API",
-    author: "apigroup_official",
-    desc: "Otomasi moderasi grup developer berbasis Baileys & PM2 yang ringan dijalankan langsung di Termux.",
-    stack: ["Node.js", "Baileys", "Termux"],
-    bannerUrl: "",
-    demoUrl: "https://discord.gg/7A5qtTpYT",
-    applause: 19,
-    replies: [],
-    isNew: false,
-  },
-];
-
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
 export default function ShowcaseView() {
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
-  const [likedIds, setLikedIds] = useState([]);
+  const {
+    user,
+    projects,
+    setProjects,
+    likedProjectIds,
+    toggleProjectLike,
+  } = useAuthStore();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
@@ -301,16 +278,6 @@ export default function ShowcaseView() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const toggleApplause = (id) => {
-    const liked = likedIds.includes(id);
-    setLikedIds(liked ? likedIds.filter((x) => x !== id) : [...likedIds, id]);
-    setProjects(
-      projects.map((p) =>
-        p.id === id ? { ...p, applause: p.applause + (liked ? -1 : 1) } : p
-      )
-    );
-  };
-
   const handleAddReply = (e, projectId) => {
     e.preventDefault();
     const text = (replyInputs[projectId] || "").trim();
@@ -324,7 +291,7 @@ export default function ShowcaseView() {
                 ...(p.replies || []),
                 {
                   id: String(Date.now()),
-                  author: "member_api",
+                  author: user?.username || "member_api",
                   text,
                 },
               ],
@@ -389,7 +356,7 @@ export default function ShowcaseView() {
     const newProject = {
       id: String(Date.now()),
       title: title.trim(),
-      author: "builder_api",
+      author: user?.username || "builder_api",
       desc: desc.trim(),
       stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
       bannerUrl,
@@ -795,7 +762,7 @@ export default function ShowcaseView() {
         <div className="d-flex flex-column gap-3 mb-4">
           <AnimatePresence initial={false}>
             {projects.map((p, idx) => {
-              const liked = likedIds.includes(p.id);
+              const liked = likedProjectIds.includes(p.id);
               const isEditingThis = editingId === p.id && showForm;
               const isReplyOpen = openReplyId === p.id;
               const replies = p.replies || [];
@@ -994,7 +961,7 @@ export default function ShowcaseView() {
                       <div className="d-inline-flex align-items-center gap-1.5">
                         <button
                           type="button"
-                          onClick={() => toggleApplause(p.id)}
+                          onClick={() => toggleProjectLike(p.id)}
                           className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
                           style={{
                             fontSize: "0.76rem",
