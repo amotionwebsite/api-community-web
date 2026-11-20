@@ -61,21 +61,28 @@ const ApplauseSvg = ({ size = 16, active = false }) => (
 const CARD_THEMES = [
   {
     id: "sogan",
-    label: "Sogan Gold",
+    label: "Top #1 Emas",
     bg: "linear-gradient(135deg, #241c13 0%, #130f0c 55%, #1d160e 100%)",
-    border: "rgba(197, 160, 89, 0.45)",
+    border: "rgba(197, 160, 89, 0.48)",
     accent: "#c5a059",
   },
   {
     id: "emerald",
-    label: "Emerald Craft",
-    bg: "linear-gradient(135deg, #132119 0%, #0d1410 55%, #14221a 100%)",
-    border: "rgba(118, 168, 130, 0.45)",
+    label: "Top #2 Emerald",
+    bg: "linear-gradient(135deg, #13231a 0%, #0d1410 55%, #14261c 100%)",
+    border: "rgba(118, 168, 130, 0.48)",
     accent: "#8fc29b",
   },
   {
+    id: "blue",
+    label: "Top #3 Biru",
+    bg: "linear-gradient(135deg, #131e2c 0%, #0d1117 55%, #142130 100%)",
+    border: "rgba(106, 165, 232, 0.48)",
+    accent: "#7eb6f5",
+  },
+  {
     id: "obsidian",
-    label: "Obsidian Violet",
+    label: "Top #4 Violet",
     bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
     border: "rgba(176, 146, 224, 0.42)",
     accent: "#c8b2eb",
@@ -125,6 +132,10 @@ export default function TopView() {
     setCustomNote(
       `${proj.title} meraih ${proj.applause} Apresiasi di Etalase Karya Member API!`
     );
+    if (rankNumber === 1) setThemeId("sogan");
+    else if (rankNumber === 2) setThemeId("emerald");
+    else if (rankNumber === 3) setThemeId("blue");
+    else setThemeId("obsidian");
     setErrors({ title: false });
   };
 
@@ -143,7 +154,7 @@ export default function TopView() {
     addFeedPost({
       id: String(Date.now()),
       title: `${customRank.trim() || "Top Karya"} — ${customTitle.trim()}`,
-      category: "Rilis Karya",
+      category: "Karya API",
       author: authorName,
       time: "Baru saja",
       excerpt:
@@ -152,6 +163,7 @@ export default function TopView() {
       content:
         customNote.trim() ||
         "Membagikan kartu pencapaian Top 10 Apresiasi Karya Member.",
+      demoUrl: refProj?.demoUrl || "https://api-community-web.vercel.app",
       topCard: {
         rank: customRank.trim() || "#1 Top Karya",
         projectTitle: customTitle.trim(),
@@ -159,6 +171,7 @@ export default function TopView() {
         applause: refProj?.applause || 1,
         stack: refProj?.stack || ["Next.js"],
         note: customNote.trim(),
+        demoUrl: refProj?.demoUrl || "https://api-community-web.vercel.app",
         themeId,
       },
       comments: [],
@@ -170,28 +183,48 @@ export default function TopView() {
 
   const getRankBadgeStyle = (rankIdx) => {
     if (rankIdx === 0) {
+      // Top 1: Emas
       return {
-        background: "linear-gradient(180deg, #dfba6d 0%, #b58d42 100%)",
+        background: "linear-gradient(180deg, #e5be6b 0%, #b58c3e 100%)",
         color: "#120f0c",
+        boxShadow: "0 4px 12px rgba(197, 160, 89, 0.28)",
       };
     }
     if (rankIdx === 1) {
+      // Top 2: Hijau Emerald
       return {
-        background: "rgba(216, 212, 206, 0.22)",
-        border: "1px solid rgba(216, 212, 206, 0.45)",
-        color: "#f2ece1",
+        background: "rgba(118, 168, 130, 0.24)",
+        border: "1px solid rgba(118, 168, 130, 0.55)",
+        color: "#9fd0aa",
       };
     }
     if (rankIdx === 2) {
+      // Top 3: Biru
       return {
-        background: "rgba(184, 107, 67, 0.24)",
-        border: "1px solid rgba(184, 107, 67, 0.48)",
-        color: "#eab18e",
+        background: "rgba(106, 165, 232, 0.22)",
+        border: "1px solid rgba(106, 165, 232, 0.52)",
+        color: "#8cc0fa",
+      };
+    }
+    if (rankIdx === 3) {
+      // Top 4: Ungu Violet lembut
+      return {
+        background: "rgba(176, 146, 224, 0.18)",
+        border: "1px solid rgba(176, 146, 224, 0.42)",
+        color: "#cbb5ed",
+      };
+    }
+    if (rankIdx === 4) {
+      // Top 5: Terakota hangat
+      return {
+        background: "rgba(184, 107, 67, 0.2)",
+        border: "1px solid rgba(184, 107, 67, 0.45)",
+        color: "#e8a882",
       };
     }
     return {
       background: "rgba(255, 255, 255, 0.05)",
-      border: "1px solid rgba(197, 160, 89, 0.18)",
+      border: "1px solid rgba(197, 160, 89, 0.16)",
       color: "#b8ad9e",
     };
   };

@@ -12,8 +12,71 @@ const POST_TAGS = [
   "Workflow",
   "Diskusi Tech",
   "Tips & Trik",
-  "Rilis Karya",
+  "Karya API",
 ];
+
+const TERMUX_LOGO_URI =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="4" fill="#18181b" stroke="#e4e4e7" stroke-width="1.8"/><path d="M6.8 8.5L10.8 12L6.8 15.5" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><line x1="12.5" y1="15.5" x2="17.2" y2="15.5" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round"/></svg>'
+  );
+
+const TECH_LOGOS = {
+  html5: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+  css3: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
+  javascript: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+  typescript: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+  react: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+  "next.js": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
+  "vue.js": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg",
+  "nuxt.js": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nuxtjs/nuxtjs-original.svg",
+  svelte: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg",
+  angular: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg",
+  vite: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
+  "tailwind css": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+  bootstrap: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
+  sass: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sass/sass-original.svg",
+  "framer motion": "https://cdn.simpleicons.org/framer/ffffff",
+  "node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+  "express.js": "https://cdn.simpleicons.org/express/ffffff",
+  nestjs: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg",
+  bun: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
+  deno: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/denojs/denojs-original.svg",
+  python: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
+  django: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg",
+  flask: "https://cdn.simpleicons.org/flask/ffffff",
+  fastapi: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg",
+  php: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+  laravel: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
+  go: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original-wordmark.svg",
+  rust: "https://cdn.simpleicons.org/rust/ffffff",
+  java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+  "spring boot": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg",
+  mongodb: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg",
+  postgresql: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg",
+  mysql: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+  sqlite: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg",
+  redis: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg",
+  prisma: "https://cdn.simpleicons.org/prisma/ffffff",
+  supabase: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg",
+  firebase: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg",
+  docker: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
+  linux: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg",
+  bash: "https://cdn.simpleicons.org/gnubash/ffffff",
+  termux: TERMUX_LOGO_URI,
+  git: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
+  nginx: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg",
+  vercel: "https://cdn.simpleicons.org/vercel/ffffff",
+  railway: "https://cdn.simpleicons.org/railway/ffffff",
+  cloudflare: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cloudflare/cloudflare-original.svg",
+  baileys: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+  pm2: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+  figma: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
+};
+
+const getTechLogo = (name) =>
+  TECH_LOGOS[(name || "").toLowerCase()] ||
+  "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/devicon/devicon-original.svg";
 
 const TOP_CARD_THEMES = {
   sogan: {
@@ -25,6 +88,11 @@ const TOP_CARD_THEMES = {
     bg: "linear-gradient(135deg, #132119 0%, #0d1410 55%, #14221a 100%)",
     border: "rgba(118, 168, 130, 0.42)",
     accent: "#8fc29b",
+  },
+  blue: {
+    bg: "linear-gradient(135deg, #131e2c 0%, #0d1117 55%, #142130 100%)",
+    border: "rgba(106, 165, 232, 0.48)",
+    accent: "#7eb6f5",
   },
   obsidian: {
     bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
@@ -38,8 +106,8 @@ const getCategoryBadgeStyle = (cat, isSelected = true) => {
   if (lower.includes("bug") || lower.includes("error")) {
     return isSelected
       ? {
-          backgroundColor: "rgba(217, 83, 79, 0.2)",
-          border: "1px solid rgba(217, 83, 79, 0.45)",
+          backgroundColor: "rgba(217, 83, 79, 0.22)",
+          border: "1px solid rgba(217, 83, 79, 0.48)",
           color: "#f28b82",
         }
       : {
@@ -51,54 +119,69 @@ const getCategoryBadgeStyle = (cat, isSelected = true) => {
   if (lower.includes("workflow")) {
     return isSelected
       ? {
-          backgroundColor: "rgba(118, 168, 130, 0.2)",
-          border: "1px solid rgba(118, 168, 130, 0.42)",
+          backgroundColor: "rgba(118, 168, 130, 0.22)",
+          border: "1px solid rgba(118, 168, 130, 0.46)",
           color: "#9fd0aa",
         }
       : {
-          backgroundColor: "rgba(255, 255, 255, 0.03)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          color: "#8f8578",
+          backgroundColor: "rgba(118, 168, 130, 0.08)",
+          border: "1px solid rgba(118, 168, 130, 0.22)",
+          color: "#8ab895",
         };
   }
   if (lower.includes("tips")) {
     return isSelected
       ? {
-          backgroundColor: "rgba(114, 159, 207, 0.18)",
-          border: "1px solid rgba(114, 159, 207, 0.4)",
-          color: "#9ec5f0",
+          backgroundColor: "rgba(106, 165, 232, 0.22)",
+          border: "1px solid rgba(106, 165, 232, 0.46)",
+          color: "#8cc0fa",
         }
       : {
-          backgroundColor: "rgba(255, 255, 255, 0.03)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          color: "#8f8578",
+          backgroundColor: "rgba(106, 165, 232, 0.08)",
+          border: "1px solid rgba(106, 165, 232, 0.22)",
+          color: "#7aa8de",
         };
   }
-  if (lower.includes("rilis")) {
+  if (lower.includes("karya") || lower.includes("rilis")) {
     return isSelected
       ? {
-          backgroundColor: "rgba(184, 107, 67, 0.2)",
-          border: "1px solid rgba(184, 107, 67, 0.45)",
+          backgroundColor: "rgba(184, 107, 67, 0.22)",
+          border: "1px solid rgba(184, 107, 67, 0.46)",
           color: "#e8a882",
         }
       : {
-          backgroundColor: "rgba(255, 255, 255, 0.03)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          color: "#8f8578",
+          backgroundColor: "rgba(184, 107, 67, 0.08)",
+          border: "1px solid rgba(184, 107, 67, 0.22)",
+          color: "#d19370",
         };
   }
   return isSelected
     ? {
-        backgroundColor: "rgba(197, 160, 89, 0.18)",
-        border: "1px solid rgba(197, 160, 89, 0.45)",
+        backgroundColor: "rgba(197, 160, 89, 0.22)",
+        border: "1px solid rgba(197, 160, 89, 0.48)",
         color: "#e6cfa3",
       }
     : {
-        backgroundColor: "rgba(255, 255, 255, 0.03)",
-        border: "1px solid rgba(255, 255, 255, 0.06)",
-        color: "#8f8578",
+        backgroundColor: "rgba(197, 160, 89, 0.08)",
+        border: "1px solid rgba(197, 160, 89, 0.22)",
+        color: "#bfa574",
       };
 };
+
+const VisitArrowSvg = ({ size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M15.586 7H10c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8c.198.013.325.033.5.134.322.186.476.506.5.866v8c-.03.451-.288.844-.741.966-.656.176-1.217-.327-1.259-.966V8.414l-9.95 9.95c-.41.359-1.01.404-1.414 0-.405-.404-.359-1.005 0-1.414Z"
+    />
+  </svg>
+);
 
 const UpvoteSvg = ({ size = 16, active = false }) => (
   <svg
@@ -317,6 +400,10 @@ export default function HomeView() {
       time: "Baru saja",
       excerpt: contentClean,
       content: contentClean,
+      demoUrl:
+        selectedTag === "Karya API"
+          ? "https://api-community-web.vercel.app"
+          : undefined,
       code: codeSnippet.trim() || null,
       image: postImage || null,
       comments: [],
@@ -381,7 +468,11 @@ export default function HomeView() {
             const upvoted = upvotedIds.includes(item.id);
             const replyActive = activeReplyId === item.id;
             const isCopied = copiedId === `code-${item.id}`;
-            const badgeStyle = getCategoryBadgeStyle(item.category, true);
+            const displayCategory =
+              item.category === "Rilis Karya" ? "Karya API" : item.category;
+            const isKaryaPost =
+              Boolean(item.topCard) || displayCategory === "Karya API";
+            const badgeStyle = getCategoryBadgeStyle(displayCategory, true);
             const snippet =
               item.code ||
               (item.id === "1"
@@ -391,6 +482,11 @@ export default function HomeView() {
             const cardTheme = item.topCard
               ? TOP_CARD_THEMES[item.topCard.themeId] || TOP_CARD_THEMES.sogan
               : null;
+
+            const visitHref =
+              item.topCard?.demoUrl ||
+              item.demoUrl ||
+              "https://api-community-web.vercel.app";
 
             return (
               <motion.article
@@ -442,15 +538,32 @@ export default function HomeView() {
                             ...badgeStyle,
                           }}
                         >
-                          {item.category}
+                          {displayCategory}
                         </span>
                       </div>
-                      <span
-                        className="flex-shrink-0"
-                        style={{ fontSize: "0.7rem", color: "#7d7367" }}
-                      >
-                        {item.time}
-                      </span>
+
+                      {isKaryaPost ? (
+                        <a
+                          href={visitHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-sogan px-2.5 py-0.5 d-inline-flex align-items-center gap-1 flex-shrink-0"
+                          style={{
+                            fontFamily: "var(--font-tommy-medium), sans-serif",
+                            fontSize: "0.72rem",
+                          }}
+                        >
+                          <span>Kunjungi</span>
+                          <VisitArrowSvg size={14} />
+                        </a>
+                      ) : (
+                        <span
+                          className="flex-shrink-0"
+                          style={{ fontSize: "0.7rem", color: "#7d7367" }}
+                        >
+                          {item.time}
+                        </span>
+                      )}
                     </div>
 
                     {item.topCard && cardTheme ? (
@@ -512,18 +625,26 @@ export default function HomeView() {
                             {item.topCard.note}
                           </p>
 
-                          <div className="d-flex flex-wrap gap-1">
+                          <div className="d-flex flex-wrap gap-1.5">
                             {(item.topCard.stack || []).map((tag) => (
                               <span
                                 key={tag}
-                                className="px-2 py-0 rounded-pill"
+                                className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
                                 style={{
-                                  fontSize: "0.66rem",
-                                  backgroundColor: "rgba(255,255,255,0.06)",
-                                  color: cardTheme.accent,
+                                  fontSize: "0.68rem",
+                                  background: "rgba(118, 168, 130, 0.12)",
+                                  border: "1px solid rgba(118, 168, 130, 0.25)",
+                                  color: "#9fd0aa",
                                 }}
                               >
-                                {tag}
+                                <img
+                                  src={getTechLogo(tag)}
+                                  alt=""
+                                  width={12}
+                                  height={12}
+                                  className="object-fit-contain flex-shrink-0"
+                                />
+                                <span>{tag}</span>
                               </span>
                             ))}
                           </div>
@@ -620,32 +741,46 @@ export default function HomeView() {
                       </div>
                     )}
 
-                    <div className="d-flex align-items-center gap-3 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => toggleUpvote(item.id)}
-                        className="btn btn-sm p-0 border-0 d-inline-flex align-items-center gap-1"
-                        style={{
-                          fontSize: "0.76rem",
-                          color: upvoted ? "#c5a059" : "#8f8578",
-                        }}
-                      >
-                        <UpvoteSvg size={16} active={upvoted} />
-                        <span>{upvoted ? "Terbantu" : "Bantu Naik"}</span>
-                      </button>
+                    {/* Baris Bawah: Karya API hanya Balasan di kiri + Waktu di pojok kanan bawah; Bug & Error tetap ada Bantu Naik */}
+                    <div className="d-flex align-items-center justify-content-between pt-1">
+                      <div className="d-flex align-items-center gap-3">
+                        {!isKaryaPost && (
+                          <button
+                            type="button"
+                            onClick={() => toggleUpvote(item.id)}
+                            className="btn btn-sm p-0 border-0 d-inline-flex align-items-center gap-1"
+                            style={{
+                              fontSize: "0.76rem",
+                              color: upvoted ? "#c5a059" : "#8f8578",
+                            }}
+                          >
+                            <UpvoteSvg size={16} active={upvoted} />
+                            <span>{upvoted ? "Terbantu" : "Bantu Naik"}</span>
+                          </button>
+                        )}
 
-                      <Link
-                        href={item.topCard ? "/top" : `/forum/${item.id}`}
-                        onClick={() => setActiveReplyId(item.id)}
-                        className="text-decoration-none d-inline-flex align-items-center gap-1"
-                        style={{
-                          fontSize: "0.76rem",
-                          color: replyActive ? "#c5a059" : "#8f8578",
-                        }}
-                      >
-                        <ReplySvg size={16} active={replyActive} />
-                        <span>{item.comments?.length || 0} Balasan</span>
-                      </Link>
+                        <Link
+                          href={item.topCard ? "/top" : `/forum/${item.id}`}
+                          onClick={() => setActiveReplyId(item.id)}
+                          className="text-decoration-none d-inline-flex align-items-center gap-1"
+                          style={{
+                            fontSize: "0.76rem",
+                            color: replyActive ? "#c5a059" : "#8f8578",
+                          }}
+                        >
+                          <ReplySvg size={16} active={replyActive} />
+                          <span>{item.comments?.length || 0} Balasan</span>
+                        </Link>
+                      </div>
+
+                      {isKaryaPost && (
+                        <span
+                          className="flex-shrink-0"
+                          style={{ fontSize: "0.7rem", color: "#7d7367" }}
+                        >
+                          {item.time}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -885,7 +1020,7 @@ export default function HomeView() {
                   )}
                 </AnimatePresence>
 
-                {/* Pilihan Tag Ringkas & Clean di Atas Tombol Sisipkan Kode */}
+                {/* Pilihan Tag Ringkas dengan Warna Seragam Berbeda Tiap Kategori */}
                 <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
                   {POST_TAGS.map((tag) => {
                     const active = selectedTag === tag;
