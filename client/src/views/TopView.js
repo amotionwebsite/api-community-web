@@ -614,7 +614,7 @@ export default function TopView() {
                           style={{
                             fontFamily: "var(--font-tommy-medium), sans-serif",
                             fontSize: "0.68rem",
-                            color: rankStyle.color,
+                            color: idx === 0 ? "#e5be6b" : rankStyle.color,
                           }}
                         >
                           Top {idx + 1} Karya
