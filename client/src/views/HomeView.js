@@ -572,81 +572,140 @@ export default function HomeView() {
                         className="text-decoration-none d-block my-2"
                       >
                         <div
-                          className="p-3 rounded-4"
+                          className="rounded-4 overflow-hidden"
                           style={{
                             background: cardTheme.bg,
                             border: `1px solid ${cardTheme.border}`,
                             boxShadow: "0 10px 24px rgba(0, 0, 0, 0.45)",
                           }}
                         >
-                          <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5">
-                            <span
-                              className="px-2.5 py-0.5 rounded-pill"
-                              style={{
-                                fontFamily: "var(--font-tommy-medium), sans-serif",
-                                fontSize: "0.68rem",
-                                backgroundColor: "rgba(255, 255, 255, 0.08)",
-                                color: cardTheme.accent,
-                              }}
-                            >
-                              {item.topCard.rank}
-                            </span>
-                            <span
-                              style={{
-                                fontFamily: "var(--font-caviar), sans-serif",
-                                fontSize: "0.74rem",
-                                color: cardTheme.accent,
-                                fontWeight: 600,
-                              }}
-                            >
-                              Karya @{item.topCard.author}
-                            </span>
-                          </div>
-
-                          <h2
-                            className="h5 mb-1 text-break"
-                            style={{
-                              fontFamily: "var(--font-tommy-extra), sans-serif",
-                              color: "#f2ece1",
-                              lineHeight: 1.35,
-                            }}
+                          {/* Banner Karya di dalam Card Feed dengan Blur Bawah Halus */}
+                          <div
+                            className="position-relative w-100 overflow-hidden"
+                            style={{ height: "132px", backgroundColor: "#14110e" }}
                           >
-                            {item.topCard.projectTitle}
-                          </h2>
-
-                          <p
-                            className="mb-2 text-break"
-                            style={{
-                              fontFamily: "var(--font-tommy-regular), sans-serif",
-                              fontSize: "0.82rem",
-                              color: "#cfc5b6",
-                            }}
-                          >
-                            {item.topCard.note}
-                          </p>
-
-                          <div className="d-flex flex-wrap gap-1.5">
-                            {(item.topCard.stack || []).map((tag) => (
-                              <span
-                                key={tag}
-                                className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
+                            {item.topCard.bannerUrl ? (
+                              <img
+                                src={item.topCard.bannerUrl}
+                                alt={item.topCard.projectTitle}
+                                className="w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <div
+                                className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
                                 style={{
-                                  fontSize: "0.68rem",
-                                  background: "rgba(118, 168, 130, 0.12)",
-                                  border: "1px solid rgba(118, 168, 130, 0.25)",
-                                  color: "#9fd0aa",
+                                  background:
+                                    "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.16), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
                                 }}
                               >
-                                <img
-                                  src={getTechLogo(tag)}
-                                  alt=""
-                                  width={12}
-                                  height={12}
-                                  className="object-fit-contain flex-shrink-0"
-                                />
-                                <span>{tag}</span>
+                                <span
+                                  style={{
+                                    fontFamily: "var(--font-tommy-extra), sans-serif",
+                                    fontSize: "0.95rem",
+                                    color: "rgba(242, 236, 225, 0.2)",
+                                  }}
+                                >
+                                  {item.topCard.projectTitle}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Blur tipis & halus di dasar banner agar tidak menutupi banner */}
+                            <div
+                              className="position-absolute bottom-0 start-0 w-100"
+                              style={{
+                                height: "42px",
+                                backdropFilter: "blur(5px)",
+                                WebkitBackdropFilter: "blur(5px)",
+                                maskImage:
+                                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                                WebkitMaskImage:
+                                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                                pointerEvents: "none",
+                              }}
+                            />
+
+                            <div
+                              className="position-absolute bottom-0 start-0 w-100"
+                              style={{
+                                height: "48px",
+                                background:
+                                  "linear-gradient(to top, rgba(19, 15, 12, 0.96) 0%, rgba(19, 15, 12, 0.55) 45%, rgba(19, 15, 12, 0) 100%)",
+                                pointerEvents: "none",
+                              }}
+                            />
+                          </div>
+
+                          <div className="p-3 pt-1.5">
+                            <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5">
+                              <span
+                                className="px-2.5 py-0.5 rounded-pill"
+                                style={{
+                                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                                  fontSize: "0.68rem",
+                                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                  color: cardTheme.accent,
+                                }}
+                              >
+                                {item.topCard.rank}
                               </span>
-                            ))}
+                              <span
+                                style={{
+                                  fontFamily: "var(--font-caviar), sans-serif",
+                                  fontSize: "0.74rem",
+                                  color: cardTheme.accent,
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Karya @{item.topCard.author}
+                              </span>
+                            </div>
+
+                            <h2
+                              className="h5 mb-1 text-break"
+                              style={{
+                                fontFamily: "var(--font-tommy-extra), sans-serif",
+                                color: "#f2ece1",
+                                lineHeight: 1.35,
+                              }}
+                            >
+                              {item.topCard.projectTitle}
+                            </h2>
+
+                            <p
+                              className="mb-2 text-break"
+                              style={{
+                                fontFamily: "var(--font-tommy-regular), sans-serif",
+                                fontSize: "0.82rem",
+                                color: "#cfc5b6",
+                              }}
+                            >
+                              {item.topCard.note}
+                            </p>
+
+                            <div className="d-flex flex-wrap gap-1.5">
+                              {(item.topCard.stack || []).map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
+                                  style={{
+                                    fontSize: "0.68rem",
+                                    background: "rgba(118, 168, 130, 0.12)",
+                                    border: "1px solid rgba(118, 168, 130, 0.25)",
+                                    color: "#9fd0aa",
+                                  }}
+                                >
+                                  <img
+                                    src={getTechLogo(tag)}
+                                    alt=""
+                                    width={12}
+                                    height={12}
+                                    className="object-fit-contain flex-shrink-0"
+                                  />
+                                  <span>{tag}</span>
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </Link>

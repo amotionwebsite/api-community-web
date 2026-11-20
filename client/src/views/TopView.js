@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/useAuthStore";
 
-const PlusSvg = ({ size = 21 }) => (
+const PostToFeedSvg = ({ size = 14 }) => (
   <svg
     width={size}
     height={size}
@@ -16,7 +16,7 @@ const PlusSvg = ({ size = 21 }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       fill="currentColor"
-      d="M13 13v6c-.036.543-.428 1-1 1s-.964-.457-1-1v-6H5c-.543-.036-1-.428-1-1s.457-.964 1-1h6V5c.036-.543.428-1 1-1s.964.457 1 1v6h6c.543.036 1 .428 1 1s-.457.964-1 1Z"
+      d="M9.771 13.974c-.895-.209-1.035-1.47-.211-1.872A1 1 0 0 1 10 12h2c.383.022.725.206.898.56.339.693-.169 1.398-.898 1.44h-2Zm0-4c-.895-.209-1.035-1.47-.211-1.872A1 1 0 0 1 10 8h4c.46.026.865.305.974.771.15.645-.344 1.193-.974 1.229h-4ZM10 22v.01H8c-.308-.01-.5-.026-.798-.107C5.866 21.536 5.046 20.366 5 19.01V9H3.25c-.336-.017-.642-.124-.884-.366S2.017 8.086 2 7.75V6c.046-1.356.866-2.526 2.202-2.893.347-.095.44-.083.798-.107v2c-1.167.134-1 1.065-1 2h1V3h11c1.708.057 2.943 1.292 3 3v10c.49 0 1.019-.077 1.449.213.355.24.53.619.551 1.037V19c-.036 1.066-.551 2.043-1.486 2.59-.468.274-.976.392-1.514.41Zm1-4c0 .695.048 1.341-.181 2H18c1.171-.067 1-1.145 1-2Zm6-2V6c-.033-.568-.432-.967-1-1H7v14.01c.038.667.565 1.108 1.229.954A1 1 0 0 0 9 18.99v-1.74c.025-.502.288-.951.763-1.152.177-.074.296-.088.487-.098Z"
     />
   </svg>
 );
@@ -61,28 +61,28 @@ const ApplauseSvg = ({ size = 16, active = false }) => (
 const CARD_THEMES = [
   {
     id: "sogan",
-    label: "Top #1 Emas",
+    label: "Top 1 Emas",
     bg: "linear-gradient(135deg, #241c13 0%, #130f0c 55%, #1d160e 100%)",
     border: "rgba(197, 160, 89, 0.48)",
     accent: "#c5a059",
   },
   {
     id: "emerald",
-    label: "Top #2 Emerald",
+    label: "Top 2 Emerald",
     bg: "linear-gradient(135deg, #13231a 0%, #0d1410 55%, #14261c 100%)",
     border: "rgba(118, 168, 130, 0.48)",
     accent: "#8fc29b",
   },
   {
     id: "blue",
-    label: "Top #3 Biru",
+    label: "Top 3 Biru",
     bg: "linear-gradient(135deg, #131e2c 0%, #0d1117 55%, #142130 100%)",
     border: "rgba(106, 165, 232, 0.48)",
     accent: "#7eb6f5",
   },
   {
     id: "obsidian",
-    label: "Top #4 Violet",
+    label: "Top 4 Violet",
     bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
     border: "rgba(176, 146, 224, 0.42)",
     accent: "#c8b2eb",
@@ -107,17 +107,18 @@ export default function TopView() {
       .slice(0, 10);
   }, [projects]);
 
+  const activeUsername = (user?.username || "builder_api").toLowerCase();
+
+  const canPostProject = (proj) => {
+    const owner = (proj?.author || "").toLowerCase();
+    return owner === activeUsername;
+  };
+
   const [showBuilder, setShowBuilder] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState(
-    top10Projects[0]?.id || ""
-  );
-  const [customTitle, setCustomTitle] = useState(
-    top10Projects[0]?.title || "Karya Pilihan API"
-  );
-  const [customRank, setCustomRank] = useState("#1 Top Karya");
-  const [customNote, setCustomNote] = useState(
-    "Bangga tembus jajaran Top 10 Karya Member Anak Programmer Indonesia!"
-  );
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [customTitle, setCustomTitle] = useState("");
+  const [customRank, setCustomRank] = useState("Top 1 Karya");
+  const [customNote, setCustomNote] = useState("");
   const [themeId, setThemeId] = useState("sogan");
   const [errors, setErrors] = useState({ title: false });
   const [shakeTick, setShakeTick] = useState(0);
@@ -125,10 +126,13 @@ export default function TopView() {
   const selectedTheme =
     CARD_THEMES.find((t) => t.id === themeId) || CARD_THEMES[0];
 
-  const handleSelectPreset = (proj, rankNumber) => {
+  const selectedProj = top10Projects.find((p) => p.id === selectedProjectId);
+
+  const handleOpenCardEditor = (proj, rankNumber) => {
+    if (!canPostProject(proj)) return;
     setSelectedProjectId(proj.id);
     setCustomTitle(proj.title);
-    setCustomRank(`#${rankNumber} Top Karya`);
+    setCustomRank(`Top ${rankNumber} Karya`);
     setCustomNote(
       `${proj.title} meraih ${proj.applause} Apresiasi di Etalase Karya Member API!`
     );
@@ -137,6 +141,8 @@ export default function TopView() {
     else if (rankNumber === 3) setThemeId("blue");
     else setThemeId("obsidian");
     setErrors({ title: false });
+    setShowBuilder(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleShareCardToFeed = (e) => {
@@ -148,14 +154,13 @@ export default function TopView() {
     }
 
     const refProj = top10Projects.find((p) => p.id === selectedProjectId);
-    const authorName =
-      user?.username || refProj?.author || "builder_api";
+    if (!refProj || !canPostProject(refProj)) return;
 
     addFeedPost({
       id: String(Date.now()),
-      title: `${customRank.trim() || "Top Karya"} — ${customTitle.trim()}`,
+      title: `${customRank.trim() || "Top 1 Karya"} — ${customTitle.trim()}`,
       category: "Karya API",
-      author: authorName,
+      author: refProj.author,
       time: "Baru saja",
       excerpt:
         customNote.trim() ||
@@ -163,15 +168,16 @@ export default function TopView() {
       content:
         customNote.trim() ||
         "Membagikan kartu pencapaian Top 10 Apresiasi Karya Member.",
-      demoUrl: refProj?.demoUrl || "https://api-community-web.vercel.app",
+      demoUrl: refProj.demoUrl || "https://api-community-web.vercel.app",
       topCard: {
-        rank: customRank.trim() || "#1 Top Karya",
+        rank: customRank.trim() || "Top 1 Karya",
         projectTitle: customTitle.trim(),
-        author: refProj?.author || authorName,
-        applause: refProj?.applause || 1,
-        stack: refProj?.stack || ["Next.js"],
+        author: refProj.author,
+        applause: refProj.applause || 1,
+        stack: refProj.stack || ["Next.js"],
+        bannerUrl: refProj.bannerUrl || "",
         note: customNote.trim(),
-        demoUrl: refProj?.demoUrl || "https://api-community-web.vercel.app",
+        demoUrl: refProj.demoUrl || "https://api-community-web.vercel.app",
         themeId,
       },
       comments: [],
@@ -183,7 +189,6 @@ export default function TopView() {
 
   const getRankBadgeStyle = (rankIdx) => {
     if (rankIdx === 0) {
-      // Top 1: Emas
       return {
         background: "linear-gradient(180deg, #e5be6b 0%, #b58c3e 100%)",
         color: "#120f0c",
@@ -191,7 +196,6 @@ export default function TopView() {
       };
     }
     if (rankIdx === 1) {
-      // Top 2: Hijau Emerald
       return {
         background: "rgba(118, 168, 130, 0.24)",
         border: "1px solid rgba(118, 168, 130, 0.55)",
@@ -199,7 +203,6 @@ export default function TopView() {
       };
     }
     if (rankIdx === 2) {
-      // Top 3: Biru
       return {
         background: "rgba(106, 165, 232, 0.22)",
         border: "1px solid rgba(106, 165, 232, 0.52)",
@@ -207,7 +210,6 @@ export default function TopView() {
       };
     }
     if (rankIdx === 3) {
-      // Top 4: Ungu Violet lembut
       return {
         background: "rgba(176, 146, 224, 0.18)",
         border: "1px solid rgba(176, 146, 224, 0.42)",
@@ -215,7 +217,6 @@ export default function TopView() {
       };
     }
     if (rankIdx === 4) {
-      // Top 5: Terakota hangat
       return {
         background: "rgba(184, 107, 67, 0.2)",
         border: "1px solid rgba(184, 107, 67, 0.45)",
@@ -234,45 +235,25 @@ export default function TopView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* Header Top 10 + Tombol (+) Buat Card Sendiri */}
-        <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
-          <div>
-            <h1
-              className="h4 mb-0"
-              style={{
-                fontFamily: "var(--font-coolvetica), sans-serif",
-                color: "#f2ece1",
-              }}
-            >
-              Top 10 Karya Member
-            </h1>
-            <p className="mb-0" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
-              Peringkat apresiasi tertinggi &amp; buat card pencapaianmu untuk diposting ke Feed.
-            </p>
-          </div>
-
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setShowBuilder(!showBuilder)}
-            title="Buat Card Top Karya"
-            className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
-            style={{ width: "38px", height: "38px", padding: 0 }}
+        {/* Header Top 10 (Tanpa tombol +) */}
+        <div className="mb-3">
+          <h1
+            className="h4 mb-0"
+            style={{
+              fontFamily: "var(--font-coolvetica), sans-serif",
+              color: "#f2ece1",
+            }}
           >
-            <motion.span
-              animate={{ rotate: showBuilder ? 45 : 0 }}
-              transition={{ duration: 0.28, ease: SMOOTH_EASE }}
-              className="d-inline-flex align-items-center justify-content-center"
-            >
-              <PlusSvg size={21} />
-            </motion.span>
-          </motion.button>
+            Top 10 Karya Member
+          </h1>
+          <p className="mb-0" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
+            Peringkat apresiasi tertinggi karya member Anak Programmer Indonesia.
+          </p>
         </div>
 
-        {/* Form Buat Card Sendiri & Posting ke Feed */}
+        {/* Panel Editor Card Peringkat Karya Milik User untuk Diposting ke Feed */}
         <AnimatePresence initial={false}>
-          {showBuilder && (
+          {showBuilder && selectedProj && (
             <motion.div
               key="top-card-builder"
               initial={{ opacity: 0, height: 0, y: -8 }}
@@ -306,36 +287,8 @@ export default function TopView() {
                       textTransform: "uppercase",
                     }}
                   >
-                    Buat Card Peringkat &amp; Posting ke Feed
+                    Posting Card Karyamu ke Feed
                   </span>
-                </div>
-
-                {/* Pilih Cepat dari Karya Top 10 */}
-                <div className="d-flex align-items-center gap-1.5 overflow-x-auto pb-1">
-                  {top10Projects.slice(0, 5).map((proj, i) => {
-                    const active = selectedProjectId === proj.id;
-                    return (
-                      <button
-                        key={proj.id}
-                        type="button"
-                        onClick={() => handleSelectPreset(proj, i + 1)}
-                        className="btn btn-sm rounded-pill px-2.5 py-0.5 flex-shrink-0"
-                        style={{
-                          fontFamily: "var(--font-tommy-medium), sans-serif",
-                          fontSize: "0.69rem",
-                          backgroundColor: active
-                            ? "rgba(197, 160, 89, 0.22)"
-                            : "rgba(255, 255, 255, 0.04)",
-                          border: active
-                            ? "1px solid #c5a059"
-                            : "1px solid rgba(255, 255, 255, 0.08)",
-                          color: active ? "#f2ece1" : "#9a8f80",
-                        }}
-                      >
-                        #{i + 1} {proj.title}
-                      </button>
-                    );
-                  })}
                 </div>
 
                 <div className="row g-2">
@@ -350,6 +303,7 @@ export default function TopView() {
                         background: "rgba(14,12,10,0.7)",
                         borderColor: "rgba(197,160,89,0.22)",
                         color: "#f2ece1",
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
                       }}
                     />
                   </div>
@@ -425,64 +379,119 @@ export default function TopView() {
                   })}
                 </div>
 
-                {/* Live Preview Card */}
+                {/* Live Preview Card dengan Banner Karya & Blur Bawah Halus */}
                 <div
-                  className="p-3 rounded-4 position-relative overflow-hidden"
+                  className="rounded-4 position-relative overflow-hidden"
                   style={{
                     background: selectedTheme.bg,
                     border: `1px solid ${selectedTheme.border}`,
                     boxShadow: "0 10px 26px rgba(0, 0, 0, 0.5)",
                   }}
                 >
-                  <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5">
-                    <span
-                      className="px-2.5 py-0.5 rounded-pill"
+                  {/* Banner Karya dengan Blur Halus di Bawah */}
+                  <div
+                    className="position-relative w-100 overflow-hidden"
+                    style={{ height: "136px", backgroundColor: "#14110e" }}
+                  >
+                    {selectedProj.bannerUrl ? (
+                      <img
+                        src={selectedProj.bannerUrl}
+                        alt={customTitle}
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    ) : (
+                      <div
+                        className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
+                        style={{
+                          background:
+                            "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.18), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "var(--font-tommy-extra), sans-serif",
+                            fontSize: "0.98rem",
+                            color: "rgba(242, 236, 225, 0.24)",
+                          }}
+                        >
+                          {customTitle || selectedProj.title}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Blur tipis & halus hanya di bagian paling bawah agar banner tidak tertutup */}
+                    <div
+                      className="position-absolute bottom-0 start-0 w-100"
                       style={{
-                        fontFamily: "var(--font-tommy-medium), sans-serif",
-                        fontSize: "0.68rem",
-                        backgroundColor: "rgba(255, 255, 255, 0.08)",
-                        color: selectedTheme.accent,
+                        height: "46px",
+                        backdropFilter: "blur(5px)",
+                        WebkitBackdropFilter: "blur(5px)",
+                        maskImage:
+                          "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                        pointerEvents: "none",
                       }}
-                    >
-                      {customRank || "#1 Top Karya"}
-                    </span>
-                    <span
+                    />
+
+                    <div
+                      className="position-absolute bottom-0 start-0 w-100"
                       style={{
-                        fontFamily: "var(--font-caviar), sans-serif",
-                        fontSize: "0.74rem",
-                        color: selectedTheme.accent,
-                        fontWeight: 600,
+                        height: "52px",
+                        background:
+                          "linear-gradient(to top, rgba(19, 15, 12, 0.96) 0%, rgba(19, 15, 12, 0.55) 45%, rgba(19, 15, 12, 0) 100%)",
+                        pointerEvents: "none",
                       }}
-                    >
-                      @
-                      {user?.username ||
-                        top10Projects.find((p) => p.id === selectedProjectId)
-                          ?.author ||
-                        "builder_api"}
-                    </span>
+                    />
                   </div>
 
-                  <h3
-                    className="h5 mb-1"
-                    style={{
-                      fontFamily: "var(--font-tommy-extra), sans-serif",
-                      color: "#f2ece1",
-                      lineHeight: 1.35,
-                    }}
-                  >
-                    {customTitle || "Nama Karya Member"}
-                  </h3>
+                  <div className="p-3 pt-1.5">
+                    <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5">
+                      <span
+                        className="px-2.5 py-0.5 rounded-pill"
+                        style={{
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.68rem",
+                          backgroundColor: "rgba(255, 255, 255, 0.08)",
+                          color: selectedTheme.accent,
+                        }}
+                      >
+                        {customRank || "Top 1 Karya"}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-caviar), sans-serif",
+                          fontSize: "0.74rem",
+                          color: selectedTheme.accent,
+                          fontWeight: 600,
+                        }}
+                      >
+                        @{selectedProj.author}
+                      </span>
+                    </div>
 
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontFamily: "var(--font-tommy-regular), sans-serif",
-                      fontSize: "0.8rem",
-                      color: "#cfc5b6",
-                    }}
-                  >
-                    {customNote}
-                  </p>
+                    <h3
+                      className="h5 mb-1"
+                      style={{
+                        fontFamily: "var(--font-tommy-extra), sans-serif",
+                        color: "#f2ece1",
+                        lineHeight: 1.35,
+                      }}
+                    >
+                      {customTitle || selectedProj.title}
+                    </h3>
+
+                    <p
+                      className="mb-0"
+                      style={{
+                        fontFamily: "var(--font-tommy-regular), sans-serif",
+                        fontSize: "0.8rem",
+                        color: "#cfc5b6",
+                      }}
+                    >
+                      {customNote}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="d-flex justify-content-end gap-2 mt-1">
@@ -500,7 +509,7 @@ export default function TopView() {
                     className="btn btn-sm btn-sogan px-3 d-inline-flex align-items-center gap-1.5"
                     style={{ fontFamily: "var(--font-tommy-medium), sans-serif" }}
                   >
-                    <span>Posting ke Feed</span>
+                    <span>Kirim ke Feed</span>
                     <SendSvg size={14} />
                   </motion.button>
                 </div>
@@ -510,10 +519,11 @@ export default function TopView() {
         </AnimatePresence>
 
         {/* Daftar Leaderboard Top 10 Apresiasi Karya Member */}
-        <div className="d-flex flex-column gap-2.5 mb-4">
+        <div className="d-flex flex-column gap-3 mb-4">
           {top10Projects.map((proj, idx) => {
             const liked = likedProjectIds.includes(proj.id);
             const rankStyle = getRankBadgeStyle(idx);
+            const isMine = canPostProject(proj);
 
             return (
               <motion.article
@@ -522,106 +532,162 @@ export default function TopView() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: idx * 0.04, ease: SMOOTH_EASE }}
-                className="smoked-glass smoked-glass-interactive p-3 d-flex align-items-center justify-content-between gap-2.5"
+                className="smoked-glass smoked-glass-interactive overflow-hidden"
               >
-                {/* Nomor Peringkat */}
+                {/* Banner Karya di Top dengan Blur Bawah Halus yang Tidak Menutupi Banner */}
                 <div
-                  className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    fontFamily: "var(--font-tommy-extra), sans-serif",
-                    fontSize: "0.85rem",
-                    ...rankStyle,
-                  }}
+                  className="position-relative w-100 overflow-hidden"
+                  style={{ height: "136px", backgroundColor: "#15120f" }}
                 >
-                  #{idx + 1}
-                </div>
-
-                {/* Info Karya & Author */}
-                <div className="flex-grow-1" style={{ minWidth: 0 }}>
-                  <div className="d-flex align-items-center gap-1.5 flex-wrap mb-0.5">
-                    <span
+                  {proj.bannerUrl ? (
+                    <img
+                      src={proj.bannerUrl}
+                      alt={proj.title}
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
                       style={{
-                        fontFamily: "var(--font-caviar), sans-serif",
-                        fontSize: "0.76rem",
-                        color: "#c5a059",
-                        fontWeight: 600,
+                        background:
+                          "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.16), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
                       }}
                     >
-                      @{proj.author}
-                    </span>
-                    {proj.stack?.[0] && (
                       <span
-                        className="px-2 py-0 rounded-pill"
                         style={{
-                          fontSize: "0.65rem",
-                          background: "rgba(118, 168, 130, 0.12)",
-                          border: "1px solid rgba(118, 168, 130, 0.25)",
-                          color: "#9fd0aa",
+                          fontFamily: "var(--font-tommy-extra), sans-serif",
+                          fontSize: "1rem",
+                          color: "rgba(242, 236, 225, 0.2)",
                         }}
                       >
-                        {proj.stack[0]}
+                        {proj.title}
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
-                  <h2
-                    className="h6 mb-0.5 text-truncate"
+                  {/* Blur tipis halus di dasar banner */}
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
                     style={{
-                      fontFamily: "var(--font-tommy-extra), sans-serif",
-                      color: "#f2ece1",
+                      height: "44px",
+                      backdropFilter: "blur(5px)",
+                      WebkitBackdropFilter: "blur(5px)",
+                      maskImage:
+                        "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                      WebkitMaskImage:
+                        "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0) 100%)",
+                      pointerEvents: "none",
                     }}
-                  >
-                    {proj.title}
-                  </h2>
+                  />
 
-                  <p
-                    className="mb-0 text-truncate"
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
                     style={{
-                      fontFamily: "var(--font-tommy-regular), sans-serif",
-                      fontSize: "0.78rem",
-                      color: "#9a8f80",
+                      height: "50px",
+                      background:
+                        "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.65) 42%, rgba(21, 18, 15, 0) 100%)",
+                      pointerEvents: "none",
                     }}
-                  >
-                    {proj.desc}
-                  </p>
+                  />
                 </div>
 
-                {/* Tombol Apresiasi + Buat Card */}
-                <div className="d-flex flex-column align-items-end gap-1 flex-shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => toggleProjectLike(proj.id)}
-                    className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                    style={{
-                      fontSize: "0.73rem",
-                      color: liked ? "#c5a059" : "#b8ad9e",
-                      borderColor: liked
-                        ? "rgba(197, 160, 89, 0.45)"
-                        : undefined,
-                    }}
-                  >
-                    <ApplauseSvg size={15} active={liked} />
-                    <span>{proj.applause}</span>
-                  </button>
+                {/* Bagian Konten Bawah Banner */}
+                <div className="p-3 pt-1.5 d-flex align-items-start justify-content-between gap-2.5">
+                  {/* Kiri: Badge Rank + Info Karya */}
+                  <div className="d-flex align-items-start gap-2.5 flex-grow-1" style={{ minWidth: 0 }}>
+                    <div
+                      className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5"
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        fontFamily: "var(--font-tommy-extra), sans-serif",
+                        fontSize: "0.85rem",
+                        ...rankStyle,
+                      }}
+                    >
+                      #{idx + 1}
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleSelectPreset(proj, idx + 1);
-                      setShowBuilder(true);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="btn btn-sm p-0 border-0"
-                    style={{
-                      fontFamily: "var(--font-tommy-medium), sans-serif",
-                      fontSize: "0.67rem",
-                      color: "#c5a059",
-                    }}
-                  >
-                    Buat Card
-                  </button>
+                    <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                      <div className="d-flex align-items-center gap-1.5 flex-wrap mb-0.5">
+                        <span
+                          style={{
+                            fontFamily: "var(--font-tommy-medium), sans-serif",
+                            fontSize: "0.68rem",
+                            color: rankStyle.color,
+                          }}
+                        >
+                          Top {idx + 1} Karya
+                        </span>
+                        <span style={{ color: "#6e655a", fontSize: "0.68rem" }}>&bull;</span>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-caviar), sans-serif",
+                            fontSize: "0.76rem",
+                            color: "#c5a059",
+                            fontWeight: 600,
+                          }}
+                        >
+                          @{proj.author}
+                        </span>
+                      </div>
+
+                      <h2
+                        className="h6 mb-0.5 text-truncate"
+                        style={{
+                          fontFamily: "var(--font-tommy-extra), sans-serif",
+                          color: "#f2ece1",
+                        }}
+                      >
+                        {proj.title}
+                      </h2>
+
+                      <p
+                        className="mb-0 text-truncate"
+                        style={{
+                          fontFamily: "var(--font-tommy-regular), sans-serif",
+                          fontSize: "0.78rem",
+                          color: "#9a8f80",
+                        }}
+                      >
+                        {proj.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Kanan: Tombol "Posting di Feed" di pojok kanan atas (khusus karya user sendiri) di atas tombol Apresiasi */}
+                  <div className="d-flex flex-column align-items-end gap-1.5 flex-shrink-0">
+                    {isMine && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenCardEditor(proj, idx + 1)}
+                        className="btn btn-sm btn-sogan px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1"
+                        style={{
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.69rem",
+                        }}
+                      >
+                        <PostToFeedSvg size={13} />
+                        <span>Posting di Feed</span>
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => toggleProjectLike(proj.id)}
+                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                      style={{
+                        fontSize: "0.73rem",
+                        color: liked ? "#c5a059" : "#b8ad9e",
+                        borderColor: liked
+                          ? "rgba(197, 160, 89, 0.45)"
+                          : undefined,
+                      }}
+                    >
+                      <ApplauseSvg size={15} active={liked} />
+                      <span>{proj.applause}</span>
+                    </button>
+                  </div>
                 </div>
               </motion.article>
             );

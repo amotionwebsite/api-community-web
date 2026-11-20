@@ -134,6 +134,17 @@ const NAV_ITEMS = [
   { href: "/top", label: "Top", icon: TopTrophySvg },
 ];
 
+const GLASS_CAPSULE_STYLE = {
+  background:
+    "linear-gradient(180deg, rgba(34, 29, 24, 0.56) 0%, rgba(16, 13, 11, 0.46) 100%)",
+  backdropFilter: "blur(28px) saturate(185%)",
+  WebkitBackdropFilter: "blur(28px) saturate(185%)",
+  border: "1px solid rgba(197, 160, 89, 0.28)",
+  boxShadow:
+    "0 12px 32px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+  fontFamily: "var(--font-tommy-personal), sans-serif",
+};
+
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
@@ -147,9 +158,9 @@ export default function Navbar() {
           <header
             className="position-fixed top-0 start-0 w-100 border-bottom"
             style={{
-              backgroundColor: "rgba(14, 12, 10, 0.88)",
-              backdropFilter: "blur(18px)",
-              WebkitBackdropFilter: "blur(18px)",
+              backgroundColor: "rgba(14, 12, 10, 0.78)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
               borderColor: "rgba(197, 160, 89, 0.14)",
               zIndex: 50,
             }}
@@ -184,17 +195,10 @@ export default function Navbar() {
                 </span>
               </Link>
 
-              {/* Desktop Center Nav */}
+              {/* Desktop Center Glass Nav Capsule */}
               <nav
-                className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill"
-                style={{
-                  backgroundColor: "rgba(16, 14, 11, 0.72)",
-                  backdropFilter: "blur(24px) saturate(160%)",
-                  WebkitBackdropFilter: "blur(24px) saturate(160%)",
-                  border: "1px solid rgba(197, 160, 89, 0.22)",
-                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
-                  fontFamily: "var(--font-tommy-personal), sans-serif",
-                }}
+                className="d-none d-md-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill"
+                style={GLASS_CAPSULE_STYLE}
               >
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
@@ -206,7 +210,7 @@ export default function Navbar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
+                      className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
                       style={{
                         fontSize: "0.78rem",
                         color: active ? "#f2ece1" : "#b8ad9e",
@@ -220,7 +224,7 @@ export default function Navbar() {
                             : { scale: 1, y: 0 }
                         }
                         transition={{ type: "spring", stiffness: 450, damping: 24 }}
-                        className="d-inline-flex align-items-center"
+                        className="d-inline-flex align-items-center bg-transparent"
                       >
                         <Icon size={17} active={active} />
                       </motion.span>
@@ -313,21 +317,14 @@ export default function Navbar() {
           <div style={{ height: "58px" }} />
         </>
       ) : (
-        /* Desktop Center Nav mengambang saat di Feed, Forum, Karya, Top */
+        /* Desktop Center Glass Nav Capsule saat di Feed, Forum, Karya, Top */
         <div
           className="d-none d-md-flex justify-content-center pt-3"
           style={{ zIndex: 45 }}
         >
           <nav
-            className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
-            style={{
-              backgroundColor: "rgba(16, 14, 11, 0.72)",
-              backdropFilter: "blur(24px) saturate(160%)",
-              WebkitBackdropFilter: "blur(24px) saturate(160%)",
-              border: "1px solid rgba(197, 160, 89, 0.22)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
-              fontFamily: "var(--font-tommy-personal), sans-serif",
-            }}
+            className="d-inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill"
+            style={GLASS_CAPSULE_STYLE}
           >
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
@@ -339,7 +336,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5"
+                  className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
                   style={{
                     fontSize: "0.78rem",
                     color: active ? "#f2ece1" : "#b8ad9e",
@@ -353,7 +350,7 @@ export default function Navbar() {
                         : { scale: 1, y: 0 }
                     }
                     transition={{ type: "spring", stiffness: 450, damping: 24 }}
-                    className="d-inline-flex align-items-center"
+                    className="d-inline-flex align-items-center bg-transparent"
                   >
                     <Icon size={17} active={active} />
                   </motion.span>
@@ -377,16 +374,11 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Mobile Floating Glass Dock */}
+      {/* Mobile Floating Glassmorphism Capsule Dock */}
       <nav
-        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3 py-1.5 rounded-4 d-flex align-items-center gap-1"
+        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3.5 py-1.5 rounded-pill d-flex align-items-center gap-1"
         style={{
-          backgroundColor: "rgba(18, 15, 12, 0.76)",
-          backdropFilter: "blur(26px) saturate(170%)",
-          WebkitBackdropFilter: "blur(26px) saturate(170%)",
-          border: "1px solid rgba(197, 160, 89, 0.24)",
-          boxShadow: "0 12px 32px rgba(0, 0, 0, 0.68)",
-          fontFamily: "var(--font-tommy-personal), sans-serif",
+          ...GLASS_CAPSULE_STYLE,
           zIndex: 50,
         }}
       >
@@ -400,7 +392,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="position-relative px-2 py-1 text-decoration-none d-flex flex-column align-items-center"
+              className="position-relative px-2.5 py-1 text-decoration-none d-flex flex-column align-items-center bg-transparent"
               style={{
                 color: active ? "#f2ece1" : "#c7bdb0",
                 fontSize: "0.63rem",
@@ -414,7 +406,7 @@ export default function Navbar() {
                     : { scale: 1, y: 0 }
                 }
                 transition={{ type: "spring", stiffness: 450, damping: 22 }}
-                className="d-inline-flex align-items-center"
+                className="d-inline-flex align-items-center bg-transparent"
               >
                 <Icon size={19} active={active} />
               </motion.span>
