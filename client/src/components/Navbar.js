@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { SignOut, UserCircle } from "@phosphor-icons/react";
+import { SignOut } from "@phosphor-icons/react";
 import { useAuthStore } from "../store/useAuthStore";
 
 const DashboardSvg = ({ size = 19, active = false }) => (
@@ -127,12 +127,37 @@ const TopTrophySvg = ({ size = 19, active = false }) => (
   </svg>
 );
 
+const YouUserSvg = ({ size = 19, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="#090807"
+        stroke="#c5a059"
+        strokeWidth="1.25"
+        d="M12.79 13.025a12.3 12.3 0 0 1 3.606.779c1.904.726 4.977 2.658 4.571 5.104-.131.79-.664 1.414-1.326 1.83-.949.597-2.11.836-3.2.997-1.156.171-2.327.232-3.494.256-1.793.036-3.611.007-5.388-.256-1.381-.204-3.192-.585-4.079-1.787-1.005-1.362-.278-2.97.769-4.046 2.098-2.155 5.616-3.062 8.541-2.877m-.279-10.999a5 5 0 0 1 2.669 1.116 5 5 0 0 1 1.595 2.371c1.06 3.412-1.737 6.821-5.286 6.461a5 5 0 0 1-2.669-1.116 5 5 0 0 1-1.595-2.371c-1.06-3.412 1.737-6.821 5.286-6.461"
+      />
+    ) : (
+      <path
+        fill="currentColor"
+        d="M12.75 13.022c2.566.154 5.641 1.2 7.328 3.241.893 1.081 1.347 2.552.391 3.761-.914 1.154-2.707 1.521-4.081 1.719-1.451.209-2.924.257-4.388.257-1.675 0-3.373-.054-5.023-.361-1.215-.225-2.64-.597-3.446-1.615-1.094-1.384-.345-3.044.741-4.146 2.097-2.129 5.57-3.031 8.478-2.856m-1.38 1.998a10.4 10.4 0 0 0-2.88.588 8.7 8.7 0 0 0-1.823.896c-.584.382-1.193.87-1.519 1.504-.088.17-.18.394-.131.591.159.634 1.816.979 2.325 1.073 1.284.239 2.601.301 3.904.322 1.418.023 2.845-.001 4.256-.156.715-.078 3.092-.383 3.451-1.156.286-.615-.857-1.624-1.254-1.922-1.773-1.333-4.142-1.872-6.329-1.74m1.212-12.988a5.03 5.03 0 0 1 2.955 1.431 5.03 5.03 0 0 1 1.333 2.391c.787 3.362-2.024 6.511-5.452 6.114a5.03 5.03 0 0 1-2.955-1.431A5.03 5.03 0 0 1 7.13 8.146c-.787-3.362 2.024-6.511 5.452-6.114m-.933 1.99a3 3 0 0 0-1.524.638c-2.339 1.876-.751 5.663 2.226 5.318a3 3 0 0 0 1.524-.638c2.339-1.876.751-5.663-2.226-5.318"
+      />
+    )}
+  </svg>
+);
+
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Home", icon: DashboardSvg },
   { href: "/", label: "Feed", icon: FeedSvg },
   { href: "/forum", label: "Forum", icon: ForumSvg },
   { href: "/showcase", label: "Karya", icon: ShowcaseSvg },
   { href: "/top", label: "Top", icon: TopTrophySvg },
+  { href: "/profile", label: "You", icon: YouUserSvg },
 ];
 
 const GLASS_CAPSULE_STYLE = {
@@ -152,6 +177,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const isDashboard = pathname.startsWith("/dashboard");
+  const isProfile = pathname.startsWith("/profile");
 
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -275,7 +301,7 @@ export default function Navbar() {
                         <motion.span
                           layoutId="desktop-nav-frame"
                           transition={NAV_SPRING}
-                          className="position-absolute inset-0 rounded-pill"
+                          className="position-absolute rounded-pill"
                           style={{
                             top: 0,
                             left: 0,
@@ -318,24 +344,30 @@ export default function Navbar() {
                 })}
               </motion.nav>
 
-              {/* Auth Action */}
+              {/* Auth Action & Tombol Header You */}
               <div className="d-flex align-items-center gap-2">
                 {user ? (
                   <div className="d-flex align-items-center gap-1.5">
-                    <span
-                      className="px-2.5 py-1 rounded-pill d-inline-flex align-items-center gap-1"
-                      style={{
-                        background: "rgba(197, 160, 89, 0.14)",
-                        backdropFilter: "blur(18px)",
-                        WebkitBackdropFilter: "blur(18px)",
-                        border: "1px solid rgba(197, 160, 89, 0.25)",
-                        color: "#e6cfa3",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      <UserCircle weight="duotone" size={15} />
-                      <span>{user.username}</span>
-                    </span>
+                    <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.94 }} transition={NAV_SPRING}>
+                      <Link
+                        href="/profile"
+                        className="px-2.5 py-1 rounded-pill text-decoration-none d-inline-flex align-items-center gap-1.5"
+                        style={{
+                          background: isProfile
+                            ? "rgba(197, 160, 89, 0.24)"
+                            : "rgba(197, 160, 89, 0.14)",
+                          backdropFilter: "blur(18px)",
+                          WebkitBackdropFilter: "blur(18px)",
+                          border: "1px solid rgba(197, 160, 89, 0.32)",
+                          color: "#e6cfa3",
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        <YouUserSvg size={15} active={isProfile} />
+                        <span>{user.username}</span>
+                      </Link>
+                    </motion.div>
                     <button
                       type="button"
                       onClick={logout}
@@ -346,43 +378,64 @@ export default function Navbar() {
                     </button>
                   </div>
                 ) : (
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.96 }}
-                    transition={NAV_SPRING}
-                    className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
-                    style={{
-                      backgroundColor: "rgba(38, 35, 31, 0.65)",
-                      backdropFilter: "blur(20px) saturate(150%)",
-                      WebkitBackdropFilter: "blur(20px) saturate(150%)",
-                      border: "1px solid rgba(197, 160, 89, 0.34)",
-                      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
-                      fontFamily: "var(--font-tommy-medium), sans-serif",
-                      fontSize: "0.74rem",
-                    }}
-                  >
-                    <Link
-                      href="/register"
-                      className="px-2.5 py-1 text-decoration-none"
+                  <div className="d-flex align-items-center gap-1.5">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} transition={NAV_SPRING}>
+                      <Link
+                        href="/profile"
+                        className="px-2.5 py-1 rounded-pill text-decoration-none d-inline-flex align-items-center gap-1"
+                        style={{
+                          backgroundColor: "rgba(38, 35, 31, 0.65)",
+                          backdropFilter: "blur(20px)",
+                          WebkitBackdropFilter: "blur(20px)",
+                          border: "1px solid rgba(197, 160, 89, 0.28)",
+                          color: "#e6cfa3",
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.73rem",
+                        }}
+                      >
+                        <YouUserSvg size={14} active={isProfile} />
+                        <span>You</span>
+                      </Link>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={NAV_SPRING}
+                      className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
                       style={{
-                        backgroundColor: "rgba(52, 48, 43, 0.55)",
-                        color: "#e8e2d9",
+                        backgroundColor: "rgba(38, 35, 31, 0.65)",
+                        backdropFilter: "blur(20px) saturate(150%)",
+                        WebkitBackdropFilter: "blur(20px) saturate(150%)",
+                        border: "1px solid rgba(197, 160, 89, 0.34)",
+                        boxShadow: "0 6px 18px rgba(0, 0, 0, 0.45)",
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        fontSize: "0.74rem",
                       }}
                     >
-                      Daftar
-                    </Link>
-                    <Link
-                      href="/login"
-                      className="px-2.5 py-1 text-decoration-none"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
-                        color: "#120f0c",
-                      }}
-                    >
-                      Masuk
-                    </Link>
-                  </motion.div>
+                      <Link
+                        href="/register"
+                        className="px-2.5 py-1 text-decoration-none"
+                        style={{
+                          backgroundColor: "rgba(52, 48, 43, 0.55)",
+                          color: "#e8e2d9",
+                        }}
+                      >
+                        Daftar
+                      </Link>
+                      <Link
+                        href="/login"
+                        className="px-2.5 py-1 text-decoration-none"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
+                          color: "#120f0c",
+                        }}
+                      >
+                        Masuk
+                      </Link>
+                    </motion.div>
+                  </div>
                 )}
               </div>
             </div>
@@ -392,7 +445,7 @@ export default function Navbar() {
           <div style={{ height: "58px" }} />
         </>
       ) : (
-        /* Desktop Center Glass Nav Capsule saat di Feed, Forum, Karya, Top */
+        /* Desktop Center Glass Nav Capsule saat di Feed, Forum, Karya, Top, You */
         <div
           className="d-none d-md-flex justify-content-center pt-3 position-sticky top-0"
           style={{ zIndex: 45 }}
@@ -484,7 +537,7 @@ export default function Navbar() {
           scale: isScrolled ? 0.97 : 1,
         }}
         transition={NAV_SPRING}
-        className="d-md-none position-fixed bottom-0 start-50 mb-3 px-3 py-1.5 rounded-pill d-flex align-items-center gap-1"
+        className="d-md-none position-fixed bottom-0 start-50 mb-3 px-2.5 py-1.5 rounded-pill d-flex align-items-center gap-0.5"
         style={{
           ...GLASS_CAPSULE_STYLE,
           zIndex: 50,
@@ -500,10 +553,10 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="position-relative px-2.5 py-1 text-decoration-none d-flex flex-column align-items-center bg-transparent"
+              className="position-relative px-2 py-1 text-decoration-none d-flex flex-column align-items-center bg-transparent"
               style={{
                 color: active ? "#f2ece1" : "#c7bdb0",
-                fontSize: "0.63rem",
+                fontSize: "0.61rem",
                 fontWeight: active ? 600 : 400,
               }}
             >
@@ -524,7 +577,7 @@ export default function Navbar() {
                 />
               )}
               <motion.span
-                whileTap={{ scale: 0.82 }}
+                whileTap={{ scale: 0.8 }}
                 animate={
                   active
                     ? { scale: [1, 1.26, 1.08], y: [0, -2.5, 0] }
@@ -533,7 +586,7 @@ export default function Navbar() {
                 transition={NAV_SPRING}
                 className="d-inline-flex align-items-center bg-transparent position-relative"
               >
-                <Icon size={19} active={active} />
+                <Icon size={18} active={active} />
               </motion.span>
               <span className="mt-0.5 position-relative">{item.label}</span>
               {active && (

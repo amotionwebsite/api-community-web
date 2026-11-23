@@ -135,14 +135,23 @@ export const useAuthStore = create(
       projects: INITIAL_SHOWCASE_PROJECTS,
       likedProjectIds: [],
       feedPosts: INITIAL_THREADS,
-      loginDemo: ({ username, email }) =>
-        set({
+      loginDemo: ({ username, email, bio, role }) =>
+        set((state) => ({
           user: {
             username: username || email.split("@")[0],
             email,
+            bio:
+              bio !== undefined
+                ? bio
+                : state.user?.bio ||
+                  "Full-stack web developer & pegiat komunitas Anak Programmer Indonesia.",
+            role:
+              role !== undefined
+                ? role
+                : state.user?.role || "Full-Stack Developer",
           },
           token: "demo-jwt-token",
-        }),
+        })),
       logout: () => set({ user: null, token: null }),
       setProjects: (updater) =>
         set((state) => ({

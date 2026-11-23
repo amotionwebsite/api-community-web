@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MagnifyingGlassPlus, MagnifyingGlassMinus, ArrowsClockwise } from "@phosphor-icons/react";
@@ -304,6 +304,8 @@ const CodeSvg = ({ size = 15 }) => (
   </svg>
 );
 
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
 export default function HomeView() {
   const { user, feedPosts, addFeedPost } = useAuthStore();
   const [copiedId, setCopiedId] = useState(null);
@@ -316,6 +318,29 @@ export default function HomeView() {
   const [postImage, setPostImage] = useState("");
   const [filter, setFilter] = useState("semua");
   const fileInputRef = useRef(null);
+
+  // Deteksi arah scroll untuk animasi halus panel tulis catatan
+  const [composerCollapsed, setComposerCollapsed] = useState(false);
+  const [composerFocused, setComposerFocused] = useState(false);
+  const lastScrollYRef = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const diff = currentY - lastScrollYRef.current;
+      if (!composerFocused && !postText.trim() && !postImage && !showCodeInput) {
+        if (diff > 14 && currentY > 90) {
+          setComposerCollapsed(true);
+        } else if (diff < -10 || currentY <= 40) {
+          setComposerCollapsed(false);
+        }
+      }
+      lastScrollYRef.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [composerFocused, postText, postImage, showCodeInput]);
 
   // State Lightbox Zoom Gambar
   const [zoomSrc, setZoomSrc] = useState("");
@@ -423,6 +448,7 @@ export default function HomeView() {
     setPostImage("");
     if (fileInputRef.current) fileInputRef.current.value = "";
     setShowCodeInput(false);
+    setComposerCollapsed(false);
   };
 
   const toggleUpvote = (id) => {
@@ -442,7 +468,12 @@ export default function HomeView() {
 
       <main className="container pt-4 flex-grow-1" style={{ maxWidth: "740px" }}>
         {/* Filter Feed */}
-        <div className="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: SMOOTH_EASE }}
+          className="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1"
+        >
           {[
             { id: "semua", label: "Semua Feed" },
             { id: "code", label: "Dengan Kode" },
@@ -470,11 +501,11 @@ export default function HomeView() {
               </button>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* Stream Utas Komunitas */}
+        {/* Stream Utas Komunitas dengan Animasi Scroll Keluar-Masuk Dua Arah */}
         <div className="d-flex flex-column gap-3">
-          {visibleThreads.map((item, index) => {
+          {visibleThreads.map((item) => {
             const upvoted = upvotedIds.includes(item.id);
             const replyActive = activeReplyId === item.id;
             const isCopied = copiedId === `code-${item.id}`;
@@ -501,9 +532,11 @@ export default function HomeView() {
             return (
               <motion.article
                 key={item.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: index * 0.05 }}
+                layout="position"
+                initial={{ opacity: 0, y: 22, scale: 0.975 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.14 }}
+                transition={{ duration: 0.48, ease: SMOOTH_EASE }}
                 className="smoked-glass smoked-glass-interactive p-3 overflow-hidden"
               >
                 <div className="d-flex gap-2.5">
@@ -591,7 +624,6 @@ export default function HomeView() {
                             boxShadow: "0 10px 24px rgba(0, 0, 0, 0.45)",
                           }}
                         >
-                          {/* Banner Karya di dalam Card Feed dengan Blur Bawah Halus */}
                           <div
                             className="position-relative w-100 overflow-hidden"
                             style={{ height: "132px", backgroundColor: "#14110e" }}
@@ -811,7 +843,6 @@ export default function HomeView() {
                       </div>
                     )}
 
-                    {/* Baris Bawah: Karya API hanya Balasan di kiri + Waktu di pojok kanan bawah; Bug & Error tetap ada Bantu Naik */}
                     <div className="d-flex align-items-center justify-content-between pt-1">
                       <div className="d-flex align-items-center gap-3">
                         {!isKaryaPost && (
@@ -863,7 +894,7 @@ export default function HomeView() {
         <div style={{ height: "235px" }} />
       </main>
 
-      {/* Lightbox Zoom Gambar Bebas (Pinch / Drag / Kontrol Zoom) */}
+      {/* Lightbox Zoom Gambar Bebas */}
       <AnimatePresence>
         {zoomSrc && (
           <motion.div
@@ -987,19 +1018,29 @@ export default function HomeView() {
         )}
       </AnimatePresence>
 
-      {/* Composer Postingan Baru di Bawah (Tepat di atas dock navigasi bawah) */}
+      {/* Composer Postingan Baru di Bawah dengan Animasi Scroll Keluar-Masuk Halus */}
       <div
         className="position-fixed start-0 w-100 px-3"
-        style={{ bottom: "76px", zIndex: 42 }}
+        style={{ bottom: "76px", zIndex: 42, pointerEvents: "none" }}
       >
         <div className="container px-0" style={{ maxWidth: "740px" }}>
           <motion.form
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
+            initial={{ opacity: 0, y: 26, scale: 0.96 }}
+            animate={{
+              opacity: composerCollapsed ? 0 : 1,
+              y: composerCollapsed ? 38 : 0,
+              scale: composerCollapsed ? 0.96 : 1,
+            }}
+            transition={{ duration: 0.42, ease: SMOOTH_EASE }}
             onSubmit={handleCreatePost}
+            onFocus={() => {
+              setComposerFocused(true);
+              setComposerCollapsed(false);
+            }}
+            onBlur={() => setComposerFocused(false)}
             className="p-2.5 rounded-4"
             style={{
+              pointerEvents: composerCollapsed ? "none" : "auto",
               backgroundColor: "rgba(18, 15, 12, 0.88)",
               backdropFilter: "blur(24px) saturate(160%)",
               WebkitBackdropFilter: "blur(24px) saturate(160%)",

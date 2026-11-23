@@ -112,12 +112,13 @@ export default function DashboardView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan dengan Banner Parallax & Animasi Masuk Halus */}
+        {/* 1. Hero Sambutan dengan Banner Parallax & Animasi Masuk-Keluar Scroll */}
         <motion.section
           ref={heroRef}
-          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.7, ease: SMOOTH_EASE }}
+          initial={{ opacity: 0, y: 18, scale: 0.985, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          viewport={{ once: false, amount: 0.14 }}
+          transition={{ duration: 0.65, ease: SMOOTH_EASE }}
           className="smoked-glass overflow-hidden mb-3 text-start"
         >
           {/* Area Banner Full-bleed */}
@@ -168,15 +169,12 @@ export default function DashboardView() {
             />
           </div>
 
-          {/* Judul (Turun menimpa blur bawah banner tanpa ikut blur) + Deskripsi Rapat */}
+          {/* Judul + Deskripsi Rapat */}
           <div
             className="px-4 pb-4 position-relative"
             style={{ marginTop: "-30px", zIndex: 3 }}
           >
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.12, ease: SMOOTH_EASE }}
+            <h1
               style={{
                 fontFamily: "var(--font-coolvetica), sans-serif",
                 color: "#f2ece1",
@@ -186,12 +184,9 @@ export default function DashboardView() {
               className="h3 mb-1.5"
             >
               Selamat Datang di Website Anak Programmer Indonesia
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.24, ease: SMOOTH_EASE }}
+            <p
               className="mb-0"
               style={{
                 fontFamily: "var(--font-tommy-personal), sans-serif",
@@ -204,16 +199,16 @@ export default function DashboardView() {
               Ruang singgah digital bagi developer Indonesia untuk saling bantu
               bedah error, berbagi catatan ngoding lintas perangkat, dan merilis
               karya teknologi bersama-sama tanpa batasan latar belakang.
-            </motion.p>
+            </p>
           </div>
         </motion.section>
 
-        {/* 2. Tentang Anak Programmer Indonesia (Scroll Reveal Halus) */}
+        {/* 2. Tentang Anak Programmer Indonesia (Animasi Keluar-Masuk Saat Scroll Atas/Bawah) */}
         <motion.section
-          initial={{ opacity: 0, y: 24, scale: 0.985 }}
+          initial={{ opacity: 0, y: 24, scale: 0.975 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.22 }}
-          transition={{ duration: 0.58, ease: SMOOTH_EASE }}
+          viewport={{ once: false, amount: 0.16 }}
+          transition={{ duration: 0.56, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 mb-3 text-start"
         >
           <div
@@ -248,12 +243,12 @@ export default function DashboardView() {
           </p>
         </motion.section>
 
-        {/* 3. Visi & Misi Komunitas API (Style Baru & Scroll Reveal) */}
+        {/* 3. Visi & Misi Komunitas API (Tanpa API // 01, 3 Pilar Utama & Nomor 01-03, Animasi Scroll Dua Arah) */}
         <motion.section
-          initial={{ opacity: 0, y: 26, scale: 0.985 }}
+          initial={{ opacity: 0, y: 24, scale: 0.975 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.18 }}
-          transition={{ duration: 0.62, ease: SMOOTH_EASE }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.58, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 mb-3 text-start"
         >
           <div
@@ -270,12 +265,12 @@ export default function DashboardView() {
             <span>Visi &amp; Misi Komunitas API</span>
           </div>
 
-          {/* Kartu Visi Utama Berbingkai Sogan Hangat */}
+          {/* Kartu Visi Utama */}
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: SMOOTH_EASE }}
+            initial={{ opacity: 0, y: 14, scale: 0.985 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.48, ease: SMOOTH_EASE }}
             className="p-3.5 mb-3.5 rounded-4 position-relative overflow-hidden"
             style={{
               backgroundColor: "#16120d",
@@ -285,7 +280,7 @@ export default function DashboardView() {
               boxShadow: "inset 0 1px 0 rgba(255, 240, 200, 0.06)",
             }}
           >
-            <div className="d-flex align-items-center justify-content-between mb-1.5">
+            <div className="mb-1.5">
               <span
                 className="px-2.5 py-0.5 rounded-pill"
                 style={{
@@ -298,15 +293,6 @@ export default function DashboardView() {
                 }}
               >
                 VISI UTAMA
-              </span>
-              <span
-                style={{
-                  fontFamily: "var(--font-tommy-extra), sans-serif",
-                  fontSize: "0.75rem",
-                  color: "rgba(197, 160, 89, 0.42)",
-                }}
-              >
-                API // 01
               </span>
             </div>
 
@@ -326,29 +312,19 @@ export default function DashboardView() {
           </motion.div>
 
           {/* Header Misi Komunitas */}
-          <div className="d-flex align-items-center justify-content-between mb-2.5">
-            <span
-              style={{
-                fontFamily: "var(--font-tommy-medium), sans-serif",
-                fontSize: "0.73rem",
-                letterSpacing: "0.05em",
-                color: "#c5a059",
-              }}
-            >
-              MISI KOMUNITAS
-            </span>
-            <span
-              style={{
-                fontFamily: "var(--font-caviar), sans-serif",
-                fontSize: "0.72rem",
-                color: "#8f8578",
-              }}
-            >
-              3 Pilar Utama
-            </span>
-          </div>
+          <span
+            className="d-block mb-2.5"
+            style={{
+              fontFamily: "var(--font-tommy-medium), sans-serif",
+              fontSize: "0.73rem",
+              letterSpacing: "0.05em",
+              color: "#c5a059",
+            }}
+          >
+            MISI KOMUNITAS
+          </span>
 
-          {/* Daftar Misi dengan Sub-card Terstruktur & Animasi Stagger */}
+          {/* Daftar Misi dengan Animasi Keluar-Masuk Saat Scroll */}
           <div className="d-flex flex-column gap-2">
             {[
               "Membangun budaya saling bantu tanpa menghakimi dalam memecahkan bug, error, dan arsitektur kode.",
@@ -357,12 +333,12 @@ export default function DashboardView() {
             ].map((misi, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
+                initial={{ opacity: 0, y: 12, scale: 0.985 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.2 }}
                 transition={{
-                  duration: 0.45,
-                  delay: i * 0.08,
+                  duration: 0.44,
+                  delay: i * 0.06,
                   ease: SMOOTH_EASE,
                 }}
                 className="p-2.5 rounded-3 d-flex align-items-start gap-2.5"
@@ -383,16 +359,6 @@ export default function DashboardView() {
                 >
                   {misi}
                 </span>
-                <span
-                  className="flex-shrink-0"
-                  style={{
-                    fontFamily: "var(--font-tommy-medium), sans-serif",
-                    fontSize: "0.68rem",
-                    color: "#6e655a",
-                  }}
-                >
-                  0{i + 1}
-                </span>
               </motion.div>
             ))}
           </div>
@@ -400,10 +366,10 @@ export default function DashboardView() {
 
         {/* 4. Support API + Animasi Tombol Join Discord & Support Komunitas */}
         <motion.section
-          initial={{ opacity: 0, y: 26, scale: 0.985 }}
+          initial={{ opacity: 0, y: 24, scale: 0.975 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.62, ease: SMOOTH_EASE }}
+          viewport={{ once: false, amount: 0.16 }}
+          transition={{ duration: 0.58, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 text-start"
         >
           <div
@@ -435,10 +401,10 @@ export default function DashboardView() {
           </p>
 
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.12, ease: SMOOTH_EASE }}
+            initial={{ opacity: 0, y: 14, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.48, delay: 0.08, ease: SMOOTH_EASE }}
             className="d-flex flex-column gap-2"
             style={{ maxWidth: "235px" }}
           >
