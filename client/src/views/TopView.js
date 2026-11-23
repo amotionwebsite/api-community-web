@@ -21,6 +21,38 @@ const PostToFeedSvg = ({ size = 14 }) => (
   </svg>
 );
 
+const VisitArrowSvg = ({ size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M15.586 7H10c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8c.198.013.325.033.5.134.322.186.476.506.5.866v8c-.03.451-.288.844-.741.966-.656.176-1.217-.327-1.259-.966V8.414l-9.95 9.95c-.41.359-1.01.404-1.414 0-.405-.404-.359-1.005 0-1.414Z"
+    />
+  </svg>
+);
+
+const FireSvg = ({ size = 17 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className="flex-shrink-0"
+    style={{ color: "#e5a94c" }}
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="m14.995 6.287.731-1.475c.588.588 1.189 1.161 1.727 1.796a18.4 18.4 0 0 1 1.98 2.837c1.378 2.435 2.018 4.997 1.224 7.753a6.23 6.23 0 0 1-3.4 3.974c-1.305.608-2.709.774-4.123.93.966-.606 1.47-1.253 1.866-2.329.386-1.05.293-2.043-.217-3.039-.408-.797-1.069-1.428-1.484-2.222-.333-.637-.527-1.359-.752-2.033-1.001.626-2.021 1.226-2.881 2.046-1.495 1.426-2.321 3.237-1.51 5.248.174.429.417.823.712 1.18.38.458.83.81 1.327 1.13-1.376-.152-2.445-.334-3.675-1.019-3.214-1.79-4.599-5.347-3.014-8.739.528-1.13 1.311-2.125 2.2-2.993l1.139-1.051q.67-.662 1.243-1.407c.78-1.013 1.448-2.152 1.784-3.394.157-.58.307-1.635.383-2.093.439.263 1.391.81 1.897 1.177 1.36.988 2.199 2.191 2.843 3.723"
+    />
+  </svg>
+);
+
 const SendSvg = ({ size = 14 }) => (
   <svg
     width={size}
@@ -190,23 +222,34 @@ export default function TopView() {
   const getRankBadgeStyle = (rankIdx) => {
     if (rankIdx === 0) {
       return {
-        background: "linear-gradient(180deg, #e5be6b 0%, #b58c3e 100%)",
-        color: "#120f0c",
-        boxShadow: "0 4px 12px rgba(197, 160, 89, 0.28)",
+        backgroundColor: "#261d11",
+        backgroundImage:
+          "repeating-linear-gradient(135deg, rgba(229, 190, 107, 0.14) 0px, rgba(229, 190, 107, 0.14) 2px, transparent 2px, transparent 7px), radial-gradient(circle at 20% 15%, rgba(245, 208, 122, 0.42), rgba(168, 122, 42, 0.18) 75%)",
+        border: "1px solid rgba(235, 195, 110, 0.72)",
+        color: "#f7dfa4",
+        boxShadow:
+          "inset 0 1px 0 rgba(255, 240, 195, 0.35), 0 4px 14px rgba(197, 160, 89, 0.25)",
       };
     }
     if (rankIdx === 1) {
       return {
-        background: "rgba(118, 168, 130, 0.24)",
-        border: "1px solid rgba(118, 168, 130, 0.55)",
-        color: "#9fd0aa",
+        backgroundColor: "#112119",
+        backgroundImage:
+          "repeating-linear-gradient(-45deg, rgba(143, 212, 164, 0.12) 0px, rgba(143, 212, 164, 0.12) 1px, transparent 1px, transparent 6px), radial-gradient(circle at 80% 20%, rgba(118, 188, 140, 0.34), transparent 72%)",
+        border: "1px solid rgba(132, 202, 154, 0.58)",
+        color: "#a7e0b8",
+        boxShadow: "inset 0 1px 0 rgba(190, 245, 208, 0.22)",
       };
     }
     if (rankIdx === 2) {
       return {
-        background: "rgba(106, 165, 232, 0.22)",
-        border: "1px solid rgba(106, 165, 232, 0.52)",
-        color: "#8cc0fa",
+        backgroundColor: "#101b29",
+        backgroundImage:
+          "linear-gradient(rgba(126, 182, 245, 0.11) 1px, transparent 1px), linear-gradient(90deg, rgba(126, 182, 245, 0.11) 1px, transparent 1px), radial-gradient(circle at 25% 80%, rgba(92, 156, 230, 0.34), transparent 72%)",
+        backgroundSize: "7px 7px, 7px 7px, 100% 100%",
+        border: "1px solid rgba(126, 182, 245, 0.56)",
+        color: "#9ac9fc",
+        boxShadow: "inset 0 1px 0 rgba(195, 224, 255, 0.22)",
       };
     }
     if (rankIdx === 3) {
@@ -216,17 +259,11 @@ export default function TopView() {
         color: "#cbb5ed",
       };
     }
-    if (rankIdx === 4) {
-      return {
-        background: "rgba(184, 107, 67, 0.2)",
-        border: "1px solid rgba(184, 107, 67, 0.45)",
-        color: "#e8a882",
-      };
-    }
+    // #5 dst: background polos abu-abu
     return {
-      background: "rgba(255, 255, 255, 0.05)",
-      border: "1px solid rgba(197, 160, 89, 0.16)",
-      color: "#b8ad9e",
+      backgroundColor: "#2a2b2e",
+      border: "1px solid #3c3e42",
+      color: "#c4c7cc",
     };
   };
 
@@ -596,7 +633,7 @@ export default function TopView() {
                   {/* Kiri: Badge Rank + Info Karya */}
                   <div className="d-flex align-items-start gap-2.5 flex-grow-1" style={{ minWidth: 0 }}>
                     <div
-                      className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5"
+                      className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5 position-relative overflow-hidden"
                       style={{
                         width: "36px",
                         height: "36px",
@@ -605,7 +642,32 @@ export default function TopView() {
                         ...rankStyle,
                       }}
                     >
-                      #{idx + 1}
+                      {idx === 0 && (
+                        <motion.span
+                          aria-hidden="true"
+                          animate={{ x: ["-160%", "220%"] }}
+                          transition={{
+                            duration: 2.2,
+                            repeat: Infinity,
+                            repeatDelay: 1.1,
+                            ease: "easeInOut",
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "-30%",
+                            left: 0,
+                            width: "45%",
+                            height: "160%",
+                            background:
+                              "linear-gradient(90deg, transparent 0%, rgba(255, 248, 220, 0.65) 50%, transparent 100%)",
+                            transform: "rotate(24deg)",
+                            pointerEvents: "none",
+                          }}
+                        />
+                      )}
+                      <span className="position-relative" style={{ zIndex: 1 }}>
+                        #{idx + 1}
+                      </span>
                     </div>
 
                     <div className="flex-grow-1" style={{ minWidth: 0 }}>
@@ -632,15 +694,18 @@ export default function TopView() {
                         </span>
                       </div>
 
-                      <h2
-                        className="h6 mb-0.5 text-truncate"
-                        style={{
-                          fontFamily: "var(--font-tommy-extra), sans-serif",
-                          color: "#f2ece1",
-                        }}
-                      >
-                        {proj.title}
-                      </h2>
+                      <div className="d-flex align-items-center gap-1.5 mb-0.5" style={{ minWidth: 0 }}>
+                        <h2
+                          className="h6 mb-0 text-truncate"
+                          style={{
+                            fontFamily: "var(--font-tommy-extra), sans-serif",
+                            color: "#f2ece1",
+                          }}
+                        >
+                          {proj.title}
+                        </h2>
+                        {idx === 0 && <FireSvg size={17} />}
+                      </div>
 
                       <p
                         className="mb-0 text-truncate"
@@ -655,8 +720,22 @@ export default function TopView() {
                     </div>
                   </div>
 
-                  {/* Kanan: Tombol "Posting di Feed" di pojok kanan atas (khusus karya user sendiri) di atas tombol Apresiasi */}
+                  {/* Kanan: Tombol Kunjungi + Posting di Feed + Apresiasi */}
                   <div className="d-flex flex-column align-items-end gap-1.5 flex-shrink-0">
+                    <a
+                      href={proj.demoUrl || "https://api-community-web.vercel.app"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                      style={{
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        fontSize: "0.72rem",
+                      }}
+                    >
+                      <span>Kunjungi</span>
+                      <VisitArrowSvg size={14} />
+                    </a>
+
                     {isMine && (
                       <button
                         type="button"
