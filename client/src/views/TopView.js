@@ -149,9 +149,10 @@ export default function TopView() {
       .slice(0, 10);
   }, [projects]);
 
-  const activeUsername = (user?.username || "builder_api").toLowerCase();
+  const activeUsername = (user?.username || "").toLowerCase();
 
   const canPostProject = (proj) => {
+    if (!user) return false;
     const owner = (proj?.author || "").toLowerCase();
     return owner === activeUsername;
   };
@@ -171,6 +172,10 @@ export default function TopView() {
   const selectedProj = top10Projects.find((p) => p.id === selectedProjectId);
 
   const handleOpenCardEditor = (proj, rankNumber) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (!canPostProject(proj)) return;
     setSelectedProjectId(proj.id);
     setCustomTitle(proj.title);
@@ -187,8 +192,20 @@ export default function TopView() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleApplauseClick = (id) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    toggleProjectLike(id);
+  };
+
   const handleShareCardToFeed = (e) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (!customTitle.trim()) {
       setErrors({ title: true });
       setShakeTick((n) => n + 1);
@@ -310,17 +327,16 @@ export default function TopView() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+      className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5"
+    >
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* Header Top 10 */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: SMOOTH_EASE }}
-          className="mb-3"
-        >
+        <div className="mb-3">
           <h1
             className="h4 mb-0"
             style={{
@@ -333,11 +349,11 @@ export default function TopView() {
           <p className="mb-0" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
             Peringkat apresiasi tertinggi karya member Anak Programmer Indonesia.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Panel Editor Card Peringkat Karya Milik User untuk Diposting ke Feed */}
+        {/* Panel Editor Card Peringkat Karya Milik User */}
         <AnimatePresence initial={false}>
-          {showBuilder && selectedProj && (
+          {user && showBuilder && selectedProj && (
             <motion.div
               key="top-card-builder"
               initial={{ opacity: 0, height: 0, y: -8 }}
@@ -353,7 +369,7 @@ export default function TopView() {
                 y: -8,
                 overflow: "hidden",
               }}
-              transition={{ duration: 0.36, ease: SMOOTH_EASE }}
+              transition={{ duration: 0.34, ease: SMOOTH_EASE }}
               style={{ overflow: "hidden" }}
             >
               <form
@@ -437,7 +453,6 @@ export default function TopView() {
                   }}
                 />
 
-                {/* Pilihan Warna Card */}
                 <div className="d-flex align-items-center gap-1.5 flex-wrap">
                   {CARD_THEMES.map((t) => {
                     const active = themeId === t.id;
@@ -607,7 +622,7 @@ export default function TopView() {
         {/* Daftar Leaderboard Top 10 Apresiasi Karya Member */}
         <div className="d-flex flex-column gap-3 mb-4">
           {top10Projects.map((proj, idx) => {
-            const liked = likedProjectIds.includes(proj.id);
+            const liked = Boolean(user && likedProjectIds.includes(proj.id));
             const rankStyle = getRankBadgeStyle(idx);
             const rankCardStyle = getRankCardStyle(idx);
             const isMine = canPostProject(proj);
@@ -615,15 +630,13 @@ export default function TopView() {
             return (
               <motion.article
                 key={proj.id}
-                layout="position"
-                initial={{ opacity: 0, y: 18, scale: 0.985 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.42, delay: idx * 0.03, ease: SMOOTH_EASE }}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.12 }}
+                transition={{ duration: 0.38, ease: SMOOTH_EASE }}
                 className="smoked-glass smoked-glass-interactive overflow-hidden"
                 style={rankCardStyle}
               >
-                {/* Banner Karya di Top dengan Blur Bawah Halus yang Tidak Menutupi Banner */}
                 <div
                   className="position-relative w-100 overflow-hidden"
                   style={{ height: "136px", backgroundColor: "#15120f" }}
@@ -660,7 +673,6 @@ export default function TopView() {
                     </div>
                   )}
 
-                  {/* Blur tipis halus di dasar banner */}
                   <div
                     className="position-absolute bottom-0 start-0 w-100"
                     style={{
@@ -688,7 +700,6 @@ export default function TopView() {
 
                 {/* Bagian Konten Bawah Banner */}
                 <div className="p-3 pt-1.5 d-flex align-items-start justify-content-between gap-2.5">
-                  {/* Kiri: Badge Rank + Info Karya */}
                   <div className="d-flex align-items-start gap-2.5 flex-grow-1" style={{ minWidth: 0 }}>
                     <div
                       className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5 position-relative overflow-hidden"
@@ -778,7 +789,6 @@ export default function TopView() {
                     </div>
                   </div>
 
-                  {/* Kanan: Tombol Kunjungi + Posting di Feed + Apresiasi */}
                   <div className="d-flex flex-column align-items-end gap-1.5 flex-shrink-0">
                     <a
                       href={proj.demoUrl || "https://api-community-web.vercel.app"}
@@ -809,9 +819,11 @@ export default function TopView() {
                       </button>
                     )}
 
-                    <button
+                    <motion.button
                       type="button"
-                      onClick={() => toggleProjectLike(proj.id)}
+                      whileTap={{ scale: 0.85 }}
+                      onClick={() => handleApplauseClick(proj.id)}
+                      title={user ? "Beri Apresiasi" : "Masuk untuk memberi apresiasi"}
                       className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
                       style={{
                         fontSize: "0.73rem",
@@ -821,9 +833,15 @@ export default function TopView() {
                           : undefined,
                       }}
                     >
-                      <ApplauseSvg size={15} active={liked} />
+                      <motion.span
+                        animate={liked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                        transition={{ duration: 0.28 }}
+                        className="d-inline-flex align-items-center"
+                      >
+                        <ApplauseSvg size={15} active={liked} />
+                      </motion.span>
                       <span>{proj.applause}</span>
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </motion.article>
@@ -831,6 +849,6 @@ export default function TopView() {
           })}
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }

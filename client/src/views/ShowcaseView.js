@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown, ImageSquare, X } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
@@ -13,7 +14,6 @@ const TERMUX_LOGO_URI =
   );
 
 const TECH_CATALOG = [
-  // Frontend & UI
   { name: "HTML5", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
   { name: "CSS3", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" },
   { name: "JavaScript", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" },
@@ -29,7 +29,6 @@ const TECH_CATALOG = [
   { name: "Bootstrap", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" },
   { name: "Sass", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sass/sass-original.svg" },
   { name: "Framer Motion", logo: "https://cdn.simpleicons.org/framer/ffffff" },
-  // Backend & Runtime
   { name: "Node.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
   { name: "Express.js", logo: "https://cdn.simpleicons.org/express/ffffff" },
   { name: "NestJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg" },
@@ -52,7 +51,6 @@ const TECH_CATALOG = [
   { name: "Ruby", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg" },
   { name: "GraphQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" },
   { name: "Socket.io", logo: "https://cdn.simpleicons.org/socketdotio/ffffff" },
-  // Mobile & Game
   { name: "React Native", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
   { name: "Flutter", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
   { name: "Dart", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" },
@@ -60,7 +58,6 @@ const TECH_CATALOG = [
   { name: "Swift", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
   { name: "Android", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/android/android-original.svg" },
   { name: "Unity", logo: "https://cdn.simpleicons.org/unity/ffffff" },
-  // Database & BaaS
   { name: "MongoDB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" },
   { name: "PostgreSQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" },
   { name: "MySQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
@@ -69,7 +66,6 @@ const TECH_CATALOG = [
   { name: "Prisma", logo: "https://cdn.simpleicons.org/prisma/ffffff" },
   { name: "Supabase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg" },
   { name: "Firebase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg" },
-  // DevOps, CLI & Tools
   { name: "Docker", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" },
   { name: "Linux", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" },
   { name: "Bash", logo: "https://cdn.simpleicons.org/gnubash/ffffff" },
@@ -223,6 +219,7 @@ const ApplauseSvg = ({ size = 17, active = false }) => (
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
 export default function ShowcaseView() {
+  const router = useRouter();
   const {
     user,
     projects,
@@ -260,7 +257,25 @@ export default function ShowcaseView() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleToggleCreateForm = () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    if (showForm) {
+      setShowForm(false);
+      resetFormState();
+    } else {
+      resetFormState();
+      setShowForm(true);
+    }
+  };
+
   const handleStartEdit = (project) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (editingId === project.id && showForm) {
       setShowForm(false);
       resetFormState();
@@ -278,8 +293,28 @@ export default function ShowcaseView() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleApplauseClick = (id) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    toggleProjectLike(id);
+  };
+
+  const handleToggleReplyPanel = (id) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    setOpenReplyId(openReplyId === id ? null : id);
+  };
+
   const handleAddReply = (e, projectId) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     const text = (replyInputs[projectId] || "").trim();
     if (!text) return;
     setProjects((prev) =>
@@ -291,7 +326,7 @@ export default function ShowcaseView() {
                 ...(p.replies || []),
                 {
                   id: String(Date.now()),
-                  author: user?.username || "member_api",
+                  author: user.username,
                   text,
                 },
               ],
@@ -324,6 +359,10 @@ export default function ShowcaseView() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     const titleEmpty = !title.trim();
     const descEmpty = !desc.trim();
 
@@ -356,7 +395,7 @@ export default function ShowcaseView() {
     const newProject = {
       id: String(Date.now()),
       title: title.trim(),
-      author: user?.username || "builder_api",
+      author: user.username,
       desc: desc.trim(),
       stack: selectedStack.length > 0 ? selectedStack : ["JavaScript"],
       bannerUrl,
@@ -376,7 +415,12 @@ export default function ShowcaseView() {
   );
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+      className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5"
+    >
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
@@ -397,18 +441,10 @@ export default function ShowcaseView() {
           </div>
           <motion.button
             type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => {
-              if (showForm) {
-                setShowForm(false);
-                resetFormState();
-              } else {
-                resetFormState();
-                setShowForm(true);
-              }
-            }}
-            title="Rilis Karya"
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleToggleCreateForm}
+            title={user ? "Rilis Karya" : "Masuk untuk merilis karya"}
             className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
             style={{ width: "38px", height: "38px", padding: 0 }}
           >
@@ -422,9 +458,9 @@ export default function ShowcaseView() {
           </motion.button>
         </div>
 
-        {/* Form Rilis / Edit Karya */}
+        {/* Form Rilis / Edit Karya (Hanya untuk user yang sudah login) */}
         <AnimatePresence initial={false}>
-          {showForm && (
+          {user && showForm && (
             <motion.div
               key="showcase-form-wrapper"
               initial={{ opacity: 0, height: 0, y: -8 }}
@@ -440,7 +476,7 @@ export default function ShowcaseView() {
                 y: -8,
                 overflow: "hidden",
               }}
-              transition={{ duration: 0.36, ease: SMOOTH_EASE }}
+              transition={{ duration: 0.34, ease: SMOOTH_EASE }}
               style={{ overflow: "hidden" }}
             >
               <form
@@ -535,7 +571,7 @@ export default function ShowcaseView() {
                   />
                 </motion.div>
 
-                {/* Pemilih Tech Stack Lengkap dengan Logo Resmi */}
+                {/* Pemilih Tech Stack Lengkap */}
                 <div className="position-relative">
                   <button
                     type="button"
@@ -667,7 +703,6 @@ export default function ShowcaseView() {
                   </AnimatePresence>
                 </div>
 
-                {/* Link Karya */}
                 <input
                   type="url"
                   value={demoUrl}
@@ -681,7 +716,6 @@ export default function ShowcaseView() {
                   }}
                 />
 
-                {/* Upload Gambar / Banner Karya (Opsional) */}
                 <div>
                   <input
                     ref={fileInputRef}
@@ -758,85 +792,65 @@ export default function ShowcaseView() {
           )}
         </AnimatePresence>
 
-        {/* Daftar Kartu Karya */}
+        {/* Daftar Kartu Karya dengan Animasi Scroll & Interaksi Halus */}
         <div className="d-flex flex-column gap-3 mb-4">
-          <AnimatePresence initial={false}>
-            {projects.map((p, idx) => {
-              const liked = likedProjectIds.includes(p.id);
-              const isEditingThis = editingId === p.id && showForm;
-              const isReplyOpen = openReplyId === p.id;
-              const replies = p.replies || [];
+          {projects.map((p) => {
+            const liked = Boolean(user && likedProjectIds.includes(p.id));
+            const isEditingThis = editingId === p.id && showForm;
+            const isReplyOpen = openReplyId === p.id;
+            const replies = p.replies || [];
+            const isOwner =
+              user &&
+              (p.author || "").toLowerCase() === user.username.toLowerCase();
 
-              return (
-                <motion.article
-                  key={p.id}
-                  layout="position"
-                  initial={
-                    p.isNew
-                      ? {
-                          opacity: 0,
-                          y: -22,
-                          scale: 0.96,
-                          filter: "blur(6px)",
-                        }
-                      : { opacity: 0, y: 12 }
-                  }
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: "blur(0px)",
-                  }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={
-                    p.isNew
-                      ? { duration: 0.52, ease: SMOOTH_EASE }
-                      : { duration: 0.35, delay: idx * 0.05, ease: SMOOTH_EASE }
-                  }
-                  className="smoked-glass smoked-glass-interactive overflow-hidden"
-                  style={
-                    p.isNew
-                      ? { boxShadow: "0 12px 32px rgba(197, 160, 89, 0.16)" }
-                      : undefined
-                  }
-                >
-                  {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
-                  <div className="px-3.5 pt-3 pb-2.5 d-flex align-items-center justify-content-between gap-2">
-                    <span
-                      style={{
-                        fontFamily: "var(--font-caviar), sans-serif",
-                        fontSize: "0.8rem",
-                        color: "#c5a059",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Karya @{p.author}
-                    </span>
-                    <a
-                      href={p.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{
-                        fontFamily: "var(--font-tommy-medium), sans-serif",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      <span>Kunjungi</span>
-                      <VisitArrowSvg size={15} />
-                    </a>
-                  </div>
-
-                  {/* Banner Full-bleed + Tombol Edit di Pojok Kanan Atas Banner */}
-                  <div
-                    className="position-relative w-100 overflow-hidden"
+            return (
+              <motion.article
+                key={p.id}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.12 }}
+                transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+                className="smoked-glass smoked-glass-interactive overflow-hidden"
+              >
+                {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
+                <div className="px-3.5 pt-3 pb-2.5 d-flex align-items-center justify-content-between gap-2">
+                  <span
                     style={{
-                      height: "196px",
-                      backgroundColor: "#15120f",
+                      fontFamily: "var(--font-caviar), sans-serif",
+                      fontSize: "0.8rem",
+                      color: "#c5a059",
+                      fontWeight: 600,
                     }}
                   >
-                    <button
+                    Karya @{p.author}
+                  </span>
+                  <a
+                    href={p.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-sogan px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    <span>Kunjungi</span>
+                    <VisitArrowSvg size={15} />
+                  </a>
+                </div>
+
+                {/* Banner Full-bleed + Tombol Edit (Khusus pemilik karya yang sudah login) */}
+                <div
+                  className="position-relative w-100 overflow-hidden"
+                  style={{
+                    height: "196px",
+                    backgroundColor: "#15120f",
+                  }}
+                >
+                  {isOwner && (
+                    <motion.button
                       type="button"
+                      whileTap={{ scale: 0.88 }}
                       onClick={() => handleStartEdit(p)}
                       title="Edit Karya"
                       className="btn btn-sm position-absolute top-0 end-0 m-2.5 rounded-circle p-1.5 d-flex align-items-center justify-content-center"
@@ -852,172 +866,185 @@ export default function ShowcaseView() {
                       }}
                     >
                       <EditSvg size={16} active={isEditingThis} />
-                    </button>
+                    </motion.button>
+                  )}
 
-                    {p.bannerUrl ? (
-                      <img
-                        src={p.bannerUrl}
-                        alt={p.title}
-                        className="w-100 h-100 object-fit-cover"
-                      />
-                    ) : (
-                      <div
-                        className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
+                  {p.bannerUrl ? (
+                    <img
+                      src={p.bannerUrl}
+                      alt={p.title}
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
+                      style={{
+                        background:
+                          "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.18), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
+                      }}
+                    >
+                      <span
                         style={{
-                          background:
-                            "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.18), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
+                          fontFamily: "var(--font-tommy-extra), sans-serif",
+                          fontSize: "1.1rem",
+                          color: "rgba(242, 236, 225, 0.22)",
+                          letterSpacing: "0.02em",
                         }}
                       >
+                        {p.title}
+                      </span>
+                    </div>
+                  )}
+
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
+                    style={{
+                      height: "76px",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                      maskImage:
+                        "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                      WebkitMaskImage:
+                        "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
+                      pointerEvents: "none",
+                    }}
+                  />
+
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
+                    style={{
+                      height: "84px",
+                      background:
+                        "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.82) 28%, rgba(21, 18, 15, 0.35) 62%, rgba(21, 18, 15, 0) 100%)",
+                      pointerEvents: "none",
+                    }}
+                  />
+                </div>
+
+                {/* Bagian Bawah Banner */}
+                <div className="px-3.5 pb-3.5 pt-2 position-relative" style={{ zIndex: 2 }}>
+                  <h2
+                    className="h5 mb-1.5 text-break"
+                    style={{
+                      fontFamily: "var(--font-tommy-extra), sans-serif",
+                      color: "#f2ece1",
+                      lineHeight: 1.38,
+                      paddingTop: "2px",
+                      paddingBottom: "2px",
+                    }}
+                  >
+                    {p.title}
+                  </h2>
+
+                  <p
+                    className="mb-2.5"
+                    style={{
+                      fontFamily: "var(--font-tommy-regular), sans-serif",
+                      fontSize: "0.85rem",
+                      color: "#b8ad9e",
+                    }}
+                  >
+                    {p.desc}
+                  </p>
+
+                  <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div className="d-flex flex-wrap gap-1.5">
+                      {p.stack.map((tag) => (
                         <span
+                          key={tag}
+                          className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
                           style={{
-                            fontFamily: "var(--font-tommy-extra), sans-serif",
-                            fontSize: "1.1rem",
-                            color: "rgba(242, 236, 225, 0.22)",
-                            letterSpacing: "0.02em",
+                            fontSize: "0.7rem",
+                            background: "rgba(118, 168, 130, 0.12)",
+                            border: "1px solid rgba(118, 168, 130, 0.25)",
+                            color: "#9fd0aa",
                           }}
                         >
-                          {p.title}
+                          <img
+                            src={getTechLogo(tag)}
+                            alt=""
+                            width={13}
+                            height={13}
+                            className="object-fit-contain flex-shrink-0"
+                          />
+                          <span>{tag}</span>
                         </span>
-                      </div>
-                    )}
-
-                    <div
-                      className="position-absolute bottom-0 start-0 w-100"
-                      style={{
-                        height: "76px",
-                        backdropFilter: "blur(10px)",
-                        WebkitBackdropFilter: "blur(10px)",
-                        maskImage:
-                          "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
-                        WebkitMaskImage:
-                          "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0) 100%)",
-                        pointerEvents: "none",
-                      }}
-                    />
-
-                    <div
-                      className="position-absolute bottom-0 start-0 w-100"
-                      style={{
-                        height: "84px",
-                        background:
-                          "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.82) 28%, rgba(21, 18, 15, 0.35) 62%, rgba(21, 18, 15, 0) 100%)",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </div>
-
-                  {/* Bagian Bawah Banner */}
-                  <div className="px-3.5 pb-3.5 pt-2 position-relative" style={{ zIndex: 2 }}>
-                    <h2
-                      className="h5 mb-1.5 text-break"
-                      style={{
-                        fontFamily: "var(--font-tommy-extra), sans-serif",
-                        color: "#f2ece1",
-                        lineHeight: 1.38,
-                        paddingTop: "2px",
-                        paddingBottom: "2px",
-                      }}
-                    >
-                      {p.title}
-                    </h2>
-
-                    <p
-                      className="mb-2.5"
-                      style={{
-                        fontFamily: "var(--font-tommy-regular), sans-serif",
-                        fontSize: "0.85rem",
-                        color: "#b8ad9e",
-                      }}
-                    >
-                      {p.desc}
-                    </p>
-
-                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                      <div className="d-flex flex-wrap gap-1.5">
-                        {p.stack.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2.5 py-0.5 rounded-pill d-inline-flex align-items-center gap-1.5"
-                            style={{
-                              fontSize: "0.7rem",
-                              background: "rgba(118, 168, 130, 0.12)",
-                              border: "1px solid rgba(118, 168, 130, 0.25)",
-                              color: "#9fd0aa",
-                            }}
-                          >
-                            <img
-                              src={getTechLogo(tag)}
-                              alt=""
-                              width={13}
-                              height={13}
-                              className="object-fit-contain flex-shrink-0"
-                            />
-                            <span>{tag}</span>
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="d-inline-flex align-items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => toggleProjectLike(p.id)}
-                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
-                          style={{
-                            fontSize: "0.76rem",
-                            color: liked ? "#c5a059" : "#b8ad9e",
-                            borderColor: liked
-                              ? "rgba(197, 160, 89, 0.45)"
-                              : undefined,
-                          }}
-                        >
-                          <ApplauseSvg size={17} active={liked} />
-                          <span>{p.applause} Apresiasi</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setOpenReplyId(isReplyOpen ? null : p.id)
-                          }
-                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
-                          style={{
-                            fontSize: "0.76rem",
-                            color: isReplyOpen ? "#c5a059" : "#b8ad9e",
-                            borderColor: isReplyOpen
-                              ? "rgba(197, 160, 89, 0.45)"
-                              : undefined,
-                          }}
-                        >
-                          <ReplySvg size={16} active={isReplyOpen} />
-                          <span>{replies.length} Balasan</span>
-                        </button>
-                      </div>
+                      ))}
                     </div>
 
-                    {/* Panel Balasan Karya */}
-                    <AnimatePresence>
-                      {isReplyOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.24, ease: SMOOTH_EASE }}
-                          className="overflow-hidden"
+                    <div className="d-inline-flex align-items-center gap-1.5">
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.85 }}
+                        onClick={() => handleApplauseClick(p.id)}
+                        title={user ? "Beri Apresiasi" : "Masuk untuk memberi apresiasi"}
+                        className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
+                        style={{
+                          fontSize: "0.76rem",
+                          color: liked ? "#c5a059" : "#b8ad9e",
+                          borderColor: liked
+                            ? "rgba(197, 160, 89, 0.45)"
+                            : undefined,
+                        }}
+                      >
+                        <motion.span
+                          animate={liked ? { scale: [1, 1.3, 1], rotate: [0, -10, 0] } : { scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="d-inline-flex align-items-center"
                         >
-                          <div
-                            className="mt-3 pt-2.5 border-top d-flex flex-column gap-2"
-                            style={{ borderColor: "rgba(197, 160, 89, 0.14)" }}
-                          >
-                            {replies.length === 0 ? (
-                              <span
-                                style={{ fontSize: "0.75rem", color: "#8f8578" }}
-                              >
-                                Belum ada balasan. Beri masukan untuk karya ini!
-                              </span>
-                            ) : (
-                              replies.map((rep) => (
-                                <div
+                          <ApplauseSvg size={17} active={liked} />
+                        </motion.span>
+                        <span>{p.applause} Apresiasi</span>
+                      </motion.button>
+
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.88 }}
+                        onClick={() => handleToggleReplyPanel(p.id)}
+                        title={user ? "Lihat & tulis balasan" : "Masuk untuk membalas"}
+                        className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1.5"
+                        style={{
+                          fontSize: "0.76rem",
+                          color: isReplyOpen ? "#c5a059" : "#b8ad9e",
+                          borderColor: isReplyOpen
+                            ? "rgba(197, 160, 89, 0.45)"
+                            : undefined,
+                        }}
+                      >
+                        <ReplySvg size={16} active={isReplyOpen} />
+                        <span>{replies.length} Balasan</span>
+                      </motion.button>
+                    </div>
+                  </div>
+
+                  {/* Panel Balasan Karya dengan Animasi Smooth */}
+                  <AnimatePresence>
+                    {user && isReplyOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.28, ease: SMOOTH_EASE }}
+                        className="overflow-hidden"
+                      >
+                        <div
+                          className="mt-3 pt-2.5 border-top d-flex flex-column gap-2"
+                          style={{ borderColor: "rgba(197, 160, 89, 0.14)" }}
+                        >
+                          {replies.length === 0 ? (
+                            <span
+                              style={{ fontSize: "0.75rem", color: "#8f8578" }}
+                            >
+                              Belum ada balasan. Beri masukan untuk karya ini!
+                            </span>
+                          ) : (
+                            <AnimatePresence initial={false}>
+                              {replies.map((rep) => (
+                                <motion.div
                                   key={rep.id}
+                                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  transition={{ duration: 0.25, ease: SMOOTH_EASE }}
                                   className="px-2.5 py-1.5 rounded-3"
                                   style={{
                                     backgroundColor: "rgba(12, 10, 9, 0.55)",
@@ -1044,51 +1071,52 @@ export default function ShowcaseView() {
                                   >
                                     {rep.text}
                                   </p>
-                                </div>
-                              ))
-                            )}
+                                </motion.div>
+                              ))}
+                            </AnimatePresence>
+                          )}
 
-                            <form
-                              onSubmit={(e) => handleAddReply(e, p.id)}
-                              className="d-flex gap-1.5 mt-1"
+                          <form
+                            onSubmit={(e) => handleAddReply(e, p.id)}
+                            className="d-flex gap-1.5 mt-1"
+                          >
+                            <input
+                              type="text"
+                              value={replyInputs[p.id] || ""}
+                              onChange={(e) =>
+                                setReplyInputs((prev) => ({
+                                  ...prev,
+                                  [p.id]: e.target.value,
+                                }))
+                              }
+                              placeholder="Tulis balasan atau masukan..."
+                              className="form-control form-control-sm"
+                              style={{
+                                backgroundColor: "rgba(14, 12, 10, 0.72)",
+                                borderColor: "rgba(197, 160, 89, 0.22)",
+                                color: "#f2ece1",
+                                fontSize: "0.76rem",
+                              }}
+                            />
+                            <motion.button
+                              type="submit"
+                              whileTap={{ scale: 0.88, rotate: -10 }}
+                              className="btn btn-sm btn-sogan px-2.5 d-inline-flex align-items-center justify-content-center"
+                              title="Kirim balasan"
                             >
-                              <input
-                                type="text"
-                                value={replyInputs[p.id] || ""}
-                                onChange={(e) =>
-                                  setReplyInputs((prev) => ({
-                                    ...prev,
-                                    [p.id]: e.target.value,
-                                  }))
-                                }
-                                placeholder="Tulis balasan atau masukan..."
-                                className="form-control form-control-sm"
-                                style={{
-                                  backgroundColor: "rgba(14, 12, 10, 0.72)",
-                                  borderColor: "rgba(197, 160, 89, 0.22)",
-                                  color: "#f2ece1",
-                                  fontSize: "0.76rem",
-                                }}
-                              />
-                              <button
-                                type="submit"
-                                className="btn btn-sm btn-sogan px-2.5 d-inline-flex align-items-center justify-content-center"
-                                title="Kirim balasan"
-                              >
-                                <SendSvg size={14} />
-                              </button>
-                            </form>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </AnimatePresence>
+                              <SendSvg size={14} />
+                            </motion.button>
+                          </form>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }

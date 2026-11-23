@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MagnifyingGlassPlus, MagnifyingGlassMinus, ArrowsClockwise } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
@@ -307,6 +308,7 @@ const CodeSvg = ({ size = 15 }) => (
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
 export default function HomeView() {
+  const router = useRouter();
   const { user, feedPosts, addFeedPost } = useAuthStore();
   const [copiedId, setCopiedId] = useState(null);
   const [upvotedIds, setUpvotedIds] = useState([]);
@@ -317,9 +319,9 @@ export default function HomeView() {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [postImage, setPostImage] = useState("");
   const [filter, setFilter] = useState("semua");
+  const [sendFlyTick, setSendFlyTick] = useState(0);
   const fileInputRef = useRef(null);
 
-  // Deteksi arah scroll untuk animasi halus panel tulis catatan
   const [composerCollapsed, setComposerCollapsed] = useState(false);
   const [composerFocused, setComposerFocused] = useState(false);
   const lastScrollYRef = useRef(0);
@@ -411,6 +413,10 @@ export default function HomeView() {
   };
 
   const handleImageChange = (e) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
@@ -424,14 +430,19 @@ export default function HomeView() {
 
   const handleCreatePost = (e) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (!postText.trim() && !postImage) return;
+    setSendFlyTick((n) => n + 1);
     const contentClean =
       postText.trim() || "Melampirkan gambar error / tangkapan layar.";
     addFeedPost({
       id: String(Date.now()),
       title: contentClean.slice(0, 72),
       category: selectedTag,
-      author: user?.username || "pegiat_kode",
+      author: user.username,
       time: "Baru saja",
       excerpt: contentClean,
       content: contentClean,
@@ -452,9 +463,22 @@ export default function HomeView() {
   };
 
   const toggleUpvote = (id) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     setUpvotedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
+  };
+
+  const handleReplyClick = (e, item) => {
+    if (!user) {
+      e.preventDefault();
+      router.push("/login");
+      return;
+    }
+    setActiveReplyId(item.id);
   };
 
   const visibleThreads = feedPosts.filter((t) => {
@@ -463,7 +487,12 @@ export default function HomeView() {
   });
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas overflow-x-hidden">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.35 }}
+      className="min-vh-100 d-flex flex-column handcrafted-canvas overflow-x-hidden"
+    >
       <Navbar />
 
       <main className="container pt-4 flex-grow-1" style={{ maxWidth: "740px" }}>
@@ -503,10 +532,10 @@ export default function HomeView() {
           })}
         </motion.div>
 
-        {/* Stream Utas Komunitas dengan Animasi Scroll Keluar-Masuk Dua Arah */}
+        {/* Stream Utas Komunitas */}
         <div className="d-flex flex-column gap-3">
           {visibleThreads.map((item) => {
-            const upvoted = upvotedIds.includes(item.id);
+            const upvoted = Boolean(user && upvotedIds.includes(item.id));
             const replyActive = activeReplyId === item.id;
             const isCopied = copiedId === `code-${item.id}`;
             const displayCategory =
@@ -532,15 +561,13 @@ export default function HomeView() {
             return (
               <motion.article
                 key={item.id}
-                layout="position"
-                initial={{ opacity: 0, y: 22, scale: 0.975 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.14 }}
-                transition={{ duration: 0.48, ease: SMOOTH_EASE }}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.12 }}
+                transition={{ duration: 0.4, ease: SMOOTH_EASE }}
                 className="smoked-glass smoked-glass-interactive p-3 overflow-hidden"
               >
                 <div className="d-flex gap-2.5">
-                  {/* Avatar + Garis Alur */}
                   <div className="d-flex flex-column align-items-center flex-shrink-0">
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center"
@@ -559,7 +586,6 @@ export default function HomeView() {
                     <div className="thread-spine flex-grow-1 my-1.5" />
                   </div>
 
-                  {/* Isi Postingan */}
                   <div className="flex-grow-1" style={{ minWidth: 0 }}>
                     <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
                       <div className="d-flex align-items-center gap-1.5 flex-wrap">
@@ -846,32 +872,43 @@ export default function HomeView() {
                     <div className="d-flex align-items-center justify-content-between pt-1">
                       <div className="d-flex align-items-center gap-3">
                         {!isKaryaPost && (
-                          <button
+                          <motion.button
                             type="button"
+                            whileTap={{ scale: 0.85 }}
                             onClick={() => toggleUpvote(item.id)}
+                            title={user ? "Bantu Naik" : "Masuk untuk memberi apresiasi"}
                             className="btn btn-sm p-0 border-0 d-inline-flex align-items-center gap-1"
                             style={{
                               fontSize: "0.76rem",
                               color: upvoted ? "#c5a059" : "#8f8578",
                             }}
                           >
-                            <UpvoteSvg size={16} active={upvoted} />
+                            <motion.span
+                              animate={upvoted ? { scale: [1, 1.32, 1], y: [0, -3, 0] } : { scale: 1, y: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="d-inline-flex align-items-center"
+                            >
+                              <UpvoteSvg size={16} active={upvoted} />
+                            </motion.span>
                             <span>{upvoted ? "Terbantu" : "Bantu Naik"}</span>
-                          </button>
+                          </motion.button>
                         )}
 
-                        <Link
-                          href={item.topCard ? "/top" : `/forum/${item.id}`}
-                          onClick={() => setActiveReplyId(item.id)}
-                          className="text-decoration-none d-inline-flex align-items-center gap-1"
-                          style={{
-                            fontSize: "0.76rem",
-                            color: replyActive ? "#c5a059" : "#8f8578",
-                          }}
-                        >
-                          <ReplySvg size={16} active={replyActive} />
-                          <span>{item.comments?.length || 0} Balasan</span>
-                        </Link>
+                        <motion.div whileTap={{ scale: 0.9 }}>
+                          <Link
+                            href={item.topCard ? "/top" : `/forum/${item.id}`}
+                            onClick={(e) => handleReplyClick(e, item)}
+                            title={user ? "Lihat & tulis balasan" : "Masuk untuk membalas"}
+                            className="text-decoration-none d-inline-flex align-items-center gap-1"
+                            style={{
+                              fontSize: "0.76rem",
+                              color: replyActive ? "#c5a059" : "#8f8578",
+                            }}
+                          >
+                            <ReplySvg size={16} active={replyActive} />
+                            <span>{item.comments?.length || 0} Balasan</span>
+                          </Link>
+                        </motion.div>
                       </div>
 
                       {isKaryaPost && (
@@ -890,7 +927,6 @@ export default function HomeView() {
           })}
         </div>
 
-        {/* Spacer aman agar postingan paling bawah tidak tertutup composer & dock nav */}
         <div style={{ height: "235px" }} />
       </main>
 
@@ -1018,7 +1054,7 @@ export default function HomeView() {
         )}
       </AnimatePresence>
 
-      {/* Composer Postingan Baru di Bawah dengan Animasi Scroll Keluar-Masuk Halus */}
+      {/* Composer Postingan Baru di Bawah (Terkunci jika belum masuk dengan animasi halus) */}
       <div
         className="position-fixed start-0 w-100 px-3"
         style={{ bottom: "76px", zIndex: 42, pointerEvents: "none" }}
@@ -1048,159 +1084,195 @@ export default function HomeView() {
               boxShadow: "0 10px 28px rgba(0, 0, 0, 0.65)",
             }}
           >
-            {postImage && (
-              <div
-                className="position-relative mb-2 rounded-3 overflow-hidden d-inline-block"
-                style={{ border: "1px solid rgba(197, 160, 89, 0.3)" }}
-              >
-                <img
-                  src={postImage}
-                  alt="Pratinjau gambar"
-                  onClick={() => openZoom(postImage)}
-                  className="object-fit-cover"
-                  style={{ maxHeight: "96px", maxWidth: "180px", cursor: "zoom-in" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPostImage("");
-                    if (fileInputRef.current) fileInputRef.current.value = "";
-                  }}
-                  className="btn btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0.5 d-flex align-items-center justify-content-center"
-                  style={{
-                    backgroundColor: "rgba(12, 10, 9, 0.85)",
-                    color: "#f2ece1",
-                    border: "1px solid rgba(197, 160, 89, 0.35)",
-                  }}
-                  title="Hapus gambar"
-                >
-                  <X size={12} />
-                </button>
-              </div>
-            )}
-
-            <div className="d-flex gap-2">
-              <div
-                className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                style={{
-                  width: "34px",
-                  height: "34px",
-                  background: "rgba(197, 160, 89, 0.14)",
-                  border: "1px solid rgba(197, 160, 89, 0.3)",
-                  color: "#c5a059",
-                  fontWeight: 600,
-                  fontSize: "0.82rem",
-                }}
-              >
-                {(user?.username?.[0] || "A").toUpperCase()}
-              </div>
-
-              <div className="flex-grow-1" style={{ minWidth: 0 }}>
-                <textarea
-                  rows={1}
-                  value={postText}
-                  onChange={(e) => setPostText(e.target.value)}
-                  placeholder="Tulis catatan ngoding atau error..."
-                  className="form-control border-0 bg-transparent p-0 shadow-none"
-                  style={{
-                    color: "#f2ece1",
-                    fontSize: "0.84rem",
-                    resize: "none",
-                  }}
-                />
-
-                <AnimatePresence>
-                  {showCodeInput && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-2 overflow-hidden"
-                    >
-                      <textarea
-                        rows={2}
-                        value={codeSnippet}
-                        onChange={(e) => setCodeSnippet(e.target.value)}
-                        placeholder="// Tempel potongan kode atau log error di sini..."
-                        className="form-control code-well p-2"
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
-                  {POST_TAGS.map((tag) => {
-                    const active = selectedTag === tag;
-                    const tagStyle = getCategoryBadgeStyle(tag, active);
-                    return (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => setSelectedTag(tag)}
-                        className="btn btn-sm rounded-pill px-2 py-0 flex-shrink-0"
-                        style={{
-                          fontFamily: "var(--font-tommy-medium), sans-serif",
-                          fontSize: "0.67rem",
-                          lineHeight: 1.55,
-                          ...tagStyle,
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div
-                  className="d-flex align-items-center justify-content-between pt-1.5 mt-1 border-top"
-                  style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
-                >
-                  <div className="d-flex align-items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setShowCodeInput(!showCodeInput)}
-                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.72rem" }}
-                    >
-                      <CodeSvg size={15} />
-                      <span>Sisipkan Kode</span>
-                    </button>
-
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="d-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
-                      style={{ fontSize: "0.72rem" }}
-                    >
-                      <AddImageSvg size={15} />
-                      <span>Gambar</span>
-                    </button>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1.5"
+            {!user ? (
+              <div className="d-flex align-items-center justify-content-between gap-2 py-1 px-1">
+                <span style={{ fontSize: "0.8rem", color: "#b8ad9e" }}>
+                  Masuk terlebih dahulu untuk menulis catatan atau mengunggah karya.
+                </span>
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.94 }}>
+                  <Link
+                    href="/login"
+                    className="btn btn-sm btn-sogan px-3 py-1 rounded-pill flex-shrink-0"
                     style={{
                       fontFamily: "var(--font-tommy-medium), sans-serif",
                       fontSize: "0.74rem",
                     }}
                   >
-                    <span>Send</span>
-                    <SendSvg size={14} />
-                  </button>
-                </div>
+                    Masuk
+                  </Link>
+                </motion.div>
               </div>
-            </div>
+            ) : (
+              <>
+                {postImage && (
+                  <div
+                    className="position-relative mb-2 rounded-3 overflow-hidden d-inline-block"
+                    style={{ border: "1px solid rgba(197, 160, 89, 0.3)" }}
+                  >
+                    <img
+                      src={postImage}
+                      alt="Pratinjau gambar"
+                      onClick={() => openZoom(postImage)}
+                      className="object-fit-cover"
+                      style={{ maxHeight: "96px", maxWidth: "180px", cursor: "zoom-in" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPostImage("");
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="btn btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0.5 d-flex align-items-center justify-content-center"
+                      style={{
+                        backgroundColor: "rgba(12, 10, 9, 0.85)",
+                        color: "#f2ece1",
+                        border: "1px solid rgba(197, 160, 89, 0.35)",
+                      }}
+                      title="Hapus gambar"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                )}
+
+                <div className="d-flex gap-2">
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                    style={{
+                      width: "34px",
+                      height: "34px",
+                      background: "rgba(197, 160, 89, 0.14)",
+                      border: "1px solid rgba(197, 160, 89, 0.3)",
+                      color: "#c5a059",
+                      fontWeight: 600,
+                      fontSize: "0.82rem",
+                    }}
+                  >
+                    {(user?.username?.[0] || "A").toUpperCase()}
+                  </div>
+
+                  <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                    <textarea
+                      rows={1}
+                      value={postText}
+                      onChange={(e) => setPostText(e.target.value)}
+                      placeholder="Tulis catatan ngoding atau error..."
+                      className="form-control border-0 bg-transparent p-0 shadow-none"
+                      style={{
+                        color: "#f2ece1",
+                        fontSize: "0.84rem",
+                        resize: "none",
+                      }}
+                    />
+
+                    <AnimatePresence>
+                      {showCodeInput && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-2 overflow-hidden"
+                        >
+                          <textarea
+                            rows={2}
+                            value={codeSnippet}
+                            onChange={(e) => setCodeSnippet(e.target.value)}
+                            placeholder="// Tempel potongan kode atau log error di sini..."
+                            className="form-control code-well p-2"
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
+                      {POST_TAGS.map((tag) => {
+                        const active = selectedTag === tag;
+                        const tagStyle = getCategoryBadgeStyle(tag, active);
+                        return (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => setSelectedTag(tag)}
+                            className="btn btn-sm rounded-pill px-2 py-0 flex-shrink-0"
+                            style={{
+                              fontFamily: "var(--font-tommy-medium), sans-serif",
+                              fontSize: "0.67rem",
+                              lineHeight: 1.55,
+                              ...tagStyle,
+                            }}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div
+                      className="d-flex align-items-center justify-content-between pt-1.5 mt-1 border-top"
+                      style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}
+                    >
+                      <div className="d-flex align-items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setShowCodeInput(!showCodeInput)}
+                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                          style={{ fontSize: "0.72rem" }}
+                        >
+                          <CodeSvg size={15} />
+                          <span>Sisipkan Kode</span>
+                        </button>
+
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="d-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="btn btn-sm btn-glass-subtle px-2.5 py-1 d-inline-flex align-items-center gap-1"
+                          style={{ fontSize: "0.72rem" }}
+                        >
+                          <AddImageSvg size={15} />
+                          <span>Gambar</span>
+                        </button>
+                      </div>
+
+                      <motion.button
+                        type="submit"
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.92 }}
+                        className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1.5"
+                        style={{
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.74rem",
+                        }}
+                      >
+                        <span>Send</span>
+                        <motion.span
+                          key={sendFlyTick}
+                          initial={sendFlyTick > 0 ? { x: 0, y: 0, opacity: 1 } : false}
+                          animate={
+                            sendFlyTick > 0
+                              ? { x: [0, 12, -8, 0], y: [0, -10, 6, 0], opacity: [1, 0, 0, 1] }
+                              : { x: 0, y: 0, opacity: 1 }
+                          }
+                          transition={{ duration: 0.48, ease: SMOOTH_EASE }}
+                          className="d-inline-flex align-items-center"
+                        >
+                          <SendSvg size={14} />
+                        </motion.span>
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </motion.form>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

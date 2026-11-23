@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react";
 import Navbar from "../components/Navbar";
@@ -87,6 +88,7 @@ const getCategoryBadgeStyle = (cat) => {
 };
 
 export default function ForumView() {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const [threads, setThreads] = useState(INITIAL_THREADS);
   const [query, setQuery] = useState("");
@@ -100,8 +102,22 @@ export default function ForumView() {
   const [errors, setErrors] = useState({ title: false, content: false });
   const [shakeTick, setShakeTick] = useState(0);
 
+  const handleToggleCreateForm = () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    setShowForm(!showForm);
+    setCatOpen(false);
+    setErrors({ title: false, content: false });
+  };
+
   const handleCreate = (e) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     const titleEmpty = !title.trim();
     const contentEmpty = !content.trim();
 
@@ -115,7 +131,7 @@ export default function ForumView() {
       id: String(Date.now()),
       title: title.trim(),
       category,
-      author: user?.username || "anggota_api",
+      author: user.username,
       time: "Baru saja",
       excerpt: content.trim().slice(0, 120),
       content: content.trim(),
@@ -138,7 +154,12 @@ export default function ForumView() {
   });
 
   return (
-    <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+      className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5"
+    >
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
@@ -159,14 +180,10 @@ export default function ForumView() {
           </div>
           <motion.button
             type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => {
-              setShowForm(!showForm);
-              setCatOpen(false);
-              setErrors({ title: false, content: false });
-            }}
-            title="Buat Utas"
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleToggleCreateForm}
+            title={user ? "Buat Utas" : "Masuk untuk membuat utas"}
             className="btn btn-sm btn-sogan rounded-pill d-inline-flex align-items-center justify-content-center flex-shrink-0"
             style={{ width: "38px", height: "38px", padding: 0 }}
           >
@@ -180,9 +197,9 @@ export default function ForumView() {
           </motion.button>
         </div>
 
-        {/* Form Tambah Utas dengan Animasi Buka-Tutup Smooth */}
+        {/* Form Tambah Utas (Hanya untuk user yang sudah masuk) */}
         <AnimatePresence initial={false}>
-          {showForm && (
+          {user && showForm && (
             <motion.div
               key="forum-form-wrapper"
               initial={{ opacity: 0, height: 0, y: -8 }}
@@ -198,7 +215,7 @@ export default function ForumView() {
                 y: -8,
                 overflow: "hidden",
               }}
-              transition={{ duration: 0.36, ease: SMOOTH_EASE }}
+              transition={{ duration: 0.34, ease: SMOOTH_EASE }}
               style={{ overflow: "hidden" }}
             >
               <form
@@ -206,7 +223,6 @@ export default function ForumView() {
                 onSubmit={handleCreate}
                 className="smoked-glass p-3.5 mb-3 d-flex flex-column gap-2.5"
               >
-                {/* Input Judul dengan Efek Merah & Getar jika kosong */}
                 <motion.div
                   key={`title-${shakeTick}`}
                   animate={
@@ -238,7 +254,7 @@ export default function ForumView() {
                   />
                 </motion.div>
 
-                {/* Custom Dropdown Kategori Buatan Website Sendiri */}
+                {/* Custom Dropdown Kategori */}
                 <div className="position-relative">
                   <button
                     type="button"
@@ -319,7 +335,6 @@ export default function ForumView() {
                   </AnimatePresence>
                 </div>
 
-                {/* Input Kronologi/Detail dengan Efek Merah & Getar jika kosong */}
                 <motion.div
                   key={`content-${shakeTick}`}
                   animate={
@@ -413,16 +428,17 @@ export default function ForumView() {
           </div>
         </div>
 
-        {/* Daftar Utas */}
+        {/* Daftar Utas dengan Animasi Scroll Smooth */}
         <div className="d-flex flex-column gap-2.5 mb-4">
-          {filtered.map((item, idx) => {
+          {filtered.map((item) => {
             const badgeStyle = getCategoryBadgeStyle(item.category);
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.12 }}
+                transition={{ duration: 0.36, ease: SMOOTH_EASE }}
               >
                 <Link
                   href={`/forum/${item.id}`}
@@ -477,6 +493,6 @@ export default function ForumView() {
           })}
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }
