@@ -80,22 +80,32 @@ const getTechLogo = (name) =>
 
 const TOP_CARD_THEMES = {
   sogan: {
-    bg: "linear-gradient(135deg, #241c13 0%, #130f0c 55%, #1d160e 100%)",
-    border: "rgba(197, 160, 89, 0.42)",
-    accent: "#c5a059",
+    bgColor: "#17120c",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(212, 168, 83, 0.22) 0%, transparent 52%), repeating-linear-gradient(135deg, rgba(197, 160, 89, 0.06) 0px, rgba(197, 160, 89, 0.06) 1px, transparent 1px, transparent 10px)",
+    border: "rgba(212, 168, 83, 0.45)",
+    accent: "#e5be6b",
   },
   emerald: {
-    bg: "linear-gradient(135deg, #132119 0%, #0d1410 55%, #14221a 100%)",
-    border: "rgba(118, 168, 130, 0.42)",
-    accent: "#8fc29b",
+    bgColor: "#0f1914",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(118, 168, 130, 0.2) 0%, transparent 52%), radial-gradient(rgba(143, 212, 164, 0.12) 1px, transparent 1px)",
+    bgSize: "100% 100%, 10px 10px",
+    border: "rgba(118, 168, 130, 0.45)",
+    accent: "#9fd0aa",
   },
   blue: {
-    bg: "linear-gradient(135deg, #131e2c 0%, #0d1117 55%, #142130 100%)",
-    border: "rgba(106, 165, 232, 0.48)",
-    accent: "#7eb6f5",
+    bgColor: "#0e1520",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(106, 165, 232, 0.2) 0%, transparent 52%), linear-gradient(rgba(126, 182, 245, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(126, 182, 245, 0.06) 1px, transparent 1px)",
+    bgSize: "100% 100%, 12px 12px, 12px 12px",
+    border: "rgba(106, 165, 232, 0.45)",
+    accent: "#8cc0fa",
   },
   obsidian: {
-    bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
+    bgColor: "#14101a",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(176, 146, 224, 0.18) 0%, transparent 52%)",
     border: "rgba(176, 146, 224, 0.4)",
     accent: "#c8b2eb",
   },
@@ -178,7 +188,7 @@ const VisitArrowSvg = ({ size = 15 }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       fill="currentColor"
-      d="M15.586 7H10c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8c.198.013.325.033.5.134.322.186.476.506.5.866v8c-.03.451-.288.844-.741.966-.656.176-1.217-.327-1.259-.966V8.414l-9.95 9.95c-.41.359-1.01.404-1.414 0-.405-.404-.359-1.005 0-1.414Z"
+      d="M14.378 7.5H10c-.83-.047-1.5-.634-1.5-1.5a1.505 1.505 0 0 1 1.166-1.462L10 4.5h8c.347.019.659.107.935.327.37.295.539.712.565 1.173v8l-.038.334A1.505 1.505 0 0 1 18 15.5c-.866 0-1.454-.67-1.5-1.5V9.621l-9.097 9.097c-.619.553-1.509.612-2.121 0-.612-.613-.554-1.502 0-2.122Z"
     />
   </svg>
 );
@@ -574,7 +584,9 @@ export default function HomeView() {
                         <div
                           className="rounded-4 overflow-hidden"
                           style={{
-                            background: cardTheme.bg,
+                            backgroundColor: cardTheme.bgColor,
+                            backgroundImage: cardTheme.bgImage,
+                            backgroundSize: cardTheme.bgSize || "100% 100%",
                             border: `1px solid ${cardTheme.border}`,
                             boxShadow: "0 10px 24px rgba(0, 0, 0, 0.45)",
                           }}
@@ -610,7 +622,6 @@ export default function HomeView() {
                               </div>
                             )}
 
-                            {/* Blur tipis & halus di dasar banner agar tidak menutupi banner */}
                             <div
                               className="position-absolute bottom-0 start-0 w-100"
                               style={{
@@ -870,7 +881,6 @@ export default function HomeView() {
               touchAction: "none",
             }}
           >
-            {/* Bar Kontrol Zoom di Atas */}
             <div
               onClick={(e) => e.stopPropagation()}
               className="position-fixed top-0 start-0 w-100 px-3 py-3 d-flex align-items-center justify-content-between"
@@ -943,7 +953,6 @@ export default function HomeView() {
               </button>
             </div>
 
-            {/* Gambar yang Dapat Di-Zoom & Geser Bebas */}
             <div
               onClick={(e) => e.stopPropagation()}
               onDoubleClick={() => {
@@ -998,7 +1007,6 @@ export default function HomeView() {
               boxShadow: "0 10px 28px rgba(0, 0, 0, 0.65)",
             }}
           >
-            {/* Pratinjau Gambar Error / Lampiran jika diunggah */}
             {postImage && (
               <div
                 className="position-relative mb-2 rounded-3 overflow-hidden d-inline-block"
@@ -1079,7 +1087,6 @@ export default function HomeView() {
                   )}
                 </AnimatePresence>
 
-                {/* Pilihan Tag Ringkas dengan Warna Seragam Berbeda Tiap Kategori */}
                 <div className="d-flex align-items-center gap-1 overflow-x-auto pt-2 pb-1">
                   {POST_TAGS.map((tag) => {
                     const active = selectedTag === tag;
@@ -1103,7 +1110,6 @@ export default function HomeView() {
                   })}
                 </div>
 
-                {/* Baris Aksi: Sisipkan Kode, Gambar, dan Send */}
                 <div
                   className="d-flex align-items-center justify-content-between pt-1.5 mt-1 border-top"
                   style={{ borderColor: "rgba(197, 160, 89, 0.12)" }}

@@ -134,7 +134,7 @@ const VisitArrowSvg = ({ size = 15 }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       fill="currentColor"
-      d="M15.586 7H10c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8c.198.013.325.033.5.134.322.186.476.506.5.866v8c-.03.451-.288.844-.741.966-.656.176-1.217-.327-1.259-.966V8.414l-9.95 9.95c-.41.359-1.01.404-1.414 0-.405-.404-.359-1.005 0-1.414Z"
+      d="M14.378 7.5H10c-.83-.047-1.5-.634-1.5-1.5a1.505 1.505 0 0 1 1.166-1.462L10 4.5h8c.347.019.659.107.935.327.37.295.539.712.565 1.173v8l-.038.334A1.505 1.505 0 0 1 18 15.5c-.866 0-1.454-.67-1.5-1.5V9.621l-9.097 9.097c-.619.553-1.509.612-2.121 0-.612-.613-.554-1.502 0-2.122Z"
     />
   </svg>
 );
@@ -422,7 +422,7 @@ export default function ShowcaseView() {
           </motion.button>
         </div>
 
-        {/* Form Rilis / Edit Karya dengan Animasi Buka-Tutup Smooth */}
+        {/* Form Rilis / Edit Karya */}
         <AnimatePresence initial={false}>
           {showForm && (
             <motion.div
@@ -800,7 +800,7 @@ export default function ShowcaseView() {
                       : undefined
                   }
                 >
-                  {/* Bagian Atas Banner: Nama Pembuat (Caviar) & Tombol Kunjungi (Tommy Medium) */}
+                  {/* Bagian Atas Banner: Nama Pembuat & Tombol Kunjungi */}
                   <div className="px-3.5 pt-3 pb-2.5 d-flex align-items-center justify-content-between gap-2">
                     <span
                       style={{
@@ -835,7 +835,6 @@ export default function ShowcaseView() {
                       backgroundColor: "#15120f",
                     }}
                   >
-                    {/* Ikon Edit Pojok Kanan Atas Banner */}
                     <button
                       type="button"
                       onClick={() => handleStartEdit(p)}
@@ -907,7 +906,7 @@ export default function ShowcaseView() {
                     />
                   </div>
 
-                  {/* Bagian Bawah Banner: Judul Proyek, Deskripsi, Tech Stack, Apresiasi & Balasan */}
+                  {/* Bagian Bawah Banner */}
                   <div className="px-3.5 pb-3.5 pt-2 position-relative" style={{ zIndex: 2 }}>
                     <h2
                       className="h5 mb-1.5 text-break"

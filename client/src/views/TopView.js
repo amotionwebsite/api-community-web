@@ -31,7 +31,7 @@ const VisitArrowSvg = ({ size = 15 }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       fill="currentColor"
-      d="M15.586 7H10c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8c.198.013.325.033.5.134.322.186.476.506.5.866v8c-.03.451-.288.844-.741.966-.656.176-1.217-.327-1.259-.966V8.414l-9.95 9.95c-.41.359-1.01.404-1.414 0-.405-.404-.359-1.005 0-1.414Z"
+      d="M14.378 7.5H10c-.83-.047-1.5-.634-1.5-1.5a1.505 1.505 0 0 1 1.166-1.462L10 4.5h8c.347.019.659.107.935.327.37.295.539.712.565 1.173v8l-.038.334A1.505 1.505 0 0 1 18 15.5c-.866 0-1.454-.67-1.5-1.5V9.621l-9.097 9.097c-.619.553-1.509.612-2.121 0-.612-.613-.554-1.502 0-2.122Z"
     />
   </svg>
 );
@@ -94,29 +94,39 @@ const CARD_THEMES = [
   {
     id: "sogan",
     label: "Top 1 Emas",
-    bg: "linear-gradient(135deg, #241c13 0%, #130f0c 55%, #1d160e 100%)",
-    border: "rgba(197, 160, 89, 0.48)",
-    accent: "#c5a059",
+    bgColor: "#17120c",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(212, 168, 83, 0.22) 0%, transparent 52%), repeating-linear-gradient(135deg, rgba(197, 160, 89, 0.06) 0px, rgba(197, 160, 89, 0.06) 1px, transparent 1px, transparent 10px)",
+    border: "rgba(212, 168, 83, 0.45)",
+    accent: "#e5be6b",
   },
   {
     id: "emerald",
     label: "Top 2 Emerald",
-    bg: "linear-gradient(135deg, #13231a 0%, #0d1410 55%, #14261c 100%)",
-    border: "rgba(118, 168, 130, 0.48)",
-    accent: "#8fc29b",
+    bgColor: "#0f1914",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(118, 168, 130, 0.2) 0%, transparent 52%), radial-gradient(rgba(143, 212, 164, 0.12) 1px, transparent 1px)",
+    bgSize: "100% 100%, 10px 10px",
+    border: "rgba(118, 168, 130, 0.45)",
+    accent: "#9fd0aa",
   },
   {
     id: "blue",
     label: "Top 3 Biru",
-    bg: "linear-gradient(135deg, #131e2c 0%, #0d1117 55%, #142130 100%)",
-    border: "rgba(106, 165, 232, 0.48)",
-    accent: "#7eb6f5",
+    bgColor: "#0e1520",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(106, 165, 232, 0.2) 0%, transparent 52%), linear-gradient(rgba(126, 182, 245, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(126, 182, 245, 0.06) 1px, transparent 1px)",
+    bgSize: "100% 100%, 12px 12px, 12px 12px",
+    border: "rgba(106, 165, 232, 0.45)",
+    accent: "#8cc0fa",
   },
   {
     id: "obsidian",
     label: "Top 4 Violet",
-    bg: "linear-gradient(135deg, #1d1526 0%, #100d14 55%, #1a1322 100%)",
-    border: "rgba(176, 146, 224, 0.42)",
+    bgColor: "#14101a",
+    bgImage:
+      "radial-gradient(circle at 88% 12%, rgba(176, 146, 224, 0.18) 0%, transparent 52%)",
+    border: "rgba(176, 146, 224, 0.4)",
     accent: "#c8b2eb",
   },
 ];
@@ -259,7 +269,6 @@ export default function TopView() {
         color: "#cbb5ed",
       };
     }
-    // #5 dst: background polos abu-abu
     return {
       backgroundColor: "#2a2b2e",
       border: "1px solid #3c3e42",
@@ -267,13 +276,51 @@ export default function TopView() {
     };
   };
 
+  const getRankCardStyle = (rankIdx) => {
+    if (rankIdx === 0) {
+      return {
+        backgroundColor: "#17120c",
+        backgroundImage:
+          "radial-gradient(circle at 92% 8%, rgba(212, 168, 83, 0.2) 0%, transparent 48%), repeating-linear-gradient(135deg, rgba(197, 160, 89, 0.05) 0px, rgba(197, 160, 89, 0.05) 1px, transparent 1px, transparent 11px)",
+        border: "1px solid rgba(212, 168, 83, 0.38)",
+        boxShadow: "0 12px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 235, 185, 0.08)",
+      };
+    }
+    if (rankIdx === 1) {
+      return {
+        backgroundColor: "#0f1813",
+        backgroundImage:
+          "radial-gradient(circle at 92% 8%, rgba(118, 168, 130, 0.18) 0%, transparent 48%), radial-gradient(rgba(143, 212, 164, 0.1) 1px, transparent 1px)",
+        backgroundSize: "100% 100%, 10px 10px",
+        border: "1px solid rgba(118, 168, 130, 0.36)",
+        boxShadow: "0 10px 26px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(185, 240, 200, 0.06)",
+      };
+    }
+    if (rankIdx === 2) {
+      return {
+        backgroundColor: "#0e1520",
+        backgroundImage:
+          "radial-gradient(circle at 92% 8%, rgba(106, 165, 232, 0.18) 0%, transparent 48%), linear-gradient(rgba(126, 182, 245, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(126, 182, 245, 0.05) 1px, transparent 1px)",
+        backgroundSize: "100% 100%, 12px 12px, 12px 12px",
+        border: "1px solid rgba(106, 165, 232, 0.36)",
+        boxShadow: "0 10px 26px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(190, 220, 255, 0.06)",
+      };
+    }
+    return undefined;
+  };
+
   return (
     <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* Header Top 10 (Tanpa tombol +) */}
-        <div className="mb-3">
+        {/* Header Top 10 */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: SMOOTH_EASE }}
+          className="mb-3"
+        >
           <h1
             className="h4 mb-0"
             style={{
@@ -286,7 +333,7 @@ export default function TopView() {
           <p className="mb-0" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
             Peringkat apresiasi tertinggi karya member Anak Programmer Indonesia.
           </p>
-        </div>
+        </motion.div>
 
         {/* Panel Editor Card Peringkat Karya Milik User untuk Diposting ke Feed */}
         <AnimatePresence initial={false}>
@@ -403,7 +450,9 @@ export default function TopView() {
                         style={{
                           fontFamily: "var(--font-tommy-medium), sans-serif",
                           fontSize: "0.7rem",
-                          background: t.bg,
+                          backgroundColor: t.bgColor,
+                          backgroundImage: t.bgImage,
+                          backgroundSize: t.bgSize || "100% 100%",
                           border: active
                             ? `1.5px solid ${t.accent}`
                             : "1px solid rgba(255,255,255,0.12)",
@@ -416,16 +465,17 @@ export default function TopView() {
                   })}
                 </div>
 
-                {/* Live Preview Card dengan Banner Karya & Blur Bawah Halus */}
+                {/* Live Preview Card */}
                 <div
                   className="rounded-4 position-relative overflow-hidden"
                   style={{
-                    background: selectedTheme.bg,
+                    backgroundColor: selectedTheme.bgColor,
+                    backgroundImage: selectedTheme.bgImage,
+                    backgroundSize: selectedTheme.bgSize || "100% 100%",
                     border: `1px solid ${selectedTheme.border}`,
                     boxShadow: "0 10px 26px rgba(0, 0, 0, 0.5)",
                   }}
                 >
-                  {/* Banner Karya dengan Blur Halus di Bawah */}
                   <div
                     className="position-relative w-100 overflow-hidden"
                     style={{ height: "136px", backgroundColor: "#14110e" }}
@@ -456,7 +506,6 @@ export default function TopView() {
                       </div>
                     )}
 
-                    {/* Blur tipis & halus hanya di bagian paling bawah agar banner tidak tertutup */}
                     <div
                       className="position-absolute bottom-0 start-0 w-100"
                       style={{
@@ -560,16 +609,19 @@ export default function TopView() {
           {top10Projects.map((proj, idx) => {
             const liked = likedProjectIds.includes(proj.id);
             const rankStyle = getRankBadgeStyle(idx);
+            const rankCardStyle = getRankCardStyle(idx);
             const isMine = canPostProject(proj);
 
             return (
               <motion.article
                 key={proj.id}
                 layout="position"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: idx * 0.04, ease: SMOOTH_EASE }}
+                initial={{ opacity: 0, y: 18, scale: 0.985 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.42, delay: idx * 0.03, ease: SMOOTH_EASE }}
                 className="smoked-glass smoked-glass-interactive overflow-hidden"
+                style={rankCardStyle}
               >
                 {/* Banner Karya di Top dengan Blur Bawah Halus yang Tidak Menutupi Banner */}
                 <div
@@ -587,14 +639,20 @@ export default function TopView() {
                       className="w-100 h-100 d-flex align-items-center justify-content-center px-3 text-center"
                       style={{
                         background:
-                          "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.16), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
+                          idx === 0
+                            ? "radial-gradient(circle at 25% 25%, rgba(212, 168, 83, 0.22), transparent 62%), linear-gradient(135deg, #21190f 0%, #100d0a 100%)"
+                            : idx === 1
+                            ? "radial-gradient(circle at 25% 25%, rgba(118, 168, 130, 0.2), transparent 62%), linear-gradient(135deg, #122119 0%, #0b120e 100%)"
+                            : idx === 2
+                            ? "radial-gradient(circle at 25% 25%, rgba(106, 165, 232, 0.2), transparent 62%), linear-gradient(135deg, #111c2b 0%, #0b1018 100%)"
+                            : "radial-gradient(circle at 25% 25%, rgba(197, 160, 89, 0.16), transparent 60%), linear-gradient(135deg, #1b1713 0%, #0e0c0a 100%)",
                       }}
                     >
                       <span
                         style={{
                           fontFamily: "var(--font-tommy-extra), sans-serif",
                           fontSize: "1rem",
-                          color: "rgba(242, 236, 225, 0.2)",
+                          color: "rgba(242, 236, 225, 0.24)",
                         }}
                       >
                         {proj.title}
@@ -622,7 +680,7 @@ export default function TopView() {
                     style={{
                       height: "50px",
                       background:
-                        "linear-gradient(to top, #15120f 0%, rgba(21, 18, 15, 0.65) 42%, rgba(21, 18, 15, 0) 100%)",
+                        "linear-gradient(to top, rgba(16, 14, 12, 0.94) 0%, rgba(16, 14, 12, 0.55) 42%, rgba(16, 14, 12, 0) 100%)",
                       pointerEvents: "none",
                     }}
                   />

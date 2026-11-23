@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { SignOut, UserCircle } from "@phosphor-icons/react";
 import { useAuthStore } from "../store/useAuthStore";
 
@@ -145,23 +146,70 @@ const GLASS_CAPSULE_STYLE = {
   fontFamily: "var(--font-tommy-personal), sans-serif",
 };
 
+const NAV_SPRING = { type: "spring", stiffness: 430, damping: 28, mass: 0.85 };
+
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const isDashboard = pathname.startsWith("/dashboard");
 
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 26,
+    restDelta: 0.001,
+  });
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 24);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
+      {/* Indikator Progress Scroll Tipis di Atas Layar */}
+      <motion.div
+        style={{
+          scaleX: smoothProgress,
+          transformOrigin: "0% 50%",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "2px",
+          background:
+            "linear-gradient(90deg, rgba(197,160,89,0.2) 0%, #c5a059 60%, #f0d08a 100%)",
+          zIndex: 70,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Top Glass Header: Muncul hanya saat di halaman /dashboard */}
       {isDashboard ? (
         <>
-          <header
+          <motion.header
+            initial={{ opacity: 0, y: -14 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              backgroundColor: isScrolled
+                ? "rgba(12, 10, 8, 0.92)"
+                : "rgba(14, 12, 10, 0.76)",
+              boxShadow: isScrolled
+                ? "0 10px 28px rgba(0, 0, 0, 0.6)"
+                : "0 0 0 rgba(0, 0, 0, 0)",
+            }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="position-fixed top-0 start-0 w-100 border-bottom"
             style={{
-              backgroundColor: "rgba(14, 12, 10, 0.78)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              borderColor: "rgba(197, 160, 89, 0.14)",
+              backdropFilter: "blur(22px) saturate(165%)",
+              WebkitBackdropFilter: "blur(22px) saturate(165%)",
+              borderColor: "rgba(197, 160, 89, 0.16)",
               zIndex: 50,
             }}
           >
@@ -173,7 +221,10 @@ export default function Navbar() {
                 href="/"
                 className="d-flex align-items-center text-decoration-none"
               >
-                <img
+                <motion.img
+                  whileHover={{ rotate: -6, scale: 1.06 }}
+                  whileTap={{ scale: 0.94 }}
+                  transition={NAV_SPRING}
                   src="/logoapi.png"
                   alt="Anak Programmer Indonesia"
                   width={42}
@@ -196,8 +247,11 @@ export default function Navbar() {
               </Link>
 
               {/* Desktop Center Glass Nav Capsule */}
-              <nav
-                className="d-none d-md-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill"
+              <motion.nav
+                initial={{ opacity: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="d-none d-md-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill"
                 style={GLASS_CAPSULE_STYLE}
               >
                 {NAV_ITEMS.map((item) => {
@@ -210,29 +264,47 @@ export default function Navbar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
+                      className="position-relative px-2.5 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
                       style={{
                         fontSize: "0.78rem",
                         color: active ? "#f2ece1" : "#b8ad9e",
                         fontWeight: active ? 600 : 400,
                       }}
                     >
+                      {active && (
+                        <motion.span
+                          layoutId="desktop-nav-frame"
+                          transition={NAV_SPRING}
+                          className="position-absolute inset-0 rounded-pill"
+                          style={{
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            border: "1px solid rgba(197, 160, 89, 0.34)",
+                            backgroundColor: "rgba(197, 160, 89, 0.1)",
+                            pointerEvents: "none",
+                          }}
+                        />
+                      )}
                       <motion.span
+                        whileHover={{ y: -1.5, scale: 1.12 }}
+                        whileTap={{ scale: 0.86 }}
                         animate={
                           active
-                            ? { scale: [1, 1.2, 1.08], y: [0, -2, 0] }
-                            : { scale: 1, y: 0 }
+                            ? { scale: [1, 1.22, 1.06], rotate: [0, -6, 0] }
+                            : { scale: 1, rotate: 0 }
                         }
-                        transition={{ type: "spring", stiffness: 450, damping: 24 }}
-                        className="d-inline-flex align-items-center bg-transparent"
+                        transition={NAV_SPRING}
+                        className="d-inline-flex align-items-center bg-transparent position-relative"
                       >
                         <Icon size={17} active={active} />
                       </motion.span>
-                      <span>{item.label}</span>
+                      <span className="position-relative">{item.label}</span>
                       {active && (
                         <motion.span
                           layoutId="desktop-nav-dot"
-                          transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                          transition={NAV_SPRING}
                           className="position-absolute bottom-0 start-50 translate-middle-x rounded-circle"
                           style={{
                             width: "4px",
@@ -244,9 +316,9 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-              </nav>
+              </motion.nav>
 
-              {/* Auth Action: Kapsul Gabungan Daftar (Blur Abu-abu) / Masuk (Emas Sogan) */}
+              {/* Auth Action */}
               <div className="d-flex align-items-center gap-2">
                 {user ? (
                   <div className="d-flex align-items-center gap-1.5">
@@ -274,7 +346,10 @@ export default function Navbar() {
                     </button>
                   </div>
                 ) : (
-                  <div
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                    transition={NAV_SPRING}
                     className="d-inline-flex align-items-center rounded-pill overflow-hidden flex-shrink-0"
                     style={{
                       backgroundColor: "rgba(38, 35, 31, 0.65)",
@@ -307,11 +382,11 @@ export default function Navbar() {
                     >
                       Masuk
                     </Link>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </div>
-          </header>
+          </motion.header>
 
           {/* Spacer khusus ketika header dashboard tampil */}
           <div style={{ height: "58px" }} />
@@ -319,11 +394,18 @@ export default function Navbar() {
       ) : (
         /* Desktop Center Glass Nav Capsule saat di Feed, Forum, Karya, Top */
         <div
-          className="d-none d-md-flex justify-content-center pt-3"
+          className="d-none d-md-flex justify-content-center pt-3 position-sticky top-0"
           style={{ zIndex: 45 }}
         >
-          <nav
-            className="d-inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-pill"
+          <motion.nav
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: isScrolled ? 0.96 : 1,
+            }}
+            transition={NAV_SPRING}
+            className="d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill"
             style={GLASS_CAPSULE_STYLE}
           >
             {NAV_ITEMS.map((item) => {
@@ -336,29 +418,47 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="position-relative px-2 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
+                  className="position-relative px-2.5 py-1 text-decoration-none d-inline-flex align-items-center gap-1.5 bg-transparent"
                   style={{
                     fontSize: "0.78rem",
                     color: active ? "#f2ece1" : "#b8ad9e",
                     fontWeight: active ? 600 : 400,
                   }}
                 >
+                  {active && (
+                    <motion.span
+                      layoutId="desktop-nav-frame"
+                      transition={NAV_SPRING}
+                      className="position-absolute rounded-pill"
+                      style={{
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        border: "1px solid rgba(197, 160, 89, 0.34)",
+                        backgroundColor: "rgba(197, 160, 89, 0.1)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )}
                   <motion.span
+                    whileHover={{ y: -1.5, scale: 1.12 }}
+                    whileTap={{ scale: 0.86 }}
                     animate={
                       active
-                        ? { scale: [1, 1.2, 1.08], y: [0, -2, 0] }
-                        : { scale: 1, y: 0 }
+                        ? { scale: [1, 1.22, 1.06], rotate: [0, -6, 0] }
+                        : { scale: 1, rotate: 0 }
                     }
-                    transition={{ type: "spring", stiffness: 450, damping: 24 }}
-                    className="d-inline-flex align-items-center bg-transparent"
+                    transition={NAV_SPRING}
+                    className="d-inline-flex align-items-center bg-transparent position-relative"
                   >
                     <Icon size={17} active={active} />
                   </motion.span>
-                  <span>{item.label}</span>
+                  <span className="position-relative">{item.label}</span>
                   {active && (
                     <motion.span
                       layoutId="desktop-nav-dot"
-                      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                      transition={NAV_SPRING}
                       className="position-absolute bottom-0 start-50 translate-middle-x rounded-circle"
                       style={{
                         width: "4px",
@@ -370,13 +470,21 @@ export default function Navbar() {
                 </Link>
               );
             })}
-          </nav>
+          </motion.nav>
         </div>
       )}
 
-      {/* Mobile Floating Glassmorphism Capsule Dock */}
-      <nav
-        className="d-md-none position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3.5 py-1.5 rounded-pill d-flex align-items-center gap-1"
+      {/* Mobile Floating Glassmorphism Capsule Dock dengan Motion & Scroll Animation */}
+      <motion.nav
+        initial={{ opacity: 0, y: 26, x: "-50%", scale: 0.94 }}
+        animate={{
+          opacity: 1,
+          y: isScrolled ? 2 : 0,
+          x: "-50%",
+          scale: isScrolled ? 0.97 : 1,
+        }}
+        transition={NAV_SPRING}
+        className="d-md-none position-fixed bottom-0 start-50 mb-3 px-3 py-1.5 rounded-pill d-flex align-items-center gap-1"
         style={{
           ...GLASS_CAPSULE_STYLE,
           zIndex: 50,
@@ -399,23 +507,40 @@ export default function Navbar() {
                 fontWeight: active ? 600 : 400,
               }}
             >
+              {active && (
+                <motion.span
+                  layoutId="mobile-nav-frame"
+                  transition={NAV_SPRING}
+                  className="position-absolute rounded-pill"
+                  style={{
+                    top: "1px",
+                    left: "2px",
+                    right: "2px",
+                    bottom: "1px",
+                    border: "1px solid rgba(197, 160, 89, 0.34)",
+                    backgroundColor: "rgba(197, 160, 89, 0.08)",
+                    pointerEvents: "none",
+                  }}
+                />
+              )}
               <motion.span
+                whileTap={{ scale: 0.82 }}
                 animate={
                   active
-                    ? { scale: [1, 1.24, 1.1], y: [0, -2, 0] }
+                    ? { scale: [1, 1.26, 1.08], y: [0, -2.5, 0] }
                     : { scale: 1, y: 0 }
                 }
-                transition={{ type: "spring", stiffness: 450, damping: 22 }}
-                className="d-inline-flex align-items-center bg-transparent"
+                transition={NAV_SPRING}
+                className="d-inline-flex align-items-center bg-transparent position-relative"
               >
                 <Icon size={19} active={active} />
               </motion.span>
-              <span className="mt-0.5">{item.label}</span>
+              <span className="mt-0.5 position-relative">{item.label}</span>
               {active && (
                 <motion.span
                   layoutId="mobile-dock-dot"
-                  transition={{ type: "spring", stiffness: 420, damping: 28 }}
-                  className="rounded-circle mt-0.5"
+                  transition={NAV_SPRING}
+                  className="rounded-circle mt-0.5 position-relative"
                   style={{
                     width: "4px",
                     height: "4px",
@@ -426,7 +551,7 @@ export default function Navbar() {
             </Link>
           );
         })}
-      </nav>
+      </motion.nav>
     </>
   );
 }
