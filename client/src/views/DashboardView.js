@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Navbar from "../components/Navbar";
 
 const InfoSvg = ({ size = 18 }) => (
@@ -95,17 +96,28 @@ const SupportHandSvg = ({ size = 17 }) => (
   </svg>
 );
 
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
 export default function DashboardView() {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const bannerY = useTransform(scrollYProgress, [0, 1], [0, 26]);
+  const bannerScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
+
   return (
     <div className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5">
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* 1. Hero Sambutan dengan Banner, Blur Bawah Halus, dan Judul Turun Menimpa Blur */}
+        {/* 1. Hero Sambutan dengan Banner Parallax & Animasi Masuk Halus */}
         <motion.section
-          initial={{ opacity: 0, x: -18, filter: "blur(6px)" }}
-          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          ref={heroRef}
+          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.7, ease: SMOOTH_EASE }}
           className="smoked-glass overflow-hidden mb-3 text-start"
         >
           {/* Area Banner Full-bleed */}
@@ -116,11 +128,15 @@ export default function DashboardView() {
               backgroundColor: "#15120f",
             }}
           >
-            <img
+            <motion.img
+              style={{
+                y: bannerY,
+                scale: bannerScale,
+                objectPosition: "center 26%",
+              }}
               src="/banners.png"
               alt="Banner Anak Programmer Indonesia"
               className="w-100 h-100 object-fit-cover"
-              style={{ objectPosition: "center 26%" }}
             />
 
             {/* Blur tipis dan halus hanya di bagian bawah banner agar logo banner tetap jelas */}
@@ -158,9 +174,9 @@ export default function DashboardView() {
             style={{ marginTop: "-30px", zIndex: 3 }}
           >
             <motion.h1
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.65, delay: 0.12, ease: SMOOTH_EASE }}
               style={{
                 fontFamily: "var(--font-coolvetica), sans-serif",
                 color: "#f2ece1",
@@ -173,9 +189,9 @@ export default function DashboardView() {
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.65, delay: 0.24, ease: SMOOTH_EASE }}
               className="mb-0"
               style={{
                 fontFamily: "var(--font-tommy-personal), sans-serif",
@@ -192,11 +208,12 @@ export default function DashboardView() {
           </div>
         </motion.section>
 
-        {/* 2. Tentang Anak Programmer Indonesia */}
+        {/* 2. Tentang Anak Programmer Indonesia (Scroll Reveal Halus) */}
         <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.18 }}
+          initial={{ opacity: 0, y: 24, scale: 0.985 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.22 }}
+          transition={{ duration: 0.58, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 mb-3 text-start"
         >
           <div
@@ -231,11 +248,12 @@ export default function DashboardView() {
           </p>
         </motion.section>
 
-        {/* 3. Visi & Misi Komunitas API */}
+        {/* 3. Visi & Misi Komunitas API (Style Baru & Scroll Reveal) */}
         <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.26 }}
+          initial={{ opacity: 0, y: 26, scale: 0.985 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.18 }}
+          transition={{ duration: 0.62, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 mb-3 text-start"
         >
           <div
@@ -252,76 +270,140 @@ export default function DashboardView() {
             <span>Visi &amp; Misi Komunitas API</span>
           </div>
 
-          <div
-            className="p-3 mb-3 rounded-3"
+          {/* Kartu Visi Utama Berbingkai Sogan Hangat */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: SMOOTH_EASE }}
+            className="p-3.5 mb-3.5 rounded-4 position-relative overflow-hidden"
             style={{
-              background: "rgba(14, 12, 10, 0.55)",
-              borderLeft: "2.5px solid #c5a059",
+              backgroundColor: "#16120d",
+              backgroundImage:
+                "radial-gradient(circle at 92% 10%, rgba(197, 160, 89, 0.16) 0%, transparent 55%), repeating-linear-gradient(135deg, rgba(197, 160, 89, 0.04) 0px, rgba(197, 160, 89, 0.04) 1px, transparent 1px, transparent 10px)",
+              border: "1px solid rgba(197, 160, 89, 0.32)",
+              boxShadow: "inset 0 1px 0 rgba(255, 240, 200, 0.06)",
             }}
           >
-            <span
-              className="d-block mb-1"
-              style={{
-                fontFamily: "var(--font-tommy-medium), sans-serif",
-                fontSize: "0.73rem",
-                color: "#c5a059",
-              }}
-            >
-              VISI UTAMA
-            </span>
+            <div className="d-flex align-items-center justify-content-between mb-1.5">
+              <span
+                className="px-2.5 py-0.5 rounded-pill"
+                style={{
+                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                  fontSize: "0.68rem",
+                  letterSpacing: "0.05em",
+                  backgroundColor: "rgba(197, 160, 89, 0.16)",
+                  border: "1px solid rgba(197, 160, 89, 0.35)",
+                  color: "#e6cfa3",
+                }}
+              >
+                VISI UTAMA
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-tommy-extra), sans-serif",
+                  fontSize: "0.75rem",
+                  color: "rgba(197, 160, 89, 0.42)",
+                }}
+              >
+                API // 01
+              </span>
+            </div>
+
             <p
               className="mb-0"
               style={{
                 fontFamily: "var(--font-tommy-personal), sans-serif",
-                fontSize: "0.86rem",
+                fontSize: "0.87rem",
                 color: "#f2ece1",
-                lineHeight: 1.6,
+                lineHeight: 1.64,
               }}
             >
               Menjadi wadah kolaborasi programmer Indonesia yang inklusif dan
               terbuka bagi siapa saja—membuktikan bahwa keterbatasan perangkat
               bukanlah penghalang untuk melahirkan inovasi digital.
             </p>
+          </motion.div>
+
+          {/* Header Misi Komunitas */}
+          <div className="d-flex align-items-center justify-content-between mb-2.5">
+            <span
+              style={{
+                fontFamily: "var(--font-tommy-medium), sans-serif",
+                fontSize: "0.73rem",
+                letterSpacing: "0.05em",
+                color: "#c5a059",
+              }}
+            >
+              MISI KOMUNITAS
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-caviar), sans-serif",
+                fontSize: "0.72rem",
+                color: "#8f8578",
+              }}
+            >
+              3 Pilar Utama
+            </span>
           </div>
 
-          <span
-            className="d-block mb-2"
-            style={{
-              fontFamily: "var(--font-tommy-medium), sans-serif",
-              fontSize: "0.73rem",
-              color: "#c5a059",
-            }}
-          >
-            MISI KOMUNITAS
-          </span>
-          <ul className="list-unstyled d-flex flex-column gap-2 mb-0">
+          {/* Daftar Misi dengan Sub-card Terstruktur & Animasi Stagger */}
+          <div className="d-flex flex-column gap-2">
             {[
               "Membangun budaya saling bantu tanpa menghakimi dalam memecahkan bug, error, dan arsitektur kode.",
               "Mendorong anggota berani merilis side-project sejak dini serta memberi masukan yang membangun.",
               "Menghubungkan developer lintas daerah Indonesia dalam diskusi rutin dan kolaborasi proyek terbuka.",
             ].map((misi, i) => (
-              <li
+              <motion.div
                 key={i}
-                className="d-flex align-items-start gap-2"
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{
+                  duration: 0.45,
+                  delay: i * 0.08,
+                  ease: SMOOTH_EASE,
+                }}
+                className="p-2.5 rounded-3 d-flex align-items-start gap-2.5"
                 style={{
-                  fontFamily: "var(--font-tommy-personal), sans-serif",
-                  fontSize: "0.84rem",
-                  color: "#b8ad9e",
-                  lineHeight: 1.6,
+                  backgroundColor: "rgba(14, 12, 10, 0.55)",
+                  border: "1px solid rgba(197, 160, 89, 0.14)",
                 }}
               >
                 <CheckMisiSvg size={18} />
-                <span>{misi}</span>
-              </li>
+                <span
+                  className="flex-grow-1"
+                  style={{
+                    fontFamily: "var(--font-tommy-personal), sans-serif",
+                    fontSize: "0.84rem",
+                    color: "#cfc5b6",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {misi}
+                </span>
+                <span
+                  className="flex-shrink-0"
+                  style={{
+                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                    fontSize: "0.68rem",
+                    color: "#6e655a",
+                  }}
+                >
+                  0{i + 1}
+                </span>
+              </motion.div>
             ))}
-          </ul>
+          </div>
         </motion.section>
 
-        {/* 4. Support API */}
+        {/* 4. Support API + Animasi Tombol Join Discord & Support Komunitas */}
         <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.34 }}
+          initial={{ opacity: 0, y: 26, scale: 0.985 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.62, ease: SMOOTH_EASE }}
           className="smoked-glass p-4 text-start"
         >
           <div
@@ -352,11 +434,17 @@ export default function DashboardView() {
             di repositori terbuka kami.
           </p>
 
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.12, ease: SMOOTH_EASE }}
             className="d-flex flex-column gap-2"
             style={{ maxWidth: "235px" }}
           >
-            <a
+            <motion.a
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.96 }}
               href="https://discord.gg/7A5qtTpYT"
               target="_blank"
               rel="noopener noreferrer"
@@ -364,9 +452,11 @@ export default function DashboardView() {
             >
               <DiscordSvg size={17} />
               <span>Gabung Komunitas</span>
-            </a>
+            </motion.a>
 
-            <a
+            <motion.a
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.96 }}
               href="https://saweria.co/apicommunity"
               target="_blank"
               rel="noopener noreferrer"
@@ -374,8 +464,8 @@ export default function DashboardView() {
             >
               <SupportHandSvg size={17} />
               <span>Support Komunitas</span>
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </motion.section>
       </main>
     </div>
