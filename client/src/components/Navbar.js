@@ -31,6 +31,28 @@ const DashboardSvg = ({ size = 19, active = false }) => (
   </svg>
 );
 
+const TalkSvg = ({ size = 19, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="#09244BFF"
+        d="M11.333 19 8 21.5a1.3 1.3 0 0 1-.434.212c-.82.217-1.528-.403-1.566-1.212V19c-.225 0-1.039.022-1.407-.027C3.069 18.767 2.05 17.502 2 16V6c.027-.801.305-1.548.879-2.121C3.452 3.305 4.199 3.027 5 3h14c.538.018 1.046.136 1.514.41.935.547 1.45 1.524 1.486 2.59v10c-.057 1.708-1.292 2.943-3 3Zm4.897-9.476a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746 1.516 1.516 0 0 0-1.746-1.206m-4.5 0a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746 1.516 1.516 0 0 0-1.746-1.206m-4.5 0a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746A1.516 1.516 0 0 0 7.23 9.524"
+      />
+    ) : (
+      <path
+        fill="#09244BFF"
+        d="m16.975 9.564.418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656l.475-.077Zm-4.5 0 .418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656L12 9.487Zm-4.5 0 .418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656l.475-.077ZM6 19c-.262 0-1.092.028-1.485-.036C3.046 18.726 2.059 17.498 2 16.04V5.96c.032-.788.314-1.52.877-2.083S4.172 3.032 4.96 3h14.08c.788.032 1.52.314 2.083.877s.845 1.295.877 2.083v10.08c-.038.946-.453 1.817-1.226 2.383-.513.376-1.103.552-1.734.577h-7.653c-.135.029.029-.025-.097.032l-3.366 2.525-.346.169a1.29 1.29 0 0 1-1.506-.753L6 20.595Zm2 0 2.176-1.632A2.1 2.1 0 0 1 11.28 17h7.68c.622-.025 1.015-.418 1.04-1.04V6.04c-.014-.336-.132-.641-.412-.845-.188-.138-.398-.186-.628-.195H5.04c-.336.014-.641.132-.845.412-.138.188-.186.398-.195.628v9.92c.058 1.433 1.651.966 2.58 1.04.331.027.533.075.813.28C8.02 17.738 8 18.304 8 19"
+      />
+    )}
+  </svg>
+);
+
 const FeedSvg = ({ size = 19, active = false }) => (
   <svg
     width={size}
@@ -65,15 +87,13 @@ const ForumSvg = ({ size = 19, active = false }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     {active ? (
       <path
-        fill="#090807"
-        stroke="#c5a059"
-        strokeWidth="1.25"
-        d="M13.209 3.026a9.5 9.5 0 0 1 4.464 1.505c6.242 4.059 5.583 13.444-1.168 16.586-1.264.588-2.616.857-4.005.883H6a3.2 3.2 0 0 1-1.168-.236C3.705 21.288 3.04 20.201 3 19v-6.5c.017-.933.132-1.848.402-2.744 1.279-4.249 5.386-7.056 9.807-6.73M10 14c-.923.053-1.385 1.171-.625 1.78.184.149.392.207.625.22h2c.383-.022.725-.206.898-.56a1 1 0 0 0 0-.88c-.173-.354-.515-.538-.898-.56Zm0-4c-1.205.069-1.363 1.709-.229 1.974L10 12h5c.46-.026.865-.305.974-.771.15-.645-.344-1.193-.974-1.229Z"
+        fill="#09244BFF"
+        d="M16.732 3c.531 0 1.069-.059 1.592.026.984.16 1.637 1.005 1.676 1.974v12c-.025 1.002-.289 1.959-.854 2.796C18.205 21.188 16.662 21.958 15 22H6c-1.146-.046-1.954-.854-2-2V5c.039-.969.692-1.814 1.676-1.974C6.199 2.941 6.737 3 7.268 3c.433-.636.949-.97 1.732-1h6c.783.03 1.299.364 1.732 1m-6.151 10.621-1.414-1.414c-.337-.295-.795-.394-1.201-.163a1 1 0 0 0-.473.616c-.094.359.024.691.26.961l2.051 2.051c.378.337.91.435 1.357.158l.198-.158 4.879-4.879c.295-.338.395-.795.163-1.201-.339-.593-1.092-.637-1.577-.213ZM9.5 4a.514.514 0 0 0-.5.5v1c.017.216.127.403.342.475L9.5 6h5c.216-.017.403-.127.475-.342L15 5.5v-1a.514.514 0 0 0-.5-.5Z"
       />
     ) : (
       <path
-        fill="currentColor"
-        d="M9.741 15.966c-.842-.226-.996-1.396-.241-1.832.175-.101.302-.121.5-.134h2c.36.024.68.178.866.5.132.228.168.504.1.759-.122.453-.515.711-.966.741h-2Zm0-4c-.842-.226-.996-1.396-.241-1.832.175-.101.302-.121.5-.134h5c.451.03.844.288.966.741.176.656-.327 1.217-.966 1.259h-5ZM5.92 21.997C4.253 21.885 3.051 20.684 3 19v-6.5c.017-.987.146-1.962.453-2.903 1.359-4.17 5.432-6.945 9.827-6.565a9.5 9.5 0 0 1 4.634 1.661c5.681 3.984 5.369 12.434-.587 15.99-1.465.875-3.129 1.288-4.827 1.317H6Zm5.993-16.974c-3.01.233-5.655 2.334-6.565 5.213-.235.744-.333 1.505-.348 2.283v6.441c.016.389.184.741.542.926.159.082.321.107.498.114h6.441c1.155-.022 2.274-.252 3.317-.762a7.57 7.57 0 0 0 3.178-2.954c3.055-5.216-1.053-11.724-7.063-11.261"
+        fill="#09244BFF"
+        d="m10.582 13.621 4.242-4.242c.482-.423 1.234-.381 1.573.207.235.407.139.867-.159 1.207l-4.949 4.95-.207.159c-.407.235-.868.139-1.208-.159l-2.121-2.122c-.238-.271-.355-.606-.259-.966.092-.342.365-.615.707-.707.36-.096.695.021.966.259ZM7.273 3c.392-.617.992-.973 1.727-1h6c.735.027 1.335.383 1.727 1 .371 0 1.122-.053 1.617.033C19.311 3.201 19.965 4.04 20 5v12c-.023.968-.271 1.914-.81 2.727C18.246 21.152 16.699 21.96 15 22H6c-1.135-.042-1.958-.865-2-2V5c.035-.96.689-1.799 1.656-1.967C6.151 2.947 6.902 3 7.273 3M7 5l-.994.006v14.988l.051.006h8.914c1.736-.05 2.979-1.293 3.029-3.029V5.057l-.006-.051L17 5c-.084 1.14-.827 1.957-2 2H9c-1.173-.043-1.916-.86-2-2m2.006-.994v.988h5.988v-.988Z"
       />
     )}
   </svg>
@@ -153,6 +173,7 @@ const YouUserSvg = ({ size = 19, active = false }) => (
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Home", icon: DashboardSvg },
+  { href: "/talk", label: "Talk", icon: TalkSvg },
   { href: "/", label: "Feed", icon: FeedSvg },
   { href: "/forum", label: "Forum", icon: ForumSvg },
   { href: "/showcase", label: "Karya", icon: ShowcaseSvg },
@@ -176,8 +197,9 @@ const NAV_SPRING = { type: "spring", stiffness: 430, damping: 28, mass: 0.85 };
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
-  const isDashboard = pathname.startsWith("/dashboard");
+  const isDashboard = pathname === "/" || pathname.startsWith("/dashboard");
   const isProfile = pathname.startsWith("/profile");
+  const isTalkActive = pathname.startsWith("/talk");
 
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -195,6 +217,16 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const isNavItemActive = (href) => {
+    if (href === "/dashboard") {
+      return pathname === "/" || pathname.startsWith("/dashboard");
+    }
+    if (href === "/") {
+      return pathname === "/feed";
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -215,7 +247,7 @@ export default function Navbar() {
         }}
       />
 
-      {/* Top Glass Header: Muncul hanya saat di halaman /dashboard */}
+      {/* Top Glass Header: Muncul saat di halaman /dashboard atau default "/" */}
       {isDashboard ? (
         <>
           <motion.header
@@ -243,34 +275,81 @@ export default function Navbar() {
               className="container py-2 d-flex align-items-center justify-content-between gap-2"
               style={{ maxWidth: "740px" }}
             >
-              <Link
-                href="/"
-                className="d-flex align-items-center text-decoration-none"
-              >
-                <motion.img
-                  whileHover={{ rotate: -6, scale: 1.06 }}
-                  whileTap={{ scale: 0.94 }}
-                  transition={NAV_SPRING}
-                  src="/logoapi.png"
-                  alt="Anak Programmer Indonesia"
-                  width={42}
-                  height={42}
-                  className="object-fit-contain flex-shrink-0"
-                />
-                <span
-                  style={{
-                    fontFamily: "var(--font-utendo), sans-serif",
-                    fontWeight: 700,
-                    color: "#f2ece1",
-                    fontSize: "0.92rem",
-                    letterSpacing: "-0.01em",
-                    lineHeight: 1.2,
-                    marginLeft: "-6px",
-                  }}
+              <div className="d-flex align-items-center gap-2 flex-wrap">
+                <Link
+                  href="/dashboard"
+                  className="d-flex align-items-center text-decoration-none"
                 >
-                  Anak Programmer Indonesia
-                </span>
-              </Link>
+                  <motion.img
+                    whileHover={{ rotate: -6, scale: 1.06 }}
+                    whileTap={{ scale: 0.94 }}
+                    transition={NAV_SPRING}
+                    src="/logoapi.png"
+                    alt="Anak Programmer Indonesia"
+                    width={42}
+                    height={42}
+                    className="object-fit-contain flex-shrink-0"
+                  />
+                  <span
+                    style={{
+                      fontFamily: "var(--font-utendo), sans-serif",
+                      fontWeight: 700,
+                      color: "#f2ece1",
+                      fontSize: "0.92rem",
+                      letterSpacing: "-0.01em",
+                      lineHeight: 1.2,
+                      marginLeft: "-6px",
+                    }}
+                  >
+                    Anak Programmer Indonesia
+                  </span>
+                </Link>
+
+                <motion.div
+                  whileHover={{ scale: 1.04, y: -1 }}
+                  whileTap={{ scale: 0.93 }}
+                  transition={NAV_SPRING}
+                >
+                  <Link
+                    href="/talk"
+                    className="px-2.5 py-1 rounded-pill text-decoration-none d-inline-flex align-items-center gap-1.5"
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.74rem",
+                      backgroundColor: isTalkActive
+                        ? "#0b0b0c"
+                        : "rgba(38, 35, 31, 0.65)",
+                      backdropFilter: "blur(20px)",
+                      WebkitBackdropFilter: "blur(20px)",
+                      border: isTalkActive
+                        ? "1px solid rgba(197, 160, 89, 0.65)"
+                        : "1px solid rgba(197, 160, 89, 0.28)",
+                      color: isTalkActive ? "#f2ece1" : "#e6cfa3",
+                      boxShadow: isTalkActive
+                        ? "0 6px 18px rgba(0, 0, 0, 0.55)"
+                        : "none",
+                    }}
+                  >
+                    <motion.span
+                      animate={
+                        isTalkActive
+                          ? { scale: [1, 1.2, 1.05] }
+                          : { scale: 1 }
+                      }
+                      transition={NAV_SPRING}
+                      className="d-inline-flex align-items-center justify-content-center rounded-2"
+                      style={
+                        isTalkActive
+                          ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                          : undefined
+                      }
+                    >
+                      <TalkSvg size={16} active={isTalkActive} />
+                    </motion.span>
+                    <span>Talk</span>
+                  </Link>
+                </motion.div>
+              </div>
 
               {/* Desktop Center Glass Nav Capsule */}
               <motion.nav
@@ -282,10 +361,9 @@ export default function Navbar() {
               >
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
-                  const active =
-                    item.href === "/"
-                      ? pathname === "/"
-                      : pathname.startsWith(item.href);
+                  const active = isNavItemActive(item.href);
+                  const isBlackBgItem =
+                    item.href === "/forum" || item.href === "/talk";
                   return (
                     <Link
                       key={item.href}
@@ -322,7 +400,12 @@ export default function Navbar() {
                             : { scale: 1, rotate: 0 }
                         }
                         transition={NAV_SPRING}
-                        className="d-inline-flex align-items-center bg-transparent position-relative"
+                        className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
+                        style={
+                          active && isBlackBgItem
+                            ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                            : undefined
+                        }
                       >
                         <Icon size={17} active={active} />
                       </motion.span>
@@ -348,7 +431,11 @@ export default function Navbar() {
               <div className="d-flex align-items-center gap-2">
                 {user ? (
                   <div className="d-flex align-items-center gap-1.5">
-                    <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.94 }} transition={NAV_SPRING}>
+                    <motion.div
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.94 }}
+                      transition={NAV_SPRING}
+                    >
                       <Link
                         href="/profile"
                         className="px-2.5 py-1 rounded-pill text-decoration-none d-inline-flex align-items-center gap-1.5"
@@ -379,7 +466,11 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="d-flex align-items-center gap-1.5">
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} transition={NAV_SPRING}>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.92 }}
+                      transition={NAV_SPRING}
+                    >
                       <Link
                         href="/profile"
                         className="px-2.5 py-1 rounded-pill text-decoration-none d-inline-flex align-items-center gap-1"
@@ -463,10 +554,9 @@ export default function Navbar() {
           >
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
+              const active = isNavItemActive(item.href);
+              const isBlackBgItem =
+                item.href === "/forum" || item.href === "/talk";
               return (
                 <Link
                   key={item.href}
@@ -503,7 +593,12 @@ export default function Navbar() {
                         : { scale: 1, rotate: 0 }
                     }
                     transition={NAV_SPRING}
-                    className="d-inline-flex align-items-center bg-transparent position-relative"
+                    className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
+                    style={
+                      active && isBlackBgItem
+                        ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                        : undefined
+                    }
                   >
                     <Icon size={17} active={active} />
                   </motion.span>
@@ -537,7 +632,7 @@ export default function Navbar() {
           scale: isScrolled ? 0.97 : 1,
         }}
         transition={NAV_SPRING}
-        className="d-md-none position-fixed bottom-0 start-50 mb-3 px-2.5 py-1.5 rounded-pill d-flex align-items-center gap-0.5"
+        className="d-md-none position-fixed bottom-0 start-50 mb-3 px-2 py-1.5 rounded-pill d-flex align-items-center gap-0.5"
         style={{
           ...GLASS_CAPSULE_STYLE,
           zIndex: 50,
@@ -545,18 +640,17 @@ export default function Navbar() {
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const active =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href);
+          const active = isNavItemActive(item.href);
+          const isBlackBgItem =
+            item.href === "/forum" || item.href === "/talk";
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="position-relative px-2 py-1 text-decoration-none d-flex flex-column align-items-center bg-transparent"
+              className="position-relative px-1.5 py-1 text-decoration-none d-flex flex-column align-items-center bg-transparent"
               style={{
                 color: active ? "#f2ece1" : "#c7bdb0",
-                fontSize: "0.61rem",
+                fontSize: "0.59rem",
                 fontWeight: active ? 600 : 400,
               }}
             >
@@ -584,7 +678,12 @@ export default function Navbar() {
                     : { scale: 1, y: 0 }
                 }
                 transition={NAV_SPRING}
-                className="d-inline-flex align-items-center bg-transparent position-relative"
+                className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
+                style={
+                  active && isBlackBgItem
+                    ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                    : undefined
+                }
               >
                 <Icon size={18} active={active} />
               </motion.span>
@@ -608,4 +707,3 @@ export default function Navbar() {
     </>
   );
 }
-// sync build
