@@ -120,7 +120,6 @@ export default function ThreadDetailView() {
       <Navbar />
 
       <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
-        {/* Tombol Kembali */}
         <div className="mb-3">
           <motion.button
             type="button"
@@ -167,7 +166,6 @@ export default function ThreadDetailView() {
           </motion.div>
         ) : (
           <>
-            {/* Kartu Utama Utas */}
             <motion.article
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -231,7 +229,6 @@ export default function ThreadDetailView() {
               )}
             </motion.article>
 
-            {/* Daftar Balasan */}
             <div className="smoked-glass p-3.5 mb-3">
               <div className="d-flex align-items-center gap-1.5 mb-3">
                 <ReplySvg size={16} />
@@ -299,7 +296,6 @@ export default function ThreadDetailView() {
                 </div>
               )}
 
-              {/* Form Tulis Balasan (Dilindungi Login) */}
               {!user ? (
                 <div
                   className="p-2.5 rounded-3 d-flex align-items-center justify-content-between gap-2"
