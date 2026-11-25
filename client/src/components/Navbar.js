@@ -176,9 +176,9 @@ const YouUserSvg = ({ size = 19, active = false }) => (
 );
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Home", icon: DashboardSvg },
+  { href: "/", label: "Home", icon: DashboardSvg },
   { href: "/talk", label: "Talk", icon: TalkSvg },
-  { href: "/", label: "Feed", icon: FeedSvg },
+  { href: "/feed", label: "Feed", icon: FeedSvg },
   { href: "/forum", label: "Forum", icon: ForumSvg },
   { href: "/showcase", label: "Karya", icon: ShowcaseSvg },
   { href: "/top", label: "Top", icon: TopTrophySvg },
@@ -223,11 +223,8 @@ export default function Navbar() {
   }, []);
 
   const isNavItemActive = (href) => {
-    if (href === "/dashboard") {
-      return pathname === "/" || pathname.startsWith("/dashboard");
-    }
     if (href === "/") {
-      return pathname === "/feed";
+      return pathname === "/" || pathname.startsWith("/dashboard");
     }
     return pathname.startsWith(href);
   };
@@ -281,7 +278,7 @@ export default function Navbar() {
             >
               <div className="d-flex align-items-center gap-2 flex-wrap">
                 <Link
-                  href="/dashboard"
+                  href="/"
                   className="d-flex align-items-center text-decoration-none"
                 >
                   <motion.img
