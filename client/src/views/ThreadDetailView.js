@@ -11,13 +11,16 @@ const BackArrowSvg = ({ size = 16 }) => (
   <svg
     width={size}
     height={size}
-    xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M0 0h24v24H0z" fill="none" />
     <path
-      fill="currentColor"
-      d="M7.828 11H20a1 1 0 0 1 0 2H7.828l5.364 5.364a1 1 0 0 1-1.414 1.414l-7.071-7.071a1 1 0 0 1 0-1.414l7.071-7.071a1 1 0 1 1 1.414 1.414Z"
+      d="M19 12H5M5 12L12 19M5 12L12 5"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -26,28 +29,34 @@ const SendSvg = ({ size = 14 }) => (
   <svg
     width={size}
     height={size}
-    xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M0 0h24v24H0z" fill="none" />
     <path
-      fill="currentColor"
-      d="m9.53 15.846.177-.139 5-5c.359-.409.405-1.009 0-1.414-.404-.405-1.004-.358-1.414 0l-5 5-.14.176-5.15-2.981c-.521-.34-.772-.956-.532-1.554.137-.342.401-.562.733-.703l15.611-5.647c.468-.144.954-.063 1.309.292s.435.841.291 1.309l-5.646 15.61c-.141.333-.361.597-.704.734-.597.24-1.213-.011-1.553-.532Z"
+      d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
 
-const ReplySvg = ({ size = 15 }) => (
+const ReplySvg = ({ size = 16 }) => (
   <svg
     width={size}
     height={size}
-    xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M0 0h24v24H0z" fill="none" />
     <path
-      fill="currentColor"
-      d="m21.319 19.142.39 1.326c.101.451-.046.913-.464 1.151a1 1 0 0 1-.513.131l-.264-.041-1.326-.39a5.55 5.55 0 0 1-2.582.679c-3.528.083-6.123-3.218-5.443-6.624a5.4 5.4 0 0 1 1.335-2.596c3.4-3.645 9.461-1.311 9.547 3.668a5.4 5.4 0 0 1-.68 2.696m-2.043.134c-.111-.735.257-.897.5-1.545.192-.513.261-1.07.202-1.614-.304-2.816-3.721-4.112-5.822-2.215-2.222 2.007-1.019 5.754 1.961 6.076a3.5 3.5 0 0 0 1.614-.202c.648-.243.81-.611 1.545-.5M4.921 18.079l1.34-.394.276-.041c.401-.002.687.263 1.018.451l.477.246q.491.23 1.012.381l.532.132c.569.118 1.12.095 1.36.732l.059.254c.026.263-.055.529-.222.733a1 1 0 0 1-.675.36c-.231.023-.762-.087-.887-.112a8.5 8.5 0 0 1-2.814-1.091l-2.67.785c-.803.179-1.421-.439-1.242-1.242l.786-2.671a8.6 8.6 0 0 1-1.144-3.091c-.668-4.12 1.501-8.123 5.334-9.787 3.862-1.677 8.382-.359 10.843 3.018.277.379.517.784.731 1.201.262.512.582 1.102.196 1.64a1 1 0 0 1-1.166.352c-.484-.182-.59-.639-.801-1.062l-.265-.48a7 7 0 0 0-1-1.292c-2.126-2.169-5.516-2.718-8.215-1.32-2.69 1.394-4.198 4.446-3.679 7.43a7 7 0 0 0 .519 1.68l.261.517c.191.341.474.642.471 1.056l-.041.275Z"
+      d="M9 17L4 12L9 7M4 12H14C17.3137 12 20 14.6863 20 18V19"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -65,16 +74,124 @@ const getCategoryBadgeStyle = (cat) => {
   }
   if (lower.includes("workflow")) {
     return {
-      background: "rgba(118, 168, 130, 0.16)",
-      border: "1px solid rgba(118, 168, 130, 0.34)",
-      color: "#9fd0aa",
+      background: "rgba(110, 168, 180, 0.16)",
+      border: "1px solid rgba(110, 168, 180, 0.34)",
+      color: "#9fd6e0",
     };
   }
   return {
     background: "rgba(197, 160, 89, 0.16)",
     border: "1px solid rgba(197, 160, 89, 0.32)",
-    color: "#e6cfa3",
+    color: "#e6cfal",
   };
+};
+
+const renderFormattedReplyText = (text, copiedId, setCopiedId, replyKey) => {
+  const raw = String(text || "");
+  if (!raw.includes("```")) {
+    return (
+      <p
+        className="mb-0"
+        style={{
+          fontSize: "0.82rem",
+          color: "#d8cfc2",
+          lineHeight: 1.55,
+          whiteSpace: "pre-line",
+        }}
+      >
+        {raw}
+      </p>
+    );
+  }
+
+  const parts = raw.split(/(```[\s\S]*?```)/g);
+  return (
+    <div className="d-flex flex-column gap-2">
+      {parts.map((part, idx) => {
+        if (!part) return null;
+        if (part.startsWith("```") && part.endsWith("```")) {
+          const inner = part.slice(3, -3).replace(/^\n/, "");
+          const token = `${replyKey}-${idx}`;
+          const isCopied = copiedId === token;
+          return (
+            <div
+              key={token}
+              className="rounded-3 overflow-hidden"
+              style={{
+                background: "rgba(10, 10, 12, 0.72)",
+                border: "1px solid rgba(197, 160, 89, 0.24)",
+              }}
+            >
+              <div
+                className="d-flex align-items-center justify-content-between px-2 py-1"
+                style={{
+                  background: "rgba(255, 255, 255, 0.03)",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.66rem",
+                    color: "#9d958b",
+                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                  }}
+                >
+                  Kode
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.clipboard) {
+                      navigator.clipboard.writeText(inner).catch(() => {});
+                    }
+                    setCopiedId(token);
+                    setTimeout(() => {
+                      setCopiedId((prev) => (prev === token ? null : prev));
+                    }, 1600);
+                  }}
+                  className="btn btn-sm py-0 px-2 rounded-pill"
+                  style={{
+                    fontSize: "0.66rem",
+                    color: isCopied ? "#8ce0a8" : "#e6cfal",
+                    background: "rgba(197, 160, 89, 0.14)",
+                    border: "1px solid rgba(197, 160, 89, 0.28)",
+                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                  }}
+                >
+                  {isCopied ? "Tersalin" : "Salin"}
+                </button>
+              </div>
+              <pre
+                className="code-wall p-2 mb-0"
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#f2ece1",
+                  overflowX: "auto",
+                }}
+              >
+                {inner}
+              </pre>
+            </div>
+          );
+        }
+
+        return (
+          <p
+            key={`${replyKey}-txt-${idx}`}
+            className="mb-0"
+            style={{
+              fontSize: "0.82rem",
+              color: "#d8cfc2",
+              lineHeight: 1.55,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {part}
+          </p>
+        );
+      })}
+    </div>
+  );
 };
 
 export default function ThreadDetailView() {
@@ -87,6 +204,31 @@ export default function ThreadDetailView() {
   const [replyText, setReplyText] = useState("");
   const [shakeTick, setShakeTick] = useState(0);
   const [inputErr, setInputErr] = useState(false);
+  const [sortOrder, setSortOrder] = useState("oldest");
+  const [solvedCommentId, setSolvedCommentId] = useState(
+    thread?.solvedCommentId || null
+  );
+  const [copiedId, setCopiedId] = useState(null);
+
+  const isThreadAuthor =
+    Boolean(user?.username) &&
+    Boolean(thread?.author) &&
+    String(user.username).replace(/^@/, "").toLowerCase() ===
+      String(thread.author).replace(/^@/, "").toLowerCase();
+
+  const handleQuoteComment = (commentItem) => {
+    const cleanSnippet = String(commentItem?.text || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 110);
+    const quoteBlock = `> @${commentItem?.author || "member"}: "${cleanSnippet}${
+      cleanSnippet.length >= 110 ? "..." : ""
+    }"\n\n`;
+    setReplyText((prev) =>
+      prev.trim() ? `${prev.trim()}\n\n${quoteBlock}` : quoteBlock
+    );
+    setInputErr(false);
+  };
 
   const handleSendComment = (e) => {
     e.preventDefault();
@@ -94,8 +236,8 @@ export default function ThreadDetailView() {
       router.push("/login");
       return;
     }
-    const clean = replyText.trim();
-    if (!clean) {
+    const clear = replyText.trim();
+    if (!clear) {
       setInputErr(true);
       setShakeTick((n) => n + 1);
       return;
@@ -104,36 +246,49 @@ export default function ThreadDetailView() {
       id: `c-${Date.now()}`,
       author: user.username,
       time: "Baru saja",
-      text: clean,
+      text: clear,
     });
     setReplyText("");
     setInputErr(false);
   };
 
+  const rawComments = Array.isArray(thread?.comments) ? thread.comments : [];
+  const activeSolvedId = solvedCommentId || thread?.solvedCommentId || null;
+
+  const sortedComments = [...rawComments].sort((a, b) => {
+    if (activeSolvedId) {
+      if (String(a.id) === String(activeSolvedId)) return -1;
+      if (String(b.id) === String(activeSolvedId)) return 1;
+    }
+    return sortOrder === "newest" ? 1 : 0;
+  });
+
+  const displayComments =
+    sortOrder === "newest" && !activeSolvedId
+      ? [...rawComments].reverse()
+      : sortedComments;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+      transition={{ duration: 0.28, ease: SMOOTH_EASE }}
       className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5"
     >
       <Navbar />
-
-      <main className="container py-4 flex-grow-1 mb-4" style={{ maxWidth: "740px" }}>
+      <main
+        className="container py-4 flex-grow-1 mb-4"
+        style={{ maxWidth: "740px" }}
+      >
         <div className="mb-3">
           <motion.button
             type="button"
             whileHover={{ x: -3 }}
-            whileTap={{ scale: 0.94 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => router.back()}
             className="btn btn-sm btn-glass-subtle px-3 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
-            style={{
-              fontFamily: "var(--font-tommy-medium), sans-serif",
-              fontSize: "0.75rem",
-              color: "#e6cfa3",
-            }}
           >
-            <BackArrowSvg size={14} />
+            <BackArrowSvg size={16} />
             <span>Kembali</span>
           </motion.button>
         </div>
@@ -144,7 +299,7 @@ export default function ThreadDetailView() {
             animate={{ opacity: 1, scale: 1 }}
             className="smoked-glass p-4 text-center"
           >
-            <h1
+            <div
               className="h5 mb-1.5"
               style={{
                 fontFamily: "var(--font-coolvetica), sans-serif",
@@ -152,13 +307,13 @@ export default function ThreadDetailView() {
               }}
             >
               Utas Tidak Ditemukan
-            </h1>
-            <p className="mb-3" style={{ fontSize: "0.82rem", color: "#9a8f80" }}>
+            </div>
+            <p className="mb-3" style={{ fontSize: "0.82rem", color: "#9d958b" }}>
               Utas diskusi yang kamu cari mungkin sudah dihapus atau berpindah.
             </p>
             <Link
               href="/forum"
-              className="btn btn-sm btn-sogan px-3.5 py-1.5 rounded-pill"
+              className="btn btn-sm btr-sogan px-3 py-1.5 rounded-pill"
               style={{ fontFamily: "var(--font-tommy-medium), sans-serif" }}
             >
               Ke Forum Bedah Kode
@@ -169,7 +324,7 @@ export default function ThreadDetailView() {
             <motion.article
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.42, ease: SMOOTH_EASE }}
+              transition={{ duration: 0.32, ease: SMOOTH_EASE }}
               className="smoked-glass p-3.5 mb-3"
             >
               <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
@@ -185,17 +340,33 @@ export default function ThreadDetailView() {
                     {thread.category}
                   </span>
                   <span
+                    className="px-2 py-0.5 rounded-pill"
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.66rem",
+                      background: activeSolvedId
+                        ? "rgba(76, 175, 80, 0.16)"
+                        : "rgba(255, 255, 255, 0.05)",
+                      border: activeSolvedId
+                        ? "1px solid rgba(116, 214, 128, 0.36)"
+                        : "1px solid rgba(255, 255, 255, 0.12)",
+                      color: activeSolvedId ? "#8ce0a8" : "#a89f94",
+                    }}
+                  >
+                    {activeSolvedId ? "Solved" : "Open"}
+                  </span>
+                  <span
                     style={{
                       fontFamily: "var(--font-caviar), sans-serif",
                       fontSize: "0.82rem",
                       fontWeight: 600,
-                      color: "#e6cfa3",
+                      color: "#e6cfal",
                     }}
                   >
                     @{thread.author}
                   </span>
                 </div>
-                <span style={{ fontSize: "0.72rem", color: "#7d7367" }}>
+                <span style={{ fontSize: "0.72rem", color: "#7d756b" }}>
                   {thread.time}
                 </span>
               </div>
@@ -216,8 +387,8 @@ export default function ThreadDetailView() {
                 style={{
                   fontFamily: "var(--font-tommy-regular), sans-serif",
                   fontSize: "0.86rem",
-                  color: "#cfc5b6",
-                  lineHeight: 1.65,
+                  color: "#dfd5c7",
+                  lineHeight: 1.68,
                   whiteSpace: "pre-line",
                 }}
               >
@@ -225,73 +396,173 @@ export default function ThreadDetailView() {
               </p>
 
               {thread.code && (
-                <pre className="code-well p-2.5 mt-3 mb-0">{thread.code}</pre>
+                <pre className="code-wall p-2.5 mt-3 mb-0">{thread.code}</pre>
               )}
             </motion.article>
 
             <div className="smoked-glass p-3.5 mb-3">
-              <div className="d-flex align-items-center gap-1.5 mb-3">
-                <ReplySvg size={16} />
-                <span
-                  style={{
-                    fontFamily: "var(--font-tommy-medium), sans-serif",
-                    fontSize: "0.78rem",
-                    color: "#c5a059",
-                  }}
-                >
-                  {thread.comments?.length || 0} Balasan Diskusi
-                </span>
+              <div className="d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
+                <div className="d-flex align-items-center gap-1.5">
+                  <ReplySvg size={16} />
+                  <span
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.78rem",
+                      color: "#c5a059",
+                    }}
+                  >
+                    {rawComments.length || 0} Balasan Diskusi
+                  </span>
+                </div>
+
+                {rawComments.length > 1 && (
+                  <div className="d-flex align-items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setSortOrder("oldest")}
+                      className="btn btn-sm py-0.5 px-2.5 rounded-pill"
+                      style={{
+                        fontSize: "0.68rem",
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        background:
+                          sortOrder === "oldest"
+                            ? "rgba(197, 160, 89, 0.22)"
+                            : "rgba(255, 255, 255, 0.04)",
+                        border:
+                          sortOrder === "oldest"
+                            ? "1px solid rgba(197, 160, 89, 0.45)"
+                            : "1px solid rgba(255, 255, 255, 0.1)",
+                        color: sortOrder === "oldest" ? "#f2ece1" : "#9d958b",
+                      }}
+                    >
+                      Terlama
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSortOrder("newest")}
+                      className="btn btn-sm py-0.5 px-2.5 rounded-pill"
+                      style={{
+                        fontSize: "0.68rem",
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        background:
+                          sortOrder === "newest"
+                            ? "rgba(197, 160, 89, 0.22)"
+                            : "rgba(255, 255, 255, 0.04)",
+                        border:
+                          sortOrder === "newest"
+                            ? "1px solid rgba(197, 160, 89, 0.45)"
+                            : "1px solid rgba(255, 255, 255, 0.1)",
+                        color: sortOrder === "newest" ? "#f2ece1" : "#9d958b",
+                      }}
+                    >
+                      Terbaru
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {!thread.comments || thread.comments.length === 0 ? (
+              {rawComments.length === 0 ? (
                 <p
                   className="mb-3"
-                  style={{ fontSize: "0.8rem", color: "#8f8578" }}
+                  style={{ fontSize: "0.8rem", color: "#8f857b" }}
                 >
                   Belum ada balasan di utas ini. Jadilah yang pertama membantu!
                 </p>
               ) : (
                 <div className="d-flex flex-column gap-2 mb-3">
                   <AnimatePresence initial={false}>
-                    {thread.comments.map((c) => (
-                      <motion.div
-                        key={c.id}
-                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.3, ease: SMOOTH_EASE }}
-                        className="p-2.5 rounded-3"
-                        style={{
-                          backgroundColor: "rgba(14, 12, 10, 0.58)",
-                          border: "1px solid rgba(197, 160, 89, 0.14)",
-                        }}
-                      >
-                        <div className="d-flex align-items-center justify-content-between mb-1">
-                          <span
-                            style={{
-                              fontFamily: "var(--font-caviar), sans-serif",
-                              fontSize: "0.76rem",
-                              fontWeight: 600,
-                              color: "#e6cfa3",
-                            }}
-                          >
-                            @{c.author}
-                          </span>
-                          <span style={{ fontSize: "0.68rem", color: "#7d7367" }}>
-                            {c.time}
-                          </span>
-                        </div>
-                        <p
-                          className="mb-0"
+                    {displayComments.map((c) => {
+                      const isSolved = String(c.id) === String(activeSolvedId);
+                      return (
+                        <motion.div
+                          key={c.id}
+                          initial={{ opacity: 0, y: 10, scale: 0.99 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.3, ease: SMOOTH_EASE }}
+                          className="p-2.5 rounded-3"
                           style={{
-                            fontSize: "0.82rem",
-                            color: "#d8cfc2",
-                            lineHeight: 1.55,
+                            backgroundColor: isSolved
+                              ? "rgba(76, 175, 80, 0.08)"
+                              : "rgba(14, 12, 10, 0.58)",
+                            border: isSolved
+                              ? "1px solid rgba(116, 214, 128, 0.34)"
+                              : "1px solid rgba(197, 160, 89, 0.16)",
                           }}
                         >
-                          {c.text}
-                        </p>
-                      </motion.div>
-                    ))}
+                          <div className="d-flex align-items-center justify-content-between gap-2 mb-1 flex-wrap">
+                            <div className="d-flex align-items-center gap-2">
+                              <span
+                                style={{
+                                  fontFamily: "var(--font-caviar), sans-serif",
+                                  fontSize: "0.76rem",
+                                  fontWeight: 600,
+                                  color: "#e6cfal",
+                                }}
+                              >
+                                @{c.author}
+                              </span>
+                              {isSolved && (
+                                <span
+                                  className="px-2 py-0 rounded-pill"
+                                  style={{
+                                    fontSize: "0.64rem",
+                                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                                    background: "rgba(76, 175, 80, 0.18)",
+                                    border: "1px solid rgba(116, 214, 128, 0.4)",
+                                    color: "#8ce0a8",
+                                  }}
+                                >
+                                  Solusi Terbaik
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="d-flex align-items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleQuoteComment(c)}
+                                className="btn btn-link p-0 text-decoration-none"
+                                style={{
+                                  fontSize: "0.68rem",
+                                  color: "#c5a059",
+                                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                                }}
+                              >
+                                Quote
+                              </button>
+                              {isThreadAuthor && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setSolvedCommentId((prev) =>
+                                      String(prev) === String(c.id) ? null : c.id
+                                    )
+                                  }
+                                  className="btn btn-link p-0 text-decoration-none"
+                                  style={{
+                                    fontSize: "0.68rem",
+                                    color: isSolved ? "#8ce0a8" : "#9d958b",
+                                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                                  }}
+                                >
+                                  {isSolved ? "Batal Solved" : "Tandai Solved"}
+                                </button>
+                              )}
+                              <span style={{ fontSize: "0.68rem", color: "#7d756b" }}>
+                                {c.time}
+                              </span>
+                            </div>
+                          </div>
+
+                          {renderFormattedReplyText(
+                            c.text,
+                            copiedId,
+                            setCopiedId,
+                            String(c.id)
+                          )}
+                        </motion.div>
+                      );
+                    })}
                   </AnimatePresence>
                 </div>
               )}
@@ -300,16 +571,16 @@ export default function ThreadDetailView() {
                 <div
                   className="p-2.5 rounded-3 d-flex align-items-center justify-content-between gap-2"
                   style={{
-                    backgroundColor: "rgba(14, 12, 10, 0.55)",
+                    backgroundColor: "rgba(14, 12, 10, 0.65)",
                     border: "1px solid rgba(197, 160, 89, 0.16)",
                   }}
                 >
-                  <span style={{ fontSize: "0.78rem", color: "#9a8f80" }}>
+                  <span style={{ fontSize: "0.78rem", color: "#9a8f82" }}>
                     Masuk terlebih dahulu untuk menulis balasan.
                   </span>
                   <Link
                     href="/login"
-                    className="btn btn-sm btn-sogan px-3 py-1 rounded-pill flex-shrink-0"
+                    className="btn btn-sm btr-sogan px-3 py-1 rounded-pill flex-shrink-0"
                     style={{
                       fontFamily: "var(--font-tommy-medium), sans-serif",
                       fontSize: "0.74rem",
@@ -319,7 +590,10 @@ export default function ThreadDetailView() {
                   </Link>
                 </div>
               ) : (
-                <form onSubmit={handleSendComment} className="d-flex flex-column gap-2">
+                <form
+                  onSubmit={handleSendComment}
+                  className="d-flex flex-column gap-2"
+                >
                   <motion.div
                     key={`reply-${shakeTick}`}
                     animate={
@@ -330,7 +604,7 @@ export default function ThreadDetailView() {
                     transition={{ duration: 0.36 }}
                   >
                     <textarea
-                      rows={2}
+                      rows={3}
                       value={replyText}
                       onChange={(e) => {
                         setReplyText(e.target.value);
@@ -343,19 +617,18 @@ export default function ThreadDetailView() {
                           ? "rgba(217, 83, 79, 0.16)"
                           : "rgba(14, 12, 10, 0.72)",
                         borderColor: inputErr
-                          ? "#e05a54"
+                          ? "#d9534f"
                           : "rgba(197, 160, 89, 0.24)",
                         color: "#f2ece1",
                       }}
                     />
                   </motion.div>
-
                   <div className="d-flex justify-content-end">
                     <motion.button
                       type="submit"
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.94 }}
-                      className="btn btn-sm btn-sogan px-3 py-1 d-inline-flex align-items-center gap-1.5"
+                      className="btn btn-sm btr-sogan px-3 py-1 d-inline-flex align-items-center gap-1.5"
                       style={{
                         fontFamily: "var(--font-tommy-medium), sans-serif",
                         fontSize: "0.75rem",
