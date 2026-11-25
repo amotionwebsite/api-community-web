@@ -41,12 +41,14 @@ const TalkSvg = ({ size = 19, active = false }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     {active ? (
       <path
-        fill="#09244BFF"
+        fill="#090807"
+        stroke="#c5a059"
+        strokeWidth="1.25"
         d="M11.333 19 8 21.5a1.3 1.3 0 0 1-.434.212c-.82.217-1.528-.403-1.566-1.212V19c-.225 0-1.039.022-1.407-.027C3.069 18.767 2.05 17.502 2 16V6c.027-.801.305-1.548.879-2.121C3.452 3.305 4.199 3.027 5 3h14c.538.018 1.046.136 1.514.41.935.547 1.45 1.524 1.486 2.59v10c-.057 1.708-1.292 2.943-3 3Zm4.897-9.476a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746 1.516 1.516 0 0 0-1.746-1.206m-4.5 0a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746 1.516 1.516 0 0 0-1.746-1.206m-4.5 0a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746A1.516 1.516 0 0 0 7.23 9.524"
       />
     ) : (
       <path
-        fill="#09244BFF"
+        fill="currentColor"
         d="m16.975 9.564.418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656l.475-.077Zm-4.5 0 .418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656L12 9.487Zm-4.5 0 .418.216c.985.72.742 2.274-.418 2.656l-.475.077-.475-.077-.418-.216c-.985-.72-.742-2.274.418-2.656l.475-.077ZM6 19c-.262 0-1.092.028-1.485-.036C3.046 18.726 2.059 17.498 2 16.04V5.96c.032-.788.314-1.52.877-2.083S4.172 3.032 4.96 3h14.08c.788.032 1.52.314 2.083.877s.845 1.295.877 2.083v10.08c-.038.946-.453 1.817-1.226 2.383-.513.376-1.103.552-1.734.577h-7.653c-.135.029.029-.025-.097.032l-3.366 2.525-.346.169a1.29 1.29 0 0 1-1.506-.753L6 20.595Zm2 0 2.176-1.632A2.1 2.1 0 0 1 11.28 17h7.68c.622-.025 1.015-.418 1.04-1.04V6.04c-.014-.336-.132-.641-.412-.845-.188-.138-.398-.186-.628-.195H5.04c-.336.014-.641.132-.845.412-.138.188-.186.398-.195.628v9.92c.058 1.433 1.651.966 2.58 1.04.331.027.533.075.813.28C8.02 17.738 8 18.304 8 19"
       />
     )}
@@ -87,12 +89,14 @@ const ForumSvg = ({ size = 19, active = false }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     {active ? (
       <path
-        fill="#09244BFF"
+        fill="#090807"
+        stroke="#c5a059"
+        strokeWidth="1.25"
         d="M16.732 3c.531 0 1.069-.059 1.592.026.984.16 1.637 1.005 1.676 1.974v12c-.025 1.002-.289 1.959-.854 2.796C18.205 21.188 16.662 21.958 15 22H6c-1.146-.046-1.954-.854-2-2V5c.039-.969.692-1.814 1.676-1.974C6.199 2.941 6.737 3 7.268 3c.433-.636.949-.97 1.732-1h6c.783.03 1.299.364 1.732 1m-6.151 10.621-1.414-1.414c-.337-.295-.795-.394-1.201-.163a1 1 0 0 0-.473.616c-.094.359.024.691.26.961l2.051 2.051c.378.337.91.435 1.357.158l.198-.158 4.879-4.879c.295-.338.395-.795.163-1.201-.339-.593-1.092-.637-1.577-.213ZM9.5 4a.514.514 0 0 0-.5.5v1c.017.216.127.403.342.475L9.5 6h5c.216-.017.403-.127.475-.342L15 5.5v-1a.514.514 0 0 0-.5-.5Z"
       />
     ) : (
       <path
-        fill="#09244BFF"
+        fill="currentColor"
         d="m10.582 13.621 4.242-4.242c.482-.423 1.234-.381 1.573.207.235.407.139.867-.159 1.207l-4.949 4.95-.207.159c-.407.235-.868.139-1.208-.159l-2.121-2.122c-.238-.271-.355-.606-.259-.966.092-.342.365-.615.707-.707.36-.096.695.021.966.259ZM7.273 3c.392-.617.992-.973 1.727-1h6c.735.027 1.335.383 1.727 1 .371 0 1.122-.053 1.617.033C19.311 3.201 19.965 4.04 20 5v12c-.023.968-.271 1.914-.81 2.727C18.246 21.152 16.699 21.96 15 22H6c-1.135-.042-1.958-.865-2-2V5c.035-.96.689-1.799 1.656-1.967C6.151 2.947 6.902 3 7.273 3M7 5l-.994.006v14.988l.051.006h8.914c1.736-.05 2.979-1.293 3.029-3.029V5.057l-.006-.051L17 5c-.084 1.14-.827 1.957-2 2H9c-1.173-.043-1.916-.86-2-2m2.006-.994v.988h5.988v-.988Z"
       />
     )}
@@ -317,17 +321,12 @@ export default function Navbar() {
                       fontFamily: "var(--font-tommy-medium), sans-serif",
                       fontSize: "0.74rem",
                       backgroundColor: isTalkActive
-                        ? "#0b0b0c"
+                        ? "rgba(197, 160, 89, 0.24)"
                         : "rgba(38, 35, 31, 0.65)",
                       backdropFilter: "blur(20px)",
                       WebkitBackdropFilter: "blur(20px)",
-                      border: isTalkActive
-                        ? "1px solid rgba(197, 160, 89, 0.65)"
-                        : "1px solid rgba(197, 160, 89, 0.28)",
+                      border: "1px solid rgba(197, 160, 89, 0.28)",
                       color: isTalkActive ? "#f2ece1" : "#e6cfa3",
-                      boxShadow: isTalkActive
-                        ? "0 6px 18px rgba(0, 0, 0, 0.55)"
-                        : "none",
                     }}
                   >
                     <motion.span
@@ -337,12 +336,7 @@ export default function Navbar() {
                           : { scale: 1 }
                       }
                       transition={NAV_SPRING}
-                      className="d-inline-flex align-items-center justify-content-center rounded-2"
-                      style={
-                        isTalkActive
-                          ? { backgroundColor: "#0b0b0c", padding: "2px" }
-                          : undefined
-                      }
+                      className="d-inline-flex align-items-center justify-content-center"
                     >
                       <TalkSvg size={16} active={isTalkActive} />
                     </motion.span>
@@ -362,8 +356,6 @@ export default function Navbar() {
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
                   const active = isNavItemActive(item.href);
-                  const isBlackBgItem =
-                    item.href === "/forum" || item.href === "/talk";
                   return (
                     <Link
                       key={item.href}
@@ -400,12 +392,7 @@ export default function Navbar() {
                             : { scale: 1, rotate: 0 }
                         }
                         transition={NAV_SPRING}
-                        className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
-                        style={
-                          active && isBlackBgItem
-                            ? { backgroundColor: "#0b0b0c", padding: "2px" }
-                            : undefined
-                        }
+                        className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative"
                       >
                         <Icon size={17} active={active} />
                       </motion.span>
@@ -555,8 +542,6 @@ export default function Navbar() {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = isNavItemActive(item.href);
-              const isBlackBgItem =
-                item.href === "/forum" || item.href === "/talk";
               return (
                 <Link
                   key={item.href}
@@ -593,12 +578,7 @@ export default function Navbar() {
                         : { scale: 1, rotate: 0 }
                     }
                     transition={NAV_SPRING}
-                    className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
-                    style={
-                      active && isBlackBgItem
-                        ? { backgroundColor: "#0b0b0c", padding: "2px" }
-                        : undefined
-                    }
+                    className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative"
                   >
                     <Icon size={17} active={active} />
                   </motion.span>
@@ -641,8 +621,6 @@ export default function Navbar() {
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const active = isNavItemActive(item.href);
-          const isBlackBgItem =
-            item.href === "/forum" || item.href === "/talk";
           return (
             <Link
               key={item.href}
@@ -678,12 +656,7 @@ export default function Navbar() {
                     : { scale: 1, y: 0 }
                 }
                 transition={NAV_SPRING}
-                className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative rounded-2"
-                style={
-                  active && isBlackBgItem
-                    ? { backgroundColor: "#0b0b0c", padding: "2px" }
-                    : undefined
-                }
+                className="d-inline-flex align-items-center justify-content-center bg-transparent position-relative"
               >
                 <Icon size={18} active={active} />
               </motion.span>
