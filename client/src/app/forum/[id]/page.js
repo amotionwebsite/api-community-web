@@ -1,7 +1,10 @@
+import { Suspense } from "react";
 import ThreadDetailView from "@/views/ThreadDetailView";
 
-export const dynamic = "force-dynamic";
-
 export default function ThreadDetailPage() {
-  return <ThreadDetailView />;
+  return (
+    <Suspense fallback={<div className="min-vh-100 handcrafted-canvas" />}>
+      <ThreadDetailView />
+    </Suspense>
+  );
 }
