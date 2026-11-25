@@ -7,20 +7,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/useAuthStore";
 
-const BackArrowSvg = ({ size = 16 }) => (
+const BackArrowSvg = ({ size = 18 }) => (
   <svg
     width={size}
     height={size}
-    viewBox="0 0 24 24"
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
   >
+    <path d="M0 0h24v24H0z" fill="none" />
     <path
-      d="M19 12H5M5 12L12 19M5 12L12 5"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="#09244BFF"
+      d="M4.838 9.894c3.936-5.355 12.007-5.141 15.631.433a9.5 9.5 0 0 1 1.505 4.464c.01.143.059.683-.001.938-.208.895-1.469 1.035-1.872.211-.159-.325-.1-.751-.129-1.087a7.5 7.5 0 0 0-.213-1.246 7.55 7.55 0 0 0-3.129-4.368c-3.525-2.33-8.468-1.245-10.586 2.45l4.061-.716.231-.014a1.01 1.01 0 0 1 .904 1.276c-.109.379-.414.62-.787.708l-5.909 1.042a1.1 1.1 0 0 1-.515-.045c-.339-.119-.566-.423-.644-.766L2.343 7.265a1 1 0 0 1 .024-.451c.298-1.035 1.707-.909 1.946.104Z"
     />
   </svg>
 );
@@ -36,7 +33,7 @@ const SendSvg = ({ size = 14 }) => (
     <path
       d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.1"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -62,6 +59,16 @@ const ReplySvg = ({ size = 16 }) => (
 );
 
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
+const GOLD_ACTION_BTN_STYLE = {
+  fontFamily: "var(--font-tommy-medium), sans-serif",
+  fontSize: "0.78rem",
+  background: "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
+  color: "#16120e",
+  border: "1px solid rgba(255, 236, 188, 0.45)",
+  boxShadow:
+    "0 4px 14px rgba(197, 160, 89, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35)",
+};
 
 const getCategoryBadgeStyle = (cat) => {
   const lower = (cat || "").toLowerCase();
@@ -93,9 +100,10 @@ const renderFormattedReplyText = (text, copiedId, setCopiedId, replyKey) => {
       <p
         className="mb-0"
         style={{
-          fontSize: "0.82rem",
-          color: "#d8cfc2",
-          lineHeight: 1.55,
+          fontFamily: "var(--font-tommy-regular), sans-serif",
+          fontSize: "0.84rem",
+          color: "#dfd5c7",
+          lineHeight: 1.58,
           whiteSpace: "pre-line",
         }}
       >
@@ -180,9 +188,10 @@ const renderFormattedReplyText = (text, copiedId, setCopiedId, replyKey) => {
             key={`${replyKey}-txt-${idx}`}
             className="mb-0"
             style={{
-              fontSize: "0.82rem",
-              color: "#d8cfc2",
-              lineHeight: 1.55,
+              fontFamily: "var(--font-tommy-regular), sans-serif",
+              fontSize: "0.84rem",
+              color: "#dfd5c7",
+              lineHeight: 1.58,
               whiteSpace: "pre-line",
             }}
           >
@@ -210,7 +219,18 @@ export default function ThreadDetailView() {
   );
   const [copiedId, setCopiedId] = useState(null);
   const [replyTarget, setReplyTarget] = useState(null);
-  const [localReplies, setLocalReplies] = useState([]);
+  const [submittedComments, setSubmittedComments] = useState([]);
+  const [sendAnimTick, setSendAnimTick] = useState(0);
+  const [isLeavingToForum, setIsLeavingToForum] = useState(false);
+
+  const handleBackToForum = (e) => {
+    if (e) e.preventDefault();
+    if (isLeavingToForum) return;
+    setIsLeavingToForum(true);
+    setTimeout(() => {
+      router.push("/forum");
+    }, 180);
+  };
 
   const handleQuoteComment = (commentItem) => {
     const cleanSnippet = String(commentItem?.text || "")
@@ -244,31 +264,42 @@ export default function ThreadDetailView() {
       return;
     }
 
+    const authorName =
+      user?.username ||
+      user?.name ||
+      (typeof user?.email === "string" ? user.email.split("@")[0] : "member");
+
     const newComment = {
-      id: `c-${Date.now()}`,
+      id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       parentId: replyTarget ? String(replyTarget.id) : null,
-      author: user.username,
+      author: authorName,
       time: "Baru saja",
       text: clear,
     };
 
-    if (replyTarget) {
-      setLocalReplies((prev) => [...prev, newComment]);
-    } else {
-      addThreadComment(thread.id, newComment);
+    if (typeof addThreadComment === "function" && thread?.id !== undefined) {
+      try {
+        addThreadComment(thread.id, newComment);
+      } catch (_) {}
     }
 
+    setSubmittedComments((prev) => [...prev, newComment]);
+    setSendAnimTick((n) => n + 1);
     setReplyText("");
     setReplyTarget(null);
     setInputErr(false);
   };
 
   const baseComments = Array.isArray(thread?.comments) ? thread.comments : [];
-  const allComments = [...baseComments, ...localReplies];
+  const existingIds = new Set(baseComments.map((item) => String(item.id)));
+  const mergedComments = [
+    ...baseComments,
+    ...submittedComments.filter((item) => !existingIds.has(String(item.id))),
+  ];
   const activeSolvedId = solvedCommentId || thread?.solvedCommentId || null;
 
-  const topLevelComments = allComments.filter((c) => !c.parentId);
-  const childrenByParent = allComments.reduce((acc, c) => {
+  const topLevelComments = mergedComments.filter((c) => !c.parentId);
+  const childrenByParent = mergedComments.reduce((acc, c) => {
     if (c.parentId) {
       const pid = String(c.parentId);
       if (!acc[pid]) acc[pid] = [];
@@ -307,9 +338,11 @@ export default function ThreadDetailView() {
         }
       >
         <motion.div
-          initial={{ opacity: 0, y: 10, scale: 0.99 }}
+          layout
+          initial={{ opacity: 0, y: 14, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.3, ease: SMOOTH_EASE }}
+          exit={{ opacity: 0, y: -8, scale: 0.97 }}
+          transition={{ duration: 0.34, ease: SMOOTH_EASE }}
           className="p-2.5 rounded-3"
           style={{
             backgroundColor: isSolved
@@ -326,9 +359,8 @@ export default function ThreadDetailView() {
             <div className="d-flex align-items-center gap-2">
               <span
                 style={{
-                  fontFamily: "var(--font-caviar), sans-serif",
-                  fontSize: "0.76rem",
-                  fontWeight: 600,
+                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                  fontSize: "0.78rem",
                   color: "#e6cfa1",
                 }}
               >
@@ -391,7 +423,13 @@ export default function ThreadDetailView() {
               >
                 {isSolved ? "Batal Solved" : "Tandai Solved"}
               </button>
-              <span style={{ fontSize: "0.68rem", color: "#7d756b" }}>
+              <span
+                style={{
+                  fontFamily: "var(--font-tommy-regular), sans-serif",
+                  fontSize: "0.68rem",
+                  color: "#7d756b",
+                }}
+              >
                 {c.time}
               </span>
             </div>
@@ -412,8 +450,12 @@ export default function ThreadDetailView() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.28, ease: SMOOTH_EASE }}
+      animate={
+        isLeavingToForum
+          ? { opacity: 0, x: -16, scale: 0.985 }
+          : { opacity: 1, x: 0, y: 0, scale: 1 }
+      }
+      transition={{ duration: 0.24, ease: SMOOTH_EASE }}
       className="min-vh-100 d-flex flex-column handcrafted-canvas pb-5"
     >
       <Navbar />
@@ -422,16 +464,24 @@ export default function ThreadDetailView() {
         style={{ maxWidth: "740px" }}
       >
         <div className="mb-3">
-          <motion.button
-            type="button"
-            whileHover={{ x: -3 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => router.back()}
-            className="btn btn-sm btn-glass-subtle px-3 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+          <motion.a
+            href="/forum"
+            onClick={handleBackToForum}
+            whileHover={{ x: -3, scale: 1.02 }}
+            whileTap={{ x: -7, scale: 0.93 }}
+            transition={{ duration: 0.18, ease: SMOOTH_EASE }}
+            className="btn btn-sm px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5 text-decoration-none"
+            style={GOLD_ACTION_BTN_STYLE}
           >
-            <BackArrowSvg size={16} />
-            <span>Kembali</span>
-          </motion.button>
+            <motion.span
+              animate={isLeavingToForum ? { x: -4 } : { x: 0 }}
+              transition={{ duration: 0.16, ease: SMOOTH_EASE }}
+              className="d-inline-flex align-items-center"
+            >
+              <BackArrowSvg size={18} />
+            </motion.span>
+            <span>Forum</span>
+          </motion.a>
         </div>
 
         {!thread ? (
@@ -552,7 +602,7 @@ export default function ThreadDetailView() {
                       color: "#c5a059",
                     }}
                   >
-                    {allComments.length || 0} Balasan Diskusi
+                    {mergedComments.length || 0} Balasan Diskusi
                   </span>
                 </div>
 
@@ -602,16 +652,20 @@ export default function ThreadDetailView() {
                 )}
               </div>
 
-              {allComments.length === 0 ? (
+              {mergedComments.length === 0 ? (
                 <p
                   className="mb-3"
-                  style={{ fontSize: "0.8rem", color: "#8f857b" }}
+                  style={{
+                    fontFamily: "var(--font-tommy-regular), sans-serif",
+                    fontSize: "0.82rem",
+                    color: "#8f857b",
+                  }}
                 >
                   Belum ada balasan di utas ini. Jadilah yang pertama membantu!
                 </p>
               ) : (
                 <div className="d-flex flex-column gap-2 mb-3">
-                  <AnimatePresence initial={false}>
+                  <AnimatePresence initial={false} mode="popLayout">
                     {displayTopLevel.map((c) => renderCommentCard(c, 0))}
                   </AnimatePresence>
                 </div>
@@ -644,33 +698,40 @@ export default function ThreadDetailView() {
                   onSubmit={handleSendComment}
                   className="d-flex flex-column gap-2"
                 >
-                  {replyTarget && (
-                    <div
-                      className="px-2.5 py-1.5 rounded-3 d-flex align-items-center justify-content-between gap-2"
-                      style={{
-                        backgroundColor: "rgba(197, 160, 89, 0.12)",
-                        border: "1px solid rgba(197, 160, 89, 0.3)",
-                      }}
-                    >
-                      <span
+                  <AnimatePresence>
+                    {replyTarget && (
+                      <motion.div
+                        key={`target-${replyTarget.id}`}
+                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                        transition={{ duration: 0.2, ease: SMOOTH_EASE }}
+                        className="px-2.5 py-1.5 rounded-3 d-flex align-items-center justify-content-between gap-2"
                         style={{
-                          fontSize: "0.72rem",
-                          color: "#e6cfa1",
-                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          backgroundColor: "rgba(197, 160, 89, 0.12)",
+                          border: "1px solid rgba(197, 160, 89, 0.3)",
                         }}
                       >
-                        Membalas @{replyTarget.author}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setReplyTarget(null)}
-                        className="btn btn-link p-0 text-decoration-none"
-                        style={{ fontSize: "0.7rem", color: "#9d958b" }}
-                      >
-                        Batal
-                      </button>
-                    </div>
-                  )}
+                        <span
+                          style={{
+                            fontSize: "0.72rem",
+                            color: "#e6cfa1",
+                            fontFamily: "var(--font-tommy-medium), sans-serif",
+                          }}
+                        >
+                          Membalas @{replyTarget.author}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setReplyTarget(null)}
+                          className="btn btn-link p-0 text-decoration-none"
+                          style={{ fontSize: "0.7rem", color: "#9d958b" }}
+                        >
+                          Batal
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   <motion.div
                     key={`reply-${shakeTick}`}
@@ -695,6 +756,7 @@ export default function ThreadDetailView() {
                       }
                       className="form-control form-control-sm"
                       style={{
+                        fontFamily: "var(--font-tommy-regular), sans-serif",
                         backgroundColor: inputErr
                           ? "rgba(217, 83, 79, 0.16)"
                           : "rgba(14, 12, 10, 0.72)",
@@ -708,21 +770,31 @@ export default function ThreadDetailView() {
                   <div className="d-flex justify-content-end">
                     <motion.button
                       type="submit"
+                      key={`send-btn-${sendAnimTick}`}
+                      initial={
+                        sendAnimTick > 0 ? { scale: 0.92 } : { scale: 1 }
+                      }
+                      animate={{ scale: 1 }}
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.94 }}
-                      className="btn btn-sm btr-sogan px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5"
-                      style={{
-                        fontFamily: "var(--font-tommy-medium), sans-serif",
-                        fontSize: "0.75rem",
-                        background:
-                          "linear-gradient(135deg, #d4af64 0%, #a87e34 100%)",
-                        color: "#14110e",
-                        border: "1px solid rgba(242, 236, 225, 0.24)",
-                        boxShadow: "0 4px 14px rgba(197, 160, 89, 0.28)",
-                      }}
+                      transition={{ duration: 0.24, ease: SMOOTH_EASE }}
+                      className="btn btn-sm px-3.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5"
+                      style={GOLD_ACTION_BTN_STYLE}
                     >
                       <span>Kirim Balasan</span>
-                      <SendSvg size={14} />
+                      <motion.span
+                        key={`plane-${sendAnimTick}`}
+                        initial={
+                          sendAnimTick > 0
+                            ? { x: -4, y: 4, rotate: -18, opacity: 0.7 }
+                            : false
+                        }
+                        animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
+                        transition={{ duration: 0.32, ease: SMOOTH_EASE }}
+                        className="d-inline-flex align-items-center"
+                      >
+                        <SendSvg size={14} />
+                      </motion.span>
                     </motion.button>
                   </div>
                 </form>
