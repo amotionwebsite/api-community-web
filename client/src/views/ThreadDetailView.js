@@ -82,7 +82,7 @@ const getCategoryBadgeStyle = (cat) => {
   return {
     background: "rgba(197, 160, 89, 0.16)",
     border: "1px solid rgba(197, 160, 89, 0.32)",
-    color: "#e6cfal",
+    color: "#e6cfa1",
   };
 };
 
@@ -152,7 +152,7 @@ const renderFormattedReplyText = (text, copiedId, setCopiedId, replyKey) => {
                   className="btn btn-sm py-0 px-2 rounded-pill"
                   style={{
                     fontSize: "0.66rem",
-                    color: isCopied ? "#8ce0a8" : "#e6cfal",
+                    color: isCopied ? "#8ce0a8" : "#e6cfa1",
                     background: "rgba(197, 160, 89, 0.14)",
                     border: "1px solid rgba(197, 160, 89, 0.28)",
                     fontFamily: "var(--font-tommy-medium), sans-serif",
@@ -209,12 +209,8 @@ export default function ThreadDetailView() {
     thread?.solvedCommentId || null
   );
   const [copiedId, setCopiedId] = useState(null);
-
-  const isThreadAuthor =
-    Boolean(user?.username) &&
-    Boolean(thread?.author) &&
-    String(user.username).replace(/^@/, "").toLowerCase() ===
-      String(thread.author).replace(/^@/, "").toLowerCase();
+  const [replyTarget, setReplyTarget] = useState(null);
+  const [localReplies, setLocalReplies] = useState([]);
 
   const handleQuoteComment = (commentItem) => {
     const cleanSnippet = String(commentItem?.text || "")
@@ -230,6 +226,11 @@ export default function ThreadDetailView() {
     setInputErr(false);
   };
 
+  const handleReplyToComment = (commentItem) => {
+    setReplyTarget(commentItem);
+    setInputErr(false);
+  };
+
   const handleSendComment = (e) => {
     e.preventDefault();
     if (!user) {
@@ -242,20 +243,41 @@ export default function ThreadDetailView() {
       setShakeTick((n) => n + 1);
       return;
     }
-    addThreadComment(thread.id, {
+
+    const newComment = {
       id: `c-${Date.now()}`,
+      parentId: replyTarget ? String(replyTarget.id) : null,
       author: user.username,
       time: "Baru saja",
       text: clear,
-    });
+    };
+
+    if (replyTarget) {
+      setLocalReplies((prev) => [...prev, newComment]);
+    } else {
+      addThreadComment(thread.id, newComment);
+    }
+
     setReplyText("");
+    setReplyTarget(null);
     setInputErr(false);
   };
 
-  const rawComments = Array.isArray(thread?.comments) ? thread.comments : [];
+  const baseComments = Array.isArray(thread?.comments) ? thread.comments : [];
+  const allComments = [...baseComments, ...localReplies];
   const activeSolvedId = solvedCommentId || thread?.solvedCommentId || null;
 
-  const sortedComments = [...rawComments].sort((a, b) => {
+  const topLevelComments = allComments.filter((c) => !c.parentId);
+  const childrenByParent = allComments.reduce((acc, c) => {
+    if (c.parentId) {
+      const pid = String(c.parentId);
+      if (!acc[pid]) acc[pid] = [];
+      acc[pid].push(c);
+    }
+    return acc;
+  }, {});
+
+  const orderedTopLevel = [...topLevelComments].sort((a, b) => {
     if (activeSolvedId) {
       if (String(a.id) === String(activeSolvedId)) return -1;
       if (String(b.id) === String(activeSolvedId)) return 1;
@@ -263,10 +285,129 @@ export default function ThreadDetailView() {
     return sortOrder === "newest" ? 1 : 0;
   });
 
-  const displayComments =
+  const displayTopLevel =
     sortOrder === "newest" && !activeSolvedId
-      ? [...rawComments].reverse()
-      : sortedComments;
+      ? [...topLevelComments].reverse()
+      : orderedTopLevel;
+
+  const renderCommentCard = (c, depth = 0) => {
+    const isSolved = String(c.id) === String(activeSolvedId);
+    const nestedReplies = childrenByParent[String(c.id)] || [];
+
+    return (
+      <div
+        key={c.id}
+        className={depth > 0 ? "mt-2 ps-3" : ""}
+        style={
+          depth > 0
+            ? {
+                borderLeft: "2px solid rgba(197, 160, 89, 0.35)",
+              }
+            : undefined
+        }
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.3, ease: SMOOTH_EASE }}
+          className="p-2.5 rounded-3"
+          style={{
+            backgroundColor: isSolved
+              ? "rgba(76, 175, 80, 0.08)"
+              : depth > 0
+              ? "rgba(22, 19, 16, 0.72)"
+              : "rgba(14, 12, 10, 0.58)",
+            border: isSolved
+              ? "1px solid rgba(116, 214, 128, 0.34)"
+              : "1px solid rgba(197, 160, 89, 0.16)",
+          }}
+        >
+          <div className="d-flex align-items-center justify-content-between gap-2 mb-1 flex-wrap">
+            <div className="d-flex align-items-center gap-2">
+              <span
+                style={{
+                  fontFamily: "var(--font-caviar), sans-serif",
+                  fontSize: "0.76rem",
+                  fontWeight: 600,
+                  color: "#e6cfa1",
+                }}
+              >
+                @{c.author}
+              </span>
+              {isSolved && (
+                <span
+                  className="px-2 py-0 rounded-pill"
+                  style={{
+                    fontSize: "0.64rem",
+                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                    background: "rgba(76, 175, 80, 0.18)",
+                    border: "1px solid rgba(116, 214, 128, 0.4)",
+                    color: "#8ce0a8",
+                  }}
+                >
+                  Solusi Terbaik
+                </span>
+              )}
+            </div>
+
+            <div className="d-flex align-items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleReplyToComment(c)}
+                className="btn btn-link p-0 text-decoration-none"
+                style={{
+                  fontSize: "0.68rem",
+                  color: "#e6cfa1",
+                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                }}
+              >
+                Balas
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuoteComment(c)}
+                className="btn btn-link p-0 text-decoration-none"
+                style={{
+                  fontSize: "0.68rem",
+                  color: "#c5a059",
+                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                }}
+              >
+                Quote
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setSolvedCommentId((prev) =>
+                    String(prev) === String(c.id) ? null : c.id
+                  )
+                }
+                className="btn btn-link p-0 text-decoration-none"
+                style={{
+                  fontSize: "0.68rem",
+                  color: isSolved ? "#8ce0a8" : "#9d958b",
+                  fontFamily: "var(--font-tommy-medium), sans-serif",
+                }}
+              >
+                {isSolved ? "Batal Solved" : "Tandai Solved"}
+              </button>
+              <span style={{ fontSize: "0.68rem", color: "#7d756b" }}>
+                {c.time}
+              </span>
+            </div>
+          </div>
+
+          {renderFormattedReplyText(c.text, copiedId, setCopiedId, String(c.id))}
+        </motion.div>
+
+        {nestedReplies.length > 0 && (
+          <div className="d-flex flex-column">
+            {nestedReplies.map((child) => renderCommentCard(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <motion.div
@@ -360,7 +501,7 @@ export default function ThreadDetailView() {
                       fontFamily: "var(--font-caviar), sans-serif",
                       fontSize: "0.82rem",
                       fontWeight: 600,
-                      color: "#e6cfal",
+                      color: "#e6cfa1",
                     }}
                   >
                     @{thread.author}
@@ -411,11 +552,11 @@ export default function ThreadDetailView() {
                       color: "#c5a059",
                     }}
                   >
-                    {rawComments.length || 0} Balasan Diskusi
+                    {allComments.length || 0} Balasan Diskusi
                   </span>
                 </div>
 
-                {rawComments.length > 1 && (
+                {topLevelComments.length > 1 && (
                   <div className="d-flex align-items-center gap-1">
                     <button
                       type="button"
@@ -461,7 +602,7 @@ export default function ThreadDetailView() {
                 )}
               </div>
 
-              {rawComments.length === 0 ? (
+              {allComments.length === 0 ? (
                 <p
                   className="mb-3"
                   style={{ fontSize: "0.8rem", color: "#8f857b" }}
@@ -471,98 +612,7 @@ export default function ThreadDetailView() {
               ) : (
                 <div className="d-flex flex-column gap-2 mb-3">
                   <AnimatePresence initial={false}>
-                    {displayComments.map((c) => {
-                      const isSolved = String(c.id) === String(activeSolvedId);
-                      return (
-                        <motion.div
-                          key={c.id}
-                          initial={{ opacity: 0, y: 10, scale: 0.99 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          transition={{ duration: 0.3, ease: SMOOTH_EASE }}
-                          className="p-2.5 rounded-3"
-                          style={{
-                            backgroundColor: isSolved
-                              ? "rgba(76, 175, 80, 0.08)"
-                              : "rgba(14, 12, 10, 0.58)",
-                            border: isSolved
-                              ? "1px solid rgba(116, 214, 128, 0.34)"
-                              : "1px solid rgba(197, 160, 89, 0.16)",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-between gap-2 mb-1 flex-wrap">
-                            <div className="d-flex align-items-center gap-2">
-                              <span
-                                style={{
-                                  fontFamily: "var(--font-caviar), sans-serif",
-                                  fontSize: "0.76rem",
-                                  fontWeight: 600,
-                                  color: "#e6cfal",
-                                }}
-                              >
-                                @{c.author}
-                              </span>
-                              {isSolved && (
-                                <span
-                                  className="px-2 py-0 rounded-pill"
-                                  style={{
-                                    fontSize: "0.64rem",
-                                    fontFamily: "var(--font-tommy-medium), sans-serif",
-                                    background: "rgba(76, 175, 80, 0.18)",
-                                    border: "1px solid rgba(116, 214, 128, 0.4)",
-                                    color: "#8ce0a8",
-                                  }}
-                                >
-                                  Solusi Terbaik
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="d-flex align-items-center gap-2">
-                              <button
-                                type="button"
-                                onClick={() => handleQuoteComment(c)}
-                                className="btn btn-link p-0 text-decoration-none"
-                                style={{
-                                  fontSize: "0.68rem",
-                                  color: "#c5a059",
-                                  fontFamily: "var(--font-tommy-medium), sans-serif",
-                                }}
-                              >
-                                Quote
-                              </button>
-                              {isThreadAuthor && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setSolvedCommentId((prev) =>
-                                      String(prev) === String(c.id) ? null : c.id
-                                    )
-                                  }
-                                  className="btn btn-link p-0 text-decoration-none"
-                                  style={{
-                                    fontSize: "0.68rem",
-                                    color: isSolved ? "#8ce0a8" : "#9d958b",
-                                    fontFamily: "var(--font-tommy-medium), sans-serif",
-                                  }}
-                                >
-                                  {isSolved ? "Batal Solved" : "Tandai Solved"}
-                                </button>
-                              )}
-                              <span style={{ fontSize: "0.68rem", color: "#7d756b" }}>
-                                {c.time}
-                              </span>
-                            </div>
-                          </div>
-
-                          {renderFormattedReplyText(
-                            c.text,
-                            copiedId,
-                            setCopiedId,
-                            String(c.id)
-                          )}
-                        </motion.div>
-                      );
-                    })}
+                    {displayTopLevel.map((c) => renderCommentCard(c, 0))}
                   </AnimatePresence>
                 </div>
               )}
@@ -594,6 +644,34 @@ export default function ThreadDetailView() {
                   onSubmit={handleSendComment}
                   className="d-flex flex-column gap-2"
                 >
+                  {replyTarget && (
+                    <div
+                      className="px-2.5 py-1.5 rounded-3 d-flex align-items-center justify-content-between gap-2"
+                      style={{
+                        backgroundColor: "rgba(197, 160, 89, 0.12)",
+                        border: "1px solid rgba(197, 160, 89, 0.3)",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "#e6cfa1",
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                        }}
+                      >
+                        Membalas @{replyTarget.author}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setReplyTarget(null)}
+                        className="btn btn-link p-0 text-decoration-none"
+                        style={{ fontSize: "0.7rem", color: "#9d958b" }}
+                      >
+                        Batal
+                      </button>
+                    </div>
+                  )}
+
                   <motion.div
                     key={`reply-${shakeTick}`}
                     animate={
@@ -610,7 +688,11 @@ export default function ThreadDetailView() {
                         setReplyText(e.target.value);
                         if (inputErr) setInputErr(false);
                       }}
-                      placeholder="Tulis solusi atau tanggapanmu di sini..."
+                      placeholder={
+                        replyTarget
+                          ? `Tulis balasan untuk @${replyTarget.author}...`
+                          : "Tulis solusi atau tanggapanmu di sini..."
+                      }
                       className="form-control form-control-sm"
                       style={{
                         backgroundColor: inputErr
@@ -628,10 +710,15 @@ export default function ThreadDetailView() {
                       type="submit"
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.94 }}
-                      className="btn btn-sm btr-sogan px-3 py-1 d-inline-flex align-items-center gap-1.5"
+                      className="btn btn-sm btr-sogan px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5"
                       style={{
                         fontFamily: "var(--font-tommy-medium), sans-serif",
                         fontSize: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #d4af64 0%, #a87e34 100%)",
+                        color: "#14110e",
+                        border: "1px solid rgba(242, 236, 225, 0.24)",
+                        boxShadow: "0 4px 14px rgba(197, 160, 89, 0.28)",
                       }}
                     >
                       <span>Kirim Balasan</span>
