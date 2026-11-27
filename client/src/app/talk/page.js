@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -61,12 +61,12 @@ const AddTalkSvg = ({ size = 18, active = false }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     {active ? (
       <path
-        fill="#09244BFF"
+        fill="#f0d08a"
         d="M12.746 2.027a10 10 0 0 1 4.699 1.584c5.563 3.618 6.124 11.579 1.116 15.936a10 10 0 0 1-2.998 1.8 10.1 10.1 0 0 1-4.309.626 10 10 0 0 1-4.699-1.584C.992 16.771.431 8.81 5.439 4.453a10 10 0 0 1 2.998-1.8 10.1 10.1 0 0 1 4.309-.626M11 11H8a1 1 0 0 0-.44.102c-.967.473-.599 1.838.44 1.898h3v3c.06 1.039 1.425 1.407 1.898.44A1 1 0 0 0 13 16v-3h3a1 1 0 0 0 .44-.102c.967-.473.599-1.838-.44-1.898h-3V8a1 1 0 0 0-.102-.44C12.425 6.593 11.06 6.961 11 8Z"
       />
     ) : (
       <path
-        fill="#09244BFF"
+        fill="#16120e"
         d="M13 13v3c-.05.755-.802 1.269-1.5.866a1 1 0 0 1-.366-.366c-.101-.175-.121-.302-.134-.5v-3H8c-.755-.05-1.269-.802-.866-1.5.088-.152.214-.278.366-.366.175-.101.302-.121.5-.134h3V8c.05-.755.802-1.269 1.5-.866.152.088.278.214.366.366.101.175.121.302.134.5v3h3c.755.05 1.269.802.866 1.5a1 1 0 0 1-.366.366c-.175.101-.302.121-.5.134Zm5.809 6.325a10 10 0 0 1-3.791 2.212 10.1 10.1 0 0 1-4.563.345 10 10 0 0 1-3.503-1.247C1.179 17.254.289 9.233 5.192 4.675a10 10 0 0 1 3.79-2.212 10.1 10.1 0 0 1 4.563-.345 10 10 0 0 1 3.503 1.247c5.773 3.381 6.663 11.402 1.761 15.96m-7.435-15.3a8 8 0 0 0-4.377 1.733C2.03 9.744 3.51 17.709 9.585 19.629a8 8 0 0 0 7.418-1.387c4.967-3.985 3.487-11.951-2.588-13.871a8.1 8.1 0 0 0-3.041-.346"
       />
     )}
@@ -83,26 +83,62 @@ const CopyLinkSvg = ({ size = 17, active = false }) => (
     <path d="M0 0h24v24H0z" fill="none" />
     {active ? (
       <path
-        fill="#09244BFF"
+        fill="#f0d08a"
         d="M15.324 7.026C16.308 7.186 16.961 8.031 17 9v11c-.022.535-.202 1.03-.586 1.414s-.879.564-1.414.586H4c-.535-.022-1.03-.202-1.414-.586S2.022 20.535 2 20V9c.046-1.146.854-1.954 2-2h11ZM20 15c0-.656-.167-1.543.56-1.898a1 1 0 0 1 1.065.118c.246.197.357.473.375.78v1c-.046 1.146-.854 1.954-2 2h-1l-.229-.026c-.797-.186-1.033-1.244-.396-1.754A1.04 1.04 0 0 1 19 15Zm1.229-6.974c.466.109.745.514.771.974v1c-.036.63-.584 1.124-1.229.974-.466-.109-.745-.514-.771-.974V9c.036-.63.584-1.124 1.229-.974M20 4c-.656 0-1.543.167-1.898-.56a1 1 0 0 1 .273-1.22A1.04 1.04 0 0 1 19 2h1c1.146.046 1.954.854 2 2v1l-.026.229c-.186.797-1.244 1.033-1.754.396A1.04 1.04 0 0 1 20 5ZM9 4v1a1.04 1.04 0 0 1-.22.625c-.51.637-1.568.401-1.754-.396L7 5V4c.046-1.146.854-1.954 2-2h1c.233.013.441.071.625.22a1 1 0 0 1 .155 1.405c-.197.246-.473.357-.78.375Zm6.229-1.974c.797.186 1.033 1.244.396 1.754A1.04 1.04 0 0 1 15 4h-1c-.307-.018-.583-.129-.78-.375a1 1 0 0 1-.194-.854c.109-.466.514-.745.974-.771h1Z"
       />
     ) : (
       <path
-        fill="#09244BFF"
+        fill="#e6cfa1"
         d="M3.886 21.993C2.798 21.894 2.04 21.092 2 20V9c.018-.494.18-.961.513-1.333C2.897 7.239 3.431 7.021 4 7h11c.494.018.961.18 1.333.513.428.384.646.918.667 1.487v11c-.042 1.135-.865 1.958-2 2H4Zm.12-12.987v10.988h10.988V9.006Zm15.988 5.988c.015-.396-.096-1.085.14-1.494.436-.755 1.606-.601 1.832.241L22 14v1c-.042 1.135-.865 1.958-2 2h-1c-.271-.018-.511-.096-.707-.293-.535-.534-.282-1.477.448-1.673.376-.101.903-.027 1.253-.04m.04-6.253c.196-.73 1.139-.983 1.673-.448.197.196.275.436.293.707v1c-.018.271-.096.511-.293.707-.25.25-.624.351-.966.259-.453-.122-.711-.515-.741-.966V9Zm-.04-4.735c-.35-.013-.877.061-1.253-.04-.73-.196-.983-1.139-.448-1.673.196-.197.436-.275.707-.293h1c1.135.042 1.958.865 2 2v1l-.034.259c-.226.842-1.396.996-1.832.241-.236-.409-.125-1.098-.14-1.494m-10.988 0c-.013.35.061.877-.04 1.253-.196.73-1.139.983-1.673.448C7.096 5.511 7.018 5.271 7 5V4c.042-1.135.865-1.958 2-2h1l.259.034c.842.226.996 1.396.241 1.832-.409.236-1.098.125-1.494.14m4.735-.04c-.73-.196-.983-1.139-.448-1.673.196-.197.436-.275.707-.293h1c.271.018.511.096.707.293.25.25.351.624.259.966-.122.453-.515.711-.966.741h-1Z"
       />
     )}
   </svg>
 );
 
+const UserAvatar = ({ username = "member_api", avatarUrl = "", isSelf = false }) => {
+  const initial = String(username || "U").charAt(0).toUpperCase();
+  return (
+    <span
+      className="rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0 overflow-hidden"
+      style={{
+        width: "22px",
+        height: "22px",
+        backgroundColor: isSelf
+          ? "rgba(197, 160, 89, 0.28)"
+          : "rgba(95, 135, 185, 0.24)",
+        border: isSelf
+          ? "1px solid rgba(235, 198, 118, 0.6)"
+          : "1px solid rgba(150, 185, 225, 0.35)",
+        color: isSelf ? "#f0d08a" : "#cfe2f7",
+        fontFamily: "var(--font-tommy-extra), sans-serif",
+        fontSize: "0.66rem",
+      }}
+    >
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt={username}
+          className="w-100 h-100 object-fit-cover"
+        />
+      ) : (
+        initial
+      )}
+    </span>
+  );
+};
+
 export default function TalkPage() {
   const { user } = useAuthStore();
+  const currentUsername = user?.username || "member_api";
+  const currentAvatar = user?.avatar || user?.avatarUrl || "";
+
   const [groupName, setGroupName] = useState("");
   const [topic, setTopic] = useState("");
   const [selectedTag, setSelectedTag] = useState("Bug & Error");
   const [nameError, setNameError] = useState(false);
   const [shakeTick, setShakeTick] = useState(0);
   const [addClicked, setAddClicked] = useState(false);
+  const errorTimerRef = useRef(null);
 
   const [groups, setGroups] = useState([
     {
@@ -130,9 +166,16 @@ export default function TalkPage() {
   ]);
 
   const [activeRoomId, setActiveRoomId] = useState(null);
-  const [viewMode, setViewMode] = useState("list"); // "list" | "room"
+  const [viewMode, setViewMode] = useState("list");
   const [chatInput, setChatInput] = useState("");
+  const [replyTo, setReplyTo] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -143,12 +186,11 @@ export default function TalkPage() {
     if (matched) {
       setActiveRoomId(matched.id);
       setViewMode("room");
-      const currentUser = user?.username || "member_api";
       setGroups((prev) =>
         prev.map((g) => {
           if (g.id !== matched.id) return g;
           const alreadyJoined = g.messages.some(
-            (msg) => msg.systemJoin && msg.sender === currentUser
+            (msg) => msg.systemJoin && msg.sender === currentUsername
           );
           if (alreadyJoined) return g;
           return {
@@ -158,9 +200,9 @@ export default function TalkPage() {
               ...g.messages,
               {
                 id: `join-${Date.now()}`,
-                sender: currentUser,
+                sender: currentUsername,
                 systemJoin: true,
-                text: `${currentUser} bergabung melalui link komunikasi`,
+                text: `${currentUsername} bergabung melalui link komunikasi`,
                 time: new Date().toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -171,7 +213,7 @@ export default function TalkPage() {
         })
       );
     }
-  }, [user?.username]);
+  }, [currentUsername]);
 
   const activeGroup = groups.find((g) => g.id === activeRoomId) || null;
 
@@ -182,6 +224,15 @@ export default function TalkPage() {
     return `/talk?room=${code}`;
   };
 
+  const triggerNameError = () => {
+    setNameError(true);
+    setShakeTick((n) => n + 1);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    errorTimerRef.current = setTimeout(() => {
+      setNameError(false);
+    }, 5000);
+  };
+
   const handleCreateTalk = (e) => {
     e.preventDefault();
     setAddClicked(true);
@@ -189,17 +240,17 @@ export default function TalkPage() {
 
     const cleanName = groupName.trim();
     if (!cleanName) {
-      setNameError(true);
-      setShakeTick((n) => n + 1);
+      triggerNameError();
       return;
     }
 
     setNameError(false);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+
     const slug = cleanName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
-    const creator = user?.username || "member_api";
     const newGroup = {
       id: `grp-${Date.now()}`,
       name: cleanName,
@@ -210,9 +261,9 @@ export default function TalkPage() {
       messages: [
         {
           id: `sys-${Date.now()}`,
-          sender: creator,
+          sender: currentUsername,
           systemJoin: true,
-          text: `${creator} membuka ruang Talk "${cleanName}"`,
+          text: `${currentUsername} membuka ruang Talk "${cleanName}"`,
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -228,10 +279,12 @@ export default function TalkPage() {
 
   const handleOpenRoom = (grp) => {
     setActiveRoomId(grp.id);
+    setReplyTo(null);
     setViewMode("room");
   };
 
   const handleBackToList = () => {
+    setReplyTo(null);
     setViewMode("list");
   };
 
@@ -264,7 +317,11 @@ export default function TalkPage() {
 
     const newMsg = {
       id: `msg-${Date.now()}`,
-      sender: user?.username || "member_api",
+      sender: currentUsername,
+      avatar: currentAvatar,
+      replyTo: replyTo
+        ? { sender: replyTo.sender, text: replyTo.text }
+        : null,
       text: cleanMsg,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -280,6 +337,7 @@ export default function TalkPage() {
       )
     );
     setChatInput("");
+    setReplyTo(null);
   };
 
   return (
@@ -295,7 +353,7 @@ export default function TalkPage() {
         className="container py-4 flex-grow-1 mb-4"
         style={{ maxWidth: "740px" }}
       >
-        {/* Navigasi Mode ala Telegram (Daftar Talk / Ruang Komunikasi) */}
+        {/* Navigasi Mode ala Telegram */}
         <div
           className="d-flex align-items-center justify-content-between gap-2 mb-3 p-1.5 rounded-pill"
           style={{
@@ -303,10 +361,12 @@ export default function TalkPage() {
             border: "1px solid rgba(197, 160, 89, 0.24)",
           }}
         >
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.96 }}
+            transition={NAV_SPRING}
             onClick={() => setViewMode("list")}
-            className="btn btn-sm flex-grow-1 py-1.5 rounded-pill position-relative border-0"
+            className="btn btn-sm flex-grow-1 py-1.5 rounded-pill border-0"
             style={{
               fontFamily: "var(--font-tommy-medium), sans-serif",
               fontSize: "0.76rem",
@@ -319,17 +379,19 @@ export default function TalkPage() {
             }}
           >
             Daftar Talk ({groups.length})
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.96 }}
+            transition={NAV_SPRING}
             onClick={() => {
               if (!activeRoomId && groups[0]) {
                 setActiveRoomId(groups[0].id);
               }
               setViewMode("room");
             }}
-            className="btn btn-sm flex-grow-1 py-1.5 rounded-pill position-relative border-0"
+            className="btn btn-sm flex-grow-1 py-1.5 rounded-pill border-0"
             style={{
               fontFamily: "var(--font-tommy-medium), sans-serif",
               fontSize: "0.76rem",
@@ -342,7 +404,7 @@ export default function TalkPage() {
             }}
           >
             Ruang Komunikasi
-          </button>
+          </motion.button>
         </div>
 
         <AnimatePresence mode="wait">
@@ -354,18 +416,18 @@ export default function TalkPage() {
               exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.28, ease: SMOOTH_EASE }}
             >
-              {/* Form Buat Talk */}
+              {/* Form Buat Talk: hanya form yang bergetar & merah, hilang otomatis setelah 5 detik */}
               <motion.form
                 key={shakeTick}
                 onSubmit={handleCreateTalk}
                 animate={
                   nameError
                     ? {
-                        x: [0, -9, 9, -7, 7, -4, 4, 0],
+                        x: [0, -8, 8, -6, 6, -3, 3, 0],
                       }
                     : { x: 0 }
                 }
-                transition={{ duration: 0.38, ease: SMOOTH_EASE }}
+                transition={{ duration: 0.36, ease: SMOOTH_EASE }}
                 className="smoked-glass p-3.5 mb-3"
                 style={{
                   borderColor: nameError
@@ -374,6 +436,7 @@ export default function TalkPage() {
                   backgroundColor: nameError
                     ? "rgba(92, 22, 22, 0.42)"
                     : undefined,
+                  transition: "background-color 0.35s ease, border-color 0.35s ease",
                 }}
               >
                 <h1
@@ -394,8 +457,8 @@ export default function TalkPage() {
                   }}
                 >
                   {nameError
-                    ? "Nama grup komunikasi wajib diisi dulu ya!"
-                    : "Buat grup komunikasi khusus topik tertentu (deskripsi opsional)."}
+                    ? "Isi Nama Talk Kamu dulu ya (notifikasi hilang dalam 5 detik)."
+                    : "Buat grup komunikasi khusus topik tertentu."}
                 </p>
 
                 <div className="d-flex flex-column gap-2">
@@ -406,9 +469,12 @@ export default function TalkPage() {
                       setGroupName(e.target.value);
                       if (nameError && e.target.value.trim()) {
                         setNameError(false);
+                        if (errorTimerRef.current) {
+                          clearTimeout(errorTimerRef.current);
+                        }
                       }
                     }}
-                    placeholder="Nama grup komunikasi (wajib)..."
+                    placeholder="Nama Talk Kamu"
                     className="form-control form-control-sm"
                     style={{
                       backgroundColor: nameError
@@ -425,7 +491,7 @@ export default function TalkPage() {
                     type="text"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Deskripsi grup komunikasi (opsional)..."
+                    placeholder="Deskripsi Talk Kamu"
                     className="form-control form-control-sm"
                     style={{
                       backgroundColor: "rgba(14, 12, 10, 0.72)",
@@ -434,7 +500,7 @@ export default function TalkPage() {
                     }}
                   />
 
-                  {/* Pilihan Tag dengan Warna */}
+                  {/* Pilihan Tag dengan Background Warna */}
                   <div className="d-flex align-items-center gap-1.5 flex-wrap pt-1">
                     {TAG_OPTIONS.map((tag) => {
                       const activeTag = selectedTag === tag;
@@ -572,9 +638,9 @@ export default function TalkPage() {
                             style={{
                               fontSize: "0.73rem",
                               fontFamily: "var(--font-tommy-medium), sans-serif",
-                              background: "rgba(197, 160, 89, 0.16)",
+                              backgroundColor: "rgba(38, 34, 29, 0.85)",
                               border: "1px solid rgba(197, 160, 89, 0.34)",
-                              color: "#e6cfa1",
+                              color: isCopied ? "#f0d08a" : "#e6cfa1",
                             }}
                           >
                             <span
@@ -583,6 +649,7 @@ export default function TalkPage() {
                                 isCopied
                                   ? {
                                       backgroundColor: "#0b0b0c",
+                                      border: "1px solid rgba(197, 160, 89, 0.45)",
                                       padding: "2px",
                                     }
                                   : undefined
@@ -621,7 +688,7 @@ export default function TalkPage() {
               </div>
             </motion.div>
           ) : (
-            /* Ruang Komunikasi Mirip Telegram untuk User yang Klik Link */
+            /* Ruang Komunikasi Mirip Telegram */
             <motion.div
               key="talk-room-view"
               initial={{ opacity: 0, x: 16 }}
@@ -632,7 +699,10 @@ export default function TalkPage() {
             >
               {activeGroup ? (
                 <>
-                  <div className="d-flex align-items-center justify-content-between gap-2 pb-2.5 mb-3 border-bottom flex-wrap" style={{ borderColor: "rgba(197, 160, 89, 0.16)" }}>
+                  <div
+                    className="d-flex align-items-center justify-content-between gap-2 pb-2.5 mb-3 border-bottom flex-wrap"
+                    style={{ borderColor: "rgba(197, 160, 89, 0.16)" }}
+                  >
                     <div>
                       <div className="d-flex align-items-center gap-2 flex-wrap">
                         <span
@@ -663,9 +733,15 @@ export default function TalkPage() {
                           {activeGroup.tag || "Diskusi Tech"}
                         </span>
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "#9d958b" }}>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-tommy-regular), sans-serif",
+                          fontSize: "0.72rem",
+                          color: "#9d958b",
+                        }}
+                      >
                         {activeGroup.membersJoined || 1} anggota terhubung via
-                        link
+                        link • geser chat orang lain ke kanan untuk membalas
                       </div>
                     </div>
 
@@ -679,7 +755,7 @@ export default function TalkPage() {
                     </button>
                   </div>
 
-                  {/* Daftar Grup Cepat di Atas Chat ala Telegram */}
+                  {/* Daftar Grup Cepat */}
                   <div className="d-flex align-items-center gap-1.5 overflow-auto pb-2 mb-3">
                     {groups.map((item) => {
                       const selected = item.id === activeGroup.id;
@@ -687,7 +763,10 @@ export default function TalkPage() {
                         <button
                           key={item.id}
                           type="button"
-                          onClick={() => setActiveRoomId(item.id)}
+                          onClick={() => {
+                            setActiveRoomId(item.id);
+                            setReplyTo(null);
+                          }}
                           className="btn btn-sm px-2.5 py-1 rounded-pill flex-shrink-0"
                           style={{
                             fontSize: "0.7rem",
@@ -705,67 +784,208 @@ export default function TalkPage() {
                     })}
                   </div>
 
-                  {/* Feed Pesan */}
+                  {/* Area Balon Chat */}
                   <div
-                    className="d-flex flex-column gap-2 mb-3 p-2.5 rounded-3"
+                    className="d-flex flex-column gap-2.5 mb-3 p-2.5 rounded-3"
                     style={{
-                      minHeight: "240px",
-                      maxHeight: "360px",
+                      minHeight: "250px",
+                      maxHeight: "380px",
                       overflowY: "auto",
                       backgroundColor: "rgba(12, 10, 8, 0.55)",
                       border: "1px solid rgba(197, 160, 89, 0.14)",
                     }}
                   >
-                    {activeGroup.messages.map((msg) =>
-                      msg.systemJoin ? (
-                        <div
-                          key={msg.id}
-                          className="text-center my-1"
-                          style={{ fontSize: "0.7rem", color: "#c5a059" }}
-                        >
-                          {msg.text} • {msg.time}
-                        </div>
-                      ) : (
-                        <motion.div
-                          key={msg.id}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.2, ease: SMOOTH_EASE }}
-                          className="p-2.5 rounded-3"
-                          style={{
-                            backgroundColor: "rgba(38, 33, 27, 0.75)",
-                            border: "1px solid rgba(197, 160, 89, 0.2)",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
-                            <span
-                              style={{
-                                fontSize: "0.74rem",
-                                fontWeight: 600,
-                                color: "#e6cfa3",
-                              }}
-                            >
-                              @{msg.sender}
-                            </span>
-                            <span
-                              style={{ fontSize: "0.66rem", color: "#8c8378" }}
-                            >
-                              {msg.time}
-                            </span>
-                          </div>
+                    {activeGroup.messages.map((msg) => {
+                      if (msg.systemJoin) {
+                        return (
                           <div
+                            key={msg.id}
+                            className="text-center my-1"
                             style={{
-                              fontSize: "0.82rem",
-                              color: "#f2ece1",
-                              lineHeight: 1.5,
+                              fontFamily: "var(--font-tommy-regular), sans-serif",
+                              fontSize: "0.7rem",
+                              color: "#c5a059",
                             }}
                           >
-                            {msg.text}
+                            {msg.text} • {msg.time}
                           </div>
-                        </motion.div>
-                      )
-                    )}
+                        );
+                      }
+
+                      const isSelf = msg.sender === currentUsername;
+
+                      return (
+                        <div
+                          key={msg.id}
+                          className={`d-flex ${
+                            isSelf ? "justify-content-end" : "justify-content-start"
+                          }`}
+                        >
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.22, ease: SMOOTH_EASE }}
+                            drag={!isSelf ? "x" : false}
+                            dragConstraints={{ left: 0, right: 64 }}
+                            dragElastic={0.25}
+                            onDragEnd={(_, info) => {
+                              if (!isSelf && info.offset.x > 36) {
+                                setReplyTo({
+                                  sender: msg.sender,
+                                  text: msg.text,
+                                });
+                              }
+                            }}
+                            whileDrag={{ scale: 0.99 }}
+                            className="px-3 py-2 rounded-3"
+                            style={{
+                              width: "fit-content",
+                              maxWidth: "82%",
+                              cursor: !isSelf ? "grab" : "default",
+                              backgroundColor: isSelf
+                                ? "rgba(197, 160, 89, 0.2)"
+                                : "rgba(34, 31, 28, 0.86)",
+                              border: isSelf
+                                ? "1px solid rgba(226, 194, 125, 0.42)"
+                                : "1px solid rgba(145, 165, 195, 0.24)",
+                            }}
+                          >
+                            {/* Header Nama & PP: di kanan untuk diri sendiri, di kiri untuk user lain */}
+                            <div
+                              className={`d-flex align-items-center gap-1.5 mb-1 ${
+                                isSelf
+                                  ? "justify-content-end"
+                                  : "justify-content-start"
+                              }`}
+                            >
+                              {isSelf ? (
+                                <>
+                                  <span
+                                    style={{
+                                      fontFamily:
+                                        "var(--font-tommy-medium), sans-serif",
+                                      fontSize: "0.73rem",
+                                      color: "#f0d08a",
+                                    }}
+                                  >
+                                    @{msg.sender}
+                                  </span>
+                                  <UserAvatar
+                                    username={msg.sender}
+                                    avatarUrl={msg.avatar || currentAvatar}
+                                    isSelf={true}
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <UserAvatar
+                                    username={msg.sender}
+                                    avatarUrl={msg.avatar}
+                                    isSelf={false}
+                                  />
+                                  <span
+                                    style={{
+                                      fontFamily:
+                                        "var(--font-tommy-medium), sans-serif",
+                                      fontSize: "0.73rem",
+                                      color: "#cfe2f7",
+                                    }}
+                                  >
+                                    @{msg.sender}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+
+                            {/* Cuplikan Pesan yang Di-reply */}
+                            {msg.replyTo && (
+                              <div
+                                className="px-2 py-1 mb-1.5 rounded-2"
+                                style={{
+                                  fontFamily:
+                                    "var(--font-tommy-regular), sans-serif",
+                                  fontSize: "0.7rem",
+                                  color: "#d6cbb9",
+                                  backgroundColor: "rgba(12, 10, 8, 0.48)",
+                                  borderLeft: "2px solid #c5a059",
+                                }}
+                              >
+                                <div style={{ fontWeight: 600 }}>
+                                  @{msg.replyTo.sender}
+                                </div>
+                                <div className="text-truncate">
+                                  {msg.replyTo.text}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Teks Pesan & Jam di Bawah Kanan Dalam Balon */}
+                            <div
+                              className="d-flex align-items-end justify-content-between gap-2.5 flex-wrap"
+                              style={{
+                                fontFamily:
+                                  "var(--font-tommy-regular), sans-serif",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "0.82rem",
+                                  color: "#f2ece1",
+                                  lineHeight: 1.48,
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {msg.text}
+                              </span>
+                              <span
+                                className="ms-auto"
+                                style={{
+                                  fontSize: "0.66rem",
+                                  color: isSelf ? "#e6cfa1" : "#9d958b",
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {msg.time}
+                              </span>
+                            </div>
+                          </motion.div>
+                        </div>
+                      );
+                    })}
                   </div>
+
+                  {/* Preview Balas Chat Jika Sedang Me-reply */}
+                  <AnimatePresence>
+                    {replyTo && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.2, ease: SMOOTH_EASE }}
+                        className="d-flex align-items-center justify-content-between gap-2 px-2.5 py-1.5 mb-2 rounded-3"
+                        style={{
+                          fontFamily: "var(--font-tommy-regular), sans-serif",
+                          fontSize: "0.72rem",
+                          color: "#e6cfa1",
+                          backgroundColor: "rgba(38, 33, 27, 0.78)",
+                          borderLeft: "3px solid #c5a059",
+                        }}
+                      >
+                        <div className="text-truncate">
+                          Membalas <strong>@{replyTo.sender}</strong>:{" "}
+                          {replyTo.text}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setReplyTo(null)}
+                          className="btn btn-sm p-0 px-1.5 text-decoration-none"
+                          style={{ fontSize: "0.7rem", color: "#f2ece1" }}
+                        >
+                          Batal
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Input Kirim Pesan */}
                   <form
@@ -804,7 +1024,10 @@ export default function TalkPage() {
                   </form>
                 </>
               ) : (
-                <p className="mb-0" style={{ fontSize: "0.8rem", color: "#9d958b" }}>
+                <p
+                  className="mb-0"
+                  style={{ fontSize: "0.8rem", color: "#9d958b" }}
+                >
                   Belum ada grup Talk. Buat grup dulu di tab Daftar Talk.
                 </p>
               )}
