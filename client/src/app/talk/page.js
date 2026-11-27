@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -96,6 +96,72 @@ const CopyLinkSvg = ({ size = 17, active = false }) => (
   </svg>
 );
 
+const PasteSvg = ({ size = 17, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="#f0d08a"
+        d="M19.324 10.026c.984.16 1.637 1.005 1.676 1.974v8c-.017.43-.129.83-.386 1.181-.385.526-.973.793-1.614.819h-7c-.43-.017-.83-.129-1.181-.386-.526-.385-.793-.973-.819-1.614v-8c.046-1.146.854-1.954 2-2h7ZM14.732 3c.531 0 1.069-.059 1.592.026.984.16 1.637 1.005 1.676 1.974v3h-6c-2.266.065-3.935 1.734-4 4v7H5c-1.146-.046-1.954-.854-2-2V5c.039-.969.692-1.814 1.676-1.974C5.199 2.941 5.737 3 6.268 3c.433-.636.949-.97 1.732-1h5c.783.03 1.299.364 1.732 1M8.5 4a.514.514 0 0 0-.5.5v1c.017.216.127.403.342.475L8.5 6h4c.216-.017.403-.127.475-.342L13 5.5v-1a.514.514 0 0 0-.5-.5Z"
+      />
+    ) : (
+      <path
+        fill="#e6cfa1"
+        d="M18 9c.368 0 .923-.04 1.344.033.967.168 1.621 1.007 1.656 1.967v9c-.021.569-.239 1.103-.667 1.487-.372.333-.839.495-1.333.513h-8c-.96-.035-1.799-.689-1.967-1.656C8.96 19.923 9 19.368 9 19H5c-1.135-.042-1.958-.865-2-2V5c.035-.96.689-1.799 1.656-1.967C5.151 2.947 5.902 3 6.273 3c.392-.617.992-.973 1.727-1h5c.735.027 1.335.383 1.727 1 .508 0 1.279-.08 1.839.085C17.425 3.338 17.968 4.122 18 5Zm-6.994 2.006v8.988h7.988v-8.988ZM6 5l-.994.006v11.988L9 17v-6c.042-1.135.865-1.958 2-2h5l-.006-3.994L15 5c-.084 1.14-.827 1.957-2 2H8c-1.173-.043-1.916-.86-2-2m2.006-.994v.988h4.988v-.988Z"
+      />
+    )}
+  </svg>
+);
+
+const SearchIconSvg = ({ size = 16, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="#f0d08a"
+        d="m17.174 15.76 3.654 3.654c.359.41.405 1.009 0 1.414s-1.004.359-1.414 0l-3.654-3.654c-1.408 1.022-2.767 1.643-4.523 1.794C5.216 19.486.57 13.705 2.394 7.934a8.52 8.52 0 0 1 5.54-5.54C13.705.57 19.486 5.216 18.968 11.237c-.151 1.756-.772 3.115-1.794 4.523m-6.903-9.734c-.704.164-1.002 1.037-.551 1.599.328.41.688.334 1.149.402a2.51 2.51 0 0 1 2.104 2.104l.053.598a.998.998 0 0 0 1.599.551c.402-.322.4-.799.349-1.27a4.6 4.6 0 0 0-.203-.932 4.54 4.54 0 0 0-3.781-3.052c-.189-.02-.505-.049-.719 0"
+      />
+    ) : (
+      <path
+        fill="#16120e"
+        d="M13.865 7.51q.357.4.609.873c.334.627.527 1.343.524 2.055-.001.452-.235.861-.68 1.01-.25.084-.527.065-.763-.053-.543-.27-.512-.695-.576-1.21a2.51 2.51 0 0 0-1.863-2.107c-.587-.148-1.182.029-1.511-.633a1.005 1.005 0 0 1 .233-1.195c.64-.565 2.138-.065 2.779.276.47.251.894.586 1.248.984m3.311 8.252 3.652 3.652c.359.41.405 1.01 0 1.414-.404.405-1.004.359-1.414 0l-3.652-3.652c-1.145.85-2.399 1.459-3.814 1.702C5.871 19.921.72 14.327 2.272 8.355a8.5 8.5 0 0 1 1.979-3.618A8.55 8.55 0 0 1 7.68 2.478c6.112-2.146 12.292 3.095 11.198 9.47-.243 1.415-.852 2.669-1.702 3.814M9.938 4.025a6.5 6.5 0 0 0-3.844 1.697 6.5 6.5 0 0 0-1.727 2.622c-1.558 4.436 2.021 9.03 6.695 8.631a6.5 6.5 0 0 0 3.844-1.697 6.5 6.5 0 0 0 1.727-2.622c1.558-4.436-2.021-9.03-6.695-8.631"
+      />
+    )}
+  </svg>
+);
+
+const JoinRoomSvg = ({ size = 17, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    {active ? (
+      <path
+        fill="#f0d08a"
+        d="M18 11.716V19h1c.233.013.441.071.625.22.76.609.298 1.727-.625 1.78H3l-.229-.026c-.797-.186-1.033-1.244-.396-1.754A1.04 1.04 0 0 1 3 19h1V5c.046-1.146.854-1.954 2-2h8.137l-1.878 1.877c-.497.535-.82 1.174-.872 1.911-.062.884.275 1.689.87 2.33l2.12 2.123c1.096 1.018 2.308 1.112 3.623.475m-4.77 1.308a1.516 1.516 0 0 0-1.206 1.746 1.516 1.516 0 0 0 1.746 1.206 1.516 1.516 0 0 0 1.206-1.746 1.516 1.516 0 0 0-1.746-1.206m3.564-7.026H20a1 1 0 0 1 .44.102c.967.473.599 1.838-.44 1.898h-3.208c.254.255.579.502.675.871.19.726-.496 1.411-1.222 1.22-.197-.052-.301-.128-.453-.261l-2.12-2.123c-.179-.205-.292-.429-.292-.707s.114-.502.293-.707l2.12-2.119c.152-.133.256-.209.453-.26.727-.191 1.412.495 1.221 1.221-.096.367-.419.611-.673.865"
+      />
+    ) : (
+      <path
+        fill="#16120e"
+        d="M6 5v14h10v-6.5c.031-.544.431-1 1-1s.969.456 1 1V19h1c.233.013.441.071.625.22.76.609.298 1.727-.625 1.78H3l-.229-.026c-.797-.186-1.033-1.244-.396-1.754A1.04 1.04 0 0 1 3 19h1V5l.026-.324C4.186 3.692 5.031 3.039 6 3h5.5c.46.026.865.305.974.771.15.645-.344 1.193-.974 1.229Zm7.77 6.024a1.516 1.516 0 0 1 1.206 1.746 1.516 1.516 0 0 1-1.746 1.206 1.516 1.516 0 0 1-1.206-1.746 1.516 1.516 0 0 1 1.746-1.206m3.024-5.025H20c.173.01.282.024.44.101.967.473.599 1.839-.44 1.899h-3.208c.254.254.579.501.675.869.191.727-.495 1.412-1.222 1.221-.197-.052-.301-.128-.453-.261l-2.12-2.123c-.179-.205-.292-.428-.292-.707s.113-.502.293-.706l2.12-2.12c.152-.133.256-.209.453-.261.726-.19 1.412.495 1.221 1.221-.096.368-.419.613-.673.867"
+      />
+    )}
+  </svg>
+);
+
 const BackArrowSvg = ({ size = 17, active = false }) => (
   <svg
     width={size}
@@ -160,6 +226,46 @@ const UserAvatar = ({ username = "member_api", avatarUrl = "", isSelf = false })
   );
 };
 
+const SwipeableOtherBubble = ({
+  msg,
+  onReply,
+  disabled,
+  children,
+}) => {
+  const controls = useAnimation();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.96 }}
+      animate={controls}
+      drag={!disabled ? "x" : false}
+      dragConstraints={{ left: 0, right: 72 }}
+      dragElastic={0.25}
+      onDragEnd={async (_, info) => {
+        if (info.offset.x > 34) {
+          onReply({ sender: msg.sender, text: msg.text });
+        }
+        await controls.start({
+          x: 0,
+          scale: 1,
+          opacity: 1,
+          transition: { duration: 0.45, ease: SMOOTH_EASE },
+        });
+      }}
+      className="px-3 py-2 rounded-3"
+      style={{
+        width: "fit-content",
+        maxWidth: "82%",
+        cursor: !disabled ? "grab" : "default",
+        backgroundColor: "rgba(34, 31, 28, 0.86)",
+        border: "1px solid rgba(145, 165, 195, 0.24)",
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 export default function TalkPage() {
   const { user } = useAuthStore();
   const currentUsername = user?.username || "member_api";
@@ -172,7 +278,6 @@ export default function TalkPage() {
   const [shakeTick, setShakeTick] = useState(0);
   const [addClicked, setAddClicked] = useState(false);
   const [backClicked, setBackClicked] = useState(false);
-  const [swipingId, setSwipingId] = useState(null);
   const errorTimerRef = useRef(null);
 
   const [groups, setGroups] = useState([
@@ -200,6 +305,13 @@ export default function TalkPage() {
     },
   ]);
 
+  const [linkInput, setLinkInput] = useState("");
+  const [pasteActive, setPasteActive] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
+  const [foundGroup, setFoundGroup] = useState(null);
+  const [searchNotFound, setSearchNotFound] = useState(false);
+  const [joiningRoomId, setJoiningRoomId] = useState(null);
+
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [viewMode, setViewMode] = useState("list");
   const [chatInput, setChatInput] = useState("");
@@ -212,6 +324,38 @@ export default function TalkPage() {
     };
   }, []);
 
+  const joinRoomById = (targetId) => {
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id !== targetId) return g;
+        const alreadyJoined = g.messages.some(
+          (msg) => msg.systemJoin && msg.sender === currentUsername
+        );
+        if (alreadyJoined) return g;
+        return {
+          ...g,
+          membersJoined: (g.membersJoined || 1) + 1,
+          messages: [
+            ...g.messages,
+            {
+              id: `join-${Date.now()}`,
+              sender: currentUsername,
+              systemJoin: true,
+              text: `${currentUsername} bergabung melalui link komunikasi`,
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+            },
+          ],
+        };
+      })
+    );
+    setActiveRoomId(targetId);
+    setReplyTo(null);
+    setViewMode("room");
+  };
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -219,34 +363,7 @@ export default function TalkPage() {
     if (!roomParam) return;
     const matched = groups.find((g) => g.code === roomParam);
     if (matched) {
-      setActiveRoomId(matched.id);
-      setViewMode("room");
-      setGroups((prev) =>
-        prev.map((g) => {
-          if (g.id !== matched.id) return g;
-          const alreadyJoined = g.messages.some(
-            (msg) => msg.systemJoin && msg.sender === currentUsername
-          );
-          if (alreadyJoined) return g;
-          return {
-            ...g,
-            membersJoined: (g.membersJoined || 1) + 1,
-            messages: [
-              ...g.messages,
-              {
-                id: `join-${Date.now()}`,
-                sender: currentUsername,
-                systemJoin: true,
-                text: `${currentUsername} bergabung melalui link komunikasi`,
-                time: new Date().toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }),
-              },
-            ],
-          };
-        })
-      );
+      joinRoomById(matched.id);
     }
   }, [currentUsername]);
 
@@ -315,6 +432,72 @@ export default function TalkPage() {
     setActiveRoomId(groupId);
     setReplyTo(null);
     setViewMode("room");
+  };
+
+  const handlePasteClick = async () => {
+    setPasteActive(true);
+    let pasted = "";
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.readText) {
+        pasted = (await navigator.clipboard.readText()) || "";
+      }
+    } catch {
+      pasted = "";
+    }
+    if (pasted.trim()) {
+      setLinkInput(pasted.trim());
+      setSearchNotFound(false);
+    }
+    setTimeout(() => {
+      setPasteActive(false);
+    }, 350);
+  };
+
+  const handleSearchRoom = (e) => {
+    e.preventDefault();
+    setSearchActive(true);
+    setTimeout(() => setSearchActive(false), 350);
+
+    const raw = linkInput.trim();
+    if (!raw) {
+      setFoundGroup(null);
+      setSearchNotFound(false);
+      return;
+    }
+
+    let extractedRoom = raw;
+    try {
+      const parsed = new URL(raw);
+      const qRoom = parsed.searchParams.get("room");
+      if (qRoom) extractedRoom = qRoom;
+    } catch {
+      const match = raw.match(/[?&]room=([^&\s]+)/);
+      if (match?.[1]) extractedRoom = decodeURIComponent(match[1]);
+    }
+
+    const needle = extractedRoom.toLowerCase();
+    const matched = groups.find(
+      (g) =>
+        g.code.toLowerCase() === needle ||
+        getGroupLink(g.code).toLowerCase() === raw.toLowerCase() ||
+        g.name.toLowerCase().includes(needle)
+    );
+
+    if (matched) {
+      setFoundGroup(matched);
+      setSearchNotFound(false);
+    } else {
+      setFoundGroup(null);
+      setSearchNotFound(true);
+    }
+  };
+
+  const handleJoinFoundRoom = (grp) => {
+    setJoiningRoomId(grp.id);
+    setTimeout(() => {
+      setJoiningRoomId(null);
+      joinRoomById(grp.id);
+    }, 280);
   };
 
   const handleBackToList = () => {
@@ -485,6 +668,181 @@ export default function TalkPage() {
               exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.28, ease: SMOOTH_EASE }}
             >
+              {/* Form Masuk via Link Komunikasi + Paste + Search */}
+              <form
+                onSubmit={handleSearchRoom}
+                className="smoked-glass p-3.5 mb-3"
+              >
+                <div
+                  className="mb-2"
+                  style={{
+                    fontFamily: "var(--font-tommy-extra), sans-serif",
+                    fontSize: "0.88rem",
+                    color: "#f2ece1",
+                  }}
+                >
+                  Masuk Ruang via Link
+                </div>
+
+                <div className="d-flex align-items-center gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={linkInput}
+                    onChange={(e) => {
+                      setLinkInput(e.target.value);
+                      if (searchNotFound) setSearchNotFound(false);
+                    }}
+                    placeholder="Tempel link komunikasi yang dibagikan..."
+                    className="form-control form-control-sm"
+                    style={{
+                      backgroundColor: "rgba(14, 12, 10, 0.72)",
+                      borderColor: "rgba(197, 160, 89, 0.24)",
+                      color: "#f2ece1",
+                    }}
+                  />
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.93 }}
+                    transition={NAV_SPRING}
+                    onClick={handlePasteClick}
+                    className="btn btn-sm px-2.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1 flex-shrink-0"
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.72rem",
+                      backgroundColor: "rgba(38, 34, 29, 0.85)",
+                      border: "1px solid rgba(197, 160, 89, 0.34)",
+                      color: pasteActive ? "#f0d08a" : "#e6cfa1",
+                    }}
+                  >
+                    <span
+                      className="d-inline-flex align-items-center justify-content-center rounded-2"
+                      style={
+                        pasteActive
+                          ? {
+                              backgroundColor: "#0b0b0c",
+                              border: "1px solid rgba(197, 160, 89, 0.45)",
+                              padding: "2px",
+                            }
+                          : undefined
+                      }
+                    >
+                      <PasteSvg size={15} active={pasteActive} />
+                    </span>
+                    <span>Paste</span>
+                  </motion.button>
+                </div>
+
+                <div className="d-flex justify-content-end">
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.94 }}
+                    transition={NAV_SPRING}
+                    className="btn btn-sm px-3 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+                    style={{
+                      fontFamily: "var(--font-tommy-medium), sans-serif",
+                      fontSize: "0.74rem",
+                      background:
+                        "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
+                      color: "#16120e",
+                      border: "1px solid rgba(255, 236, 188, 0.45)",
+                    }}
+                  >
+                    <span
+                      className="d-inline-flex align-items-center justify-content-center rounded-2"
+                      style={
+                        searchActive
+                          ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                          : undefined
+                      }
+                    >
+                      <SearchIconSvg size={15} active={searchActive} />
+                    </span>
+                    <span>Search</span>
+                  </motion.button>
+                </div>
+
+                {searchNotFound && (
+                  <div
+                    className="mt-2"
+                    style={{
+                      fontFamily: "var(--font-tommy-regular), sans-serif",
+                      fontSize: "0.74rem",
+                      color: "#ff9e9e",
+                    }}
+                  >
+                    Ruang komunikasi tidak ditemukan.
+                  </div>
+                )}
+
+                {foundGroup && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, ease: SMOOTH_EASE }}
+                    className="mt-2.5 p-2.5 rounded-3 d-flex align-items-center justify-content-between gap-2 flex-wrap"
+                    style={{
+                      backgroundColor: "rgba(26, 23, 19, 0.85)",
+                      border: "1px solid rgba(197, 160, 89, 0.34)",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-tommy-extra), sans-serif",
+                          fontSize: "0.84rem",
+                          color: "#f2ece1",
+                        }}
+                      >
+                        {foundGroup.name}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-tommy-regular), sans-serif",
+                          fontSize: "0.72rem",
+                          color: "#9d958b",
+                        }}
+                      >
+                        {foundGroup.membersJoined || 1} anggota
+                      </div>
+                    </div>
+
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.94 }}
+                      transition={NAV_SPRING}
+                      onClick={() => handleJoinFoundRoom(foundGroup)}
+                      className="btn btn-sm px-3 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+                      style={{
+                        fontFamily: "var(--font-tommy-medium), sans-serif",
+                        fontSize: "0.73rem",
+                        background:
+                          "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
+                        color: "#16120e",
+                        border: "1px solid rgba(255, 236, 188, 0.45)",
+                      }}
+                    >
+                      <span
+                        className="d-inline-flex align-items-center justify-content-center rounded-2"
+                        style={
+                          joiningRoomId === foundGroup.id
+                            ? { backgroundColor: "#0b0b0c", padding: "2px" }
+                            : undefined
+                        }
+                      >
+                        <JoinRoomSvg
+                          size={16}
+                          active={joiningRoomId === foundGroup.id}
+                        />
+                      </span>
+                      <span>Gabung keruang</span>
+                    </motion.button>
+                  </motion.div>
+                )}
+              </form>
+
               {/* Form Buat Talk */}
               <motion.form
                 key={shakeTick}
@@ -752,7 +1110,6 @@ export default function TalkPage() {
               exit={{ opacity: 0, x: 16 }}
               transition={{ duration: 0.28, ease: SMOOTH_EASE }}
             >
-              {/* Tombol Kembali di atas card Bedah CORS */}
               <div className="mb-2">
                 <motion.button
                   type="button"
@@ -885,107 +1242,125 @@ export default function TalkPage() {
                         }
 
                         const isSelf = msg.sender === currentUsername;
-                        const isSwipingThis = swipingId === msg.id;
+
+                        if (!isSelf) {
+                          return (
+                            <div
+                              key={msg.id}
+                              className="d-flex justify-content-start"
+                            >
+                              <SwipeableOtherBubble
+                                msg={msg}
+                                onReply={setReplyTo}
+                                disabled={!user}
+                              >
+                                <div className="d-flex align-items-center gap-1.5 mb-1 justify-content-start">
+                                  <UserAvatar
+                                    username={msg.sender}
+                                    avatarUrl={msg.avatar}
+                                    isSelf={false}
+                                  />
+                                  <span
+                                    style={{
+                                      fontFamily:
+                                        "var(--font-tommy-medium), sans-serif",
+                                      fontSize: "0.73rem",
+                                      color: "#cfe2f7",
+                                    }}
+                                  >
+                                    @{msg.sender}
+                                  </span>
+                                </div>
+
+                                {msg.replyTo && (
+                                  <div
+                                    className="px-2 py-1 mb-1.5 rounded-2"
+                                    style={{
+                                      fontFamily:
+                                        "var(--font-tommy-regular), sans-serif",
+                                      fontSize: "0.7rem",
+                                      color: "#d6cbb9",
+                                      backgroundColor: "rgba(12, 10, 8, 0.48)",
+                                      borderLeft: "2px solid #c5a059",
+                                    }}
+                                  >
+                                    <div style={{ fontWeight: 600 }}>
+                                      @{msg.replyTo.sender}
+                                    </div>
+                                    <div className="text-truncate">
+                                      {msg.replyTo.text}
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div
+                                  className="d-flex align-items-end justify-content-between gap-2.5 flex-wrap"
+                                  style={{
+                                    fontFamily:
+                                      "var(--font-tommy-regular), sans-serif",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontSize: "0.82rem",
+                                      color: "#f2ece1",
+                                      lineHeight: 1.48,
+                                      wordBreak: "break-word",
+                                    }}
+                                  >
+                                    {msg.text}
+                                  </span>
+                                  <span
+                                    className="ms-auto"
+                                    style={{
+                                      fontSize: "0.66rem",
+                                      color: "#9d958b",
+                                      lineHeight: 1,
+                                    }}
+                                  >
+                                    {msg.time}
+                                  </span>
+                                </div>
+                              </SwipeableOtherBubble>
+                            </div>
+                          );
+                        }
 
                         return (
                           <div
                             key={msg.id}
-                            className={`d-flex ${
-                              isSelf
-                                ? "justify-content-end"
-                                : "justify-content-start"
-                            }`}
+                            className="d-flex justify-content-end"
                           >
                             <motion.div
                               initial={{ opacity: 0, y: 12, scale: 0.96 }}
-                              animate={
-                                isSwipingThis
-                                  ? { opacity: 1, y: 0, scale: 0.99, x: 0 }
-                                  : { opacity: 1, y: 0, scale: 1, x: 0 }
-                              }
-                              transition={{
-                                duration: isSwipingThis ? 1 : 0.35,
-                                ease: SMOOTH_EASE,
-                              }}
-                              drag={!isSelf && Boolean(user) ? "x" : false}
-                              dragConstraints={{ left: 0, right: 64 }}
-                              dragElastic={0.25}
-                              onDragEnd={(_, info) => {
-                                if (!isSelf && info.offset.x > 36) {
-                                  setReplyTo({
-                                    sender: msg.sender,
-                                    text: msg.text,
-                                  });
-                                }
-                                setSwipingId(msg.id);
-                                setTimeout(() => {
-                                  setSwipingId((curr) =>
-                                    curr === msg.id ? null : curr
-                                  );
-                                }, 1000);
-                              }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              transition={{ duration: 0.35, ease: SMOOTH_EASE }}
                               className="px-3 py-2 rounded-3"
                               style={{
                                 width: "fit-content",
                                 maxWidth: "82%",
-                                cursor:
-                                  !isSelf && user ? "grab" : "default",
-                                backgroundColor: isSelf
-                                  ? "rgba(197, 160, 89, 0.2)"
-                                  : "rgba(34, 31, 28, 0.86)",
-                                border: isSelf
-                                  ? "1px solid rgba(226, 194, 125, 0.42)"
-                                  : "1px solid rgba(145, 165, 195, 0.24)",
+                                backgroundColor: "rgba(197, 160, 89, 0.2)",
+                                border: "1px solid rgba(226, 194, 125, 0.42)",
                               }}
                             >
-                              {/* Header Nama & PP */}
-                              <div
-                                className={`d-flex align-items-center gap-1.5 mb-1 ${
-                                  isSelf
-                                    ? "justify-content-end"
-                                    : "justify-content-start"
-                                }`}
-                              >
-                                {isSelf ? (
-                                  <>
-                                    <span
-                                      style={{
-                                        fontFamily:
-                                          "var(--font-tommy-medium), sans-serif",
-                                        fontSize: "0.73rem",
-                                        color: "#f0d08a",
-                                      }}
-                                    >
-                                      @{msg.sender}
-                                    </span>
-                                    <UserAvatar
-                                      username={msg.sender}
-                                      avatarUrl={msg.avatar || currentAvatar}
-                                      isSelf={true}
-                                    />
-                                  </>
-                                ) : (
-                                  <>
-                                    <UserAvatar
-                                      username={msg.sender}
-                                      avatarUrl={msg.avatar}
-                                      isSelf={false}
-                                    />
-                                    <span
-                                      style={{
-                                        fontFamily:
-                                          "var(--font-tommy-medium), sans-serif",
-                                        fontSize: "0.73rem",
-                                        color: "#cfe2f7",
-                                      }}
-                                    >
-                                      @{msg.sender}
-                                    </span>
-                                  </>
-                                )}
+                              <div className="d-flex align-items-center gap-1.5 mb-1 justify-content-end">
+                                <span
+                                  style={{
+                                    fontFamily:
+                                      "var(--font-tommy-medium), sans-serif",
+                                    fontSize: "0.73rem",
+                                    color: "#f0d08a",
+                                  }}
+                                >
+                                  @{msg.sender}
+                                </span>
+                                <UserAvatar
+                                  username={msg.sender}
+                                  avatarUrl={msg.avatar || currentAvatar}
+                                  isSelf={true}
+                                />
                               </div>
 
-                              {/* Cuplikan Pesan yang Di-reply */}
                               {msg.replyTo && (
                                 <div
                                   className="px-2 py-1 mb-1.5 rounded-2"
@@ -1007,7 +1382,6 @@ export default function TalkPage() {
                                 </div>
                               )}
 
-                              {/* Teks Pesan & Jam di Bawah Kanan Dalam Balon */}
                               <div
                                 className="d-flex align-items-end justify-content-between gap-2.5 flex-wrap"
                                 style={{
@@ -1029,7 +1403,7 @@ export default function TalkPage() {
                                   className="ms-auto"
                                   style={{
                                     fontSize: "0.66rem",
-                                    color: isSelf ? "#e6cfa1" : "#9d958b",
+                                    color: "#e6cfa1",
                                     lineHeight: 1,
                                   }}
                                 >
