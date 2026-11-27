@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -95,6 +96,38 @@ const CopyLinkSvg = ({ size = 17, active = false }) => (
   </svg>
 );
 
+const BackArrowSvg = ({ size = 17, active = false }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill={active ? "#f0d08a" : "#e6cfa1"}
+      d="m6.414 7 1.793 1.793c.499.569.33 1.464-.448 1.673a1 1 0 0 1-.518 0c-.194-.052-.299-.128-.448-.259l-3.5-3.5c-.422-.481-.381-1.233.207-1.573.175-.101.302-.121.5-.134h10c4.148.084 7.31 3.453 6.971 7.625a6.86 6.86 0 0 1-1.062 3.128C18.584 17.806 16.43 18.951 14 19H5c-.639-.042-1.142-.603-.966-1.259.122-.453.515-.711.966-.741h8.976c2.248-.053 4.183-1.4 4.823-3.596.178-.61.237-1.254.177-1.887-.252-2.638-2.401-4.455-5-4.517Z"
+    />
+  </svg>
+);
+
+const SendPlaneSvg = ({ size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#16120e"
+    strokeWidth="1.9"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M22 2 11 13" />
+    <path d="M22 2 15 22l-4-9-9-4 20-7z" />
+  </svg>
+);
+
 const UserAvatar = ({ username = "member_api", avatarUrl = "", isSelf = false }) => {
   const initial = String(username || "U").charAt(0).toUpperCase();
   return (
@@ -138,6 +171,8 @@ export default function TalkPage() {
   const [nameError, setNameError] = useState(false);
   const [shakeTick, setShakeTick] = useState(0);
   const [addClicked, setAddClicked] = useState(false);
+  const [backClicked, setBackClicked] = useState(false);
+  const [swipingId, setSwipingId] = useState(null);
   const errorTimerRef = useRef(null);
 
   const [groups, setGroups] = useState([
@@ -235,6 +270,7 @@ export default function TalkPage() {
 
   const handleCreateTalk = (e) => {
     e.preventDefault();
+    if (!user) return;
     setAddClicked(true);
     setTimeout(() => setAddClicked(false), 320);
 
@@ -251,8 +287,9 @@ export default function TalkPage() {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
+    const groupId = `grp-${Date.now()}`;
     const newGroup = {
-      id: `grp-${Date.now()}`,
+      id: groupId,
       name: cleanName,
       topic: topic.trim(),
       tag: selectedTag,
@@ -275,17 +312,18 @@ export default function TalkPage() {
     setGroups((prev) => [newGroup, ...prev]);
     setGroupName("");
     setTopic("");
-  };
-
-  const handleOpenRoom = (grp) => {
-    setActiveRoomId(grp.id);
+    setActiveRoomId(groupId);
     setReplyTo(null);
     setViewMode("room");
   };
 
   const handleBackToList = () => {
-    setReplyTo(null);
-    setViewMode("list");
+    setBackClicked(true);
+    setTimeout(() => {
+      setBackClicked(false);
+      setReplyTo(null);
+      setViewMode("list");
+    }, 180);
   };
 
   const handleCopyLink = async (grp) => {
@@ -312,6 +350,7 @@ export default function TalkPage() {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
+    if (!user) return;
     const cleanMsg = chatInput.trim();
     if (!cleanMsg || !activeGroup) return;
 
@@ -353,6 +392,36 @@ export default function TalkPage() {
         className="container py-4 flex-grow-1 mb-4"
         style={{ maxWidth: "740px" }}
       >
+        {!user && (
+          <div
+            className="smoked-glass p-3 mb-3 d-flex align-items-center justify-content-between gap-2 flex-wrap"
+            style={{ borderColor: "rgba(197, 160, 89, 0.32)" }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-tommy-regular), sans-serif",
+                fontSize: "0.8rem",
+                color: "#e6cfa3",
+              }}
+            >
+              Masuk jika ingin talk
+            </span>
+            <Link
+              href="/login"
+              className="px-3 py-1 rounded-pill text-decoration-none"
+              style={{
+                background:
+                  "linear-gradient(180deg, #cfa960 0%, #b38d46 100%)",
+                color: "#120f0c",
+                fontFamily: "var(--font-tommy-medium), sans-serif",
+                fontSize: "0.74rem",
+              }}
+            >
+              Masuk
+            </Link>
+          </div>
+        )}
+
         {/* Navigasi Mode ala Telegram */}
         <div
           className="d-flex align-items-center justify-content-between gap-2 mb-3 p-1.5 rounded-pill"
@@ -416,7 +485,7 @@ export default function TalkPage() {
               exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.28, ease: SMOOTH_EASE }}
             >
-              {/* Form Buat Talk: hanya form yang bergetar & merah, hilang otomatis setelah 5 detik */}
+              {/* Form Buat Talk */}
               <motion.form
                 key={shakeTick}
                 onSubmit={handleCreateTalk}
@@ -436,7 +505,8 @@ export default function TalkPage() {
                   backgroundColor: nameError
                     ? "rgba(92, 22, 22, 0.42)"
                     : undefined,
-                  transition: "background-color 0.35s ease, border-color 0.35s ease",
+                  transition:
+                    "background-color 0.35s ease, border-color 0.35s ease",
                 }}
               >
                 <h1
@@ -465,6 +535,7 @@ export default function TalkPage() {
                   <input
                     type="text"
                     value={groupName}
+                    disabled={!user}
                     onChange={(e) => {
                       setGroupName(e.target.value);
                       if (nameError && e.target.value.trim()) {
@@ -490,6 +561,7 @@ export default function TalkPage() {
                   <input
                     type="text"
                     value={topic}
+                    disabled={!user}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder="Deskripsi Talk Kamu"
                     className="form-control form-control-sm"
@@ -509,6 +581,7 @@ export default function TalkPage() {
                         <button
                           key={tag}
                           type="button"
+                          disabled={!user}
                           onClick={() => setSelectedTag(tag)}
                           className="btn btn-sm px-2.5 py-0.5 rounded-pill"
                           style={{
@@ -531,8 +604,9 @@ export default function TalkPage() {
                   <div className="d-flex justify-content-end pt-1">
                     <motion.button
                       type="submit"
-                      whileHover={{ scale: 1.03, y: -1 }}
-                      whileTap={{ scale: 0.94 }}
+                      disabled={!user}
+                      whileHover={user ? { scale: 1.03, y: -1 } : undefined}
+                      whileTap={user ? { scale: 0.94 } : undefined}
                       transition={NAV_SPRING}
                       className="btn btn-sm px-3.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5"
                       style={{
@@ -542,6 +616,7 @@ export default function TalkPage() {
                           "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
                         color: "#16120e",
                         border: "1px solid rgba(255, 236, 188, 0.45)",
+                        opacity: user ? 1 : 0.65,
                       }}
                     >
                       <span
@@ -573,7 +648,7 @@ export default function TalkPage() {
                         initial={{ opacity: 0, y: 18, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -12, scale: 0.97 }}
-                        transition={{ duration: 0.34, ease: SMOOTH_EASE }}
+                        transition={{ duration: 0.36, ease: SMOOTH_EASE }}
                         className="smoked-glass p-3.5"
                       >
                         <div className="d-flex align-items-center justify-content-between gap-2 mb-1.5 flex-wrap">
@@ -661,25 +736,6 @@ export default function TalkPage() {
                               {isCopied ? "Link Tersalin" : "Salin Link"}
                             </span>
                           </motion.button>
-
-                          <motion.button
-                            type="button"
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.94 }}
-                            transition={NAV_SPRING}
-                            onClick={() => handleOpenRoom(grp)}
-                            className="btn btn-sm px-3 py-1 rounded-pill"
-                            style={{
-                              fontSize: "0.73rem",
-                              fontFamily: "var(--font-tommy-medium), sans-serif",
-                              background:
-                                "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
-                              color: "#16120e",
-                              border: "1px solid rgba(255, 236, 188, 0.45)",
-                            }}
-                          >
-                            Masuk Ruang
-                          </motion.button>
                         </div>
                       </motion.div>
                     );
@@ -695,342 +751,383 @@ export default function TalkPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 16 }}
               transition={{ duration: 0.28, ease: SMOOTH_EASE }}
-              className="smoked-glass p-3.5"
             >
-              {activeGroup ? (
-                <>
-                  <div
-                    className="d-flex align-items-center justify-content-between gap-2 pb-2.5 mb-3 border-bottom flex-wrap"
-                    style={{ borderColor: "rgba(197, 160, 89, 0.16)" }}
-                  >
-                    <div>
-                      <div className="d-flex align-items-center gap-2 flex-wrap">
-                        <span
+              {/* Tombol Kembali di atas card Bedah CORS */}
+              <div className="mb-2">
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.03, x: -2 }}
+                  whileTap={{ scale: 0.94 }}
+                  transition={NAV_SPRING}
+                  onClick={handleBackToList}
+                  className="btn btn-sm px-3 py-1 rounded-pill d-inline-flex align-items-center gap-1.5"
+                  style={{
+                    fontFamily: "var(--font-tommy-medium), sans-serif",
+                    fontSize: "0.74rem",
+                    backgroundColor: backClicked
+                      ? "#0b0b0c"
+                      : "rgba(38, 34, 29, 0.85)",
+                    border: "1px solid rgba(197, 160, 89, 0.34)",
+                    color: backClicked ? "#f0d08a" : "#e6cfa1",
+                  }}
+                >
+                  <BackArrowSvg size={16} active={backClicked} />
+                  <span>Kembali</span>
+                </motion.button>
+              </div>
+
+              <div className="smoked-glass p-3.5">
+                {activeGroup ? (
+                  <>
+                    <div
+                      className="d-flex align-items-center justify-content-between gap-2 pb-2.5 mb-3 border-bottom flex-wrap"
+                      style={{ borderColor: "rgba(197, 160, 89, 0.16)" }}
+                    >
+                      <div>
+                        <div className="d-flex align-items-center gap-2 flex-wrap">
+                          <span
+                            style={{
+                              fontFamily: "var(--font-tommy-extra), sans-serif",
+                              fontSize: "0.94rem",
+                              color: "#f2ece1",
+                            }}
+                          >
+                            {activeGroup.name}
+                          </span>
+                          <span
+                            className="px-2 py-0.5 rounded-pill"
+                            style={{
+                              fontSize: "0.66rem",
+                              backgroundColor: getTagStyle(
+                                activeGroup.tag || "Diskusi Tech"
+                              ).backgroundColor,
+                              border: `1px solid ${
+                                getTagStyle(activeGroup.tag || "Diskusi Tech")
+                                  .borderColor
+                              }`,
+                              color: getTagStyle(
+                                activeGroup.tag || "Diskusi Tech"
+                              ).color,
+                            }}
+                          >
+                            {activeGroup.tag || "Diskusi Tech"}
+                          </span>
+                        </div>
+                        <div
                           style={{
-                            fontFamily: "var(--font-tommy-extra), sans-serif",
-                            fontSize: "0.94rem",
-                            color: "#f2ece1",
+                            fontFamily: "var(--font-tommy-regular), sans-serif",
+                            fontSize: "0.72rem",
+                            color: "#9d958b",
                           }}
                         >
-                          {activeGroup.name}
-                        </span>
-                        <span
-                          className="px-2 py-0.5 rounded-pill"
-                          style={{
-                            fontSize: "0.66rem",
-                            backgroundColor: getTagStyle(
-                              activeGroup.tag || "Diskusi Tech"
-                            ).backgroundColor,
-                            border: `1px solid ${
-                              getTagStyle(activeGroup.tag || "Diskusi Tech")
-                                .borderColor
-                            }`,
-                            color: getTagStyle(
-                              activeGroup.tag || "Diskusi Tech"
-                            ).color,
-                          }}
-                        >
-                          {activeGroup.tag || "Diskusi Tech"}
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-tommy-regular), sans-serif",
-                          fontSize: "0.72rem",
-                          color: "#9d958b",
-                        }}
-                      >
-                        {activeGroup.membersJoined || 1} anggota terhubung via
-                        link • geser chat orang lain ke kanan untuk membalas
+                          {activeGroup.membersJoined || 1} anggota terhubung via
+                          link • geser chat orang lain ke kanan untuk membalas
+                        </div>
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleBackToList}
-                      className="btn btn-sm btn-glass-subtle px-2.5 py-1 rounded-pill"
-                      style={{ fontSize: "0.72rem", color: "#e6cfa3" }}
-                    >
-                      Kembali
-                    </button>
-                  </div>
-
-                  {/* Daftar Grup Cepat */}
-                  <div className="d-flex align-items-center gap-1.5 overflow-auto pb-2 mb-3">
-                    {groups.map((item) => {
-                      const selected = item.id === activeGroup.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => {
-                            setActiveRoomId(item.id);
-                            setReplyTo(null);
-                          }}
-                          className="btn btn-sm px-2.5 py-1 rounded-pill flex-shrink-0"
-                          style={{
-                            fontSize: "0.7rem",
-                            fontFamily: "var(--font-tommy-medium), sans-serif",
-                            backgroundColor: selected
-                              ? "rgba(197, 160, 89, 0.24)"
-                              : "rgba(28, 25, 21, 0.65)",
-                            border: "1px solid rgba(197, 160, 89, 0.3)",
-                            color: selected ? "#f2ece1" : "#b8ad9e",
-                          }}
-                        >
-                          {item.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Area Balon Chat */}
-                  <div
-                    className="d-flex flex-column gap-2.5 mb-3 p-2.5 rounded-3"
-                    style={{
-                      minHeight: "250px",
-                      maxHeight: "380px",
-                      overflowY: "auto",
-                      backgroundColor: "rgba(12, 10, 8, 0.55)",
-                      border: "1px solid rgba(197, 160, 89, 0.14)",
-                    }}
-                  >
-                    {activeGroup.messages.map((msg) => {
-                      if (msg.systemJoin) {
+                    {/* Daftar Grup Cepat */}
+                    <div className="d-flex align-items-center gap-1.5 overflow-auto pb-2 mb-3">
+                      {groups.map((item) => {
+                        const selected = item.id === activeGroup.id;
                         return (
-                          <div
-                            key={msg.id}
-                            className="text-center my-1"
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => {
+                              setActiveRoomId(item.id);
+                              setReplyTo(null);
+                            }}
+                            className="btn btn-sm px-2.5 py-1 rounded-pill flex-shrink-0"
                             style={{
-                              fontFamily: "var(--font-tommy-regular), sans-serif",
                               fontSize: "0.7rem",
-                              color: "#c5a059",
+                              fontFamily: "var(--font-tommy-medium), sans-serif",
+                              backgroundColor: selected
+                                ? "rgba(197, 160, 89, 0.24)"
+                                : "rgba(28, 25, 21, 0.65)",
+                              border: "1px solid rgba(197, 160, 89, 0.3)",
+                              color: selected ? "#f2ece1" : "#b8ad9e",
                             }}
                           >
-                            {msg.text} • {msg.time}
-                          </div>
+                            {item.name}
+                          </button>
                         );
-                      }
+                      })}
+                    </div>
 
-                      const isSelf = msg.sender === currentUsername;
-
-                      return (
-                        <div
-                          key={msg.id}
-                          className={`d-flex ${
-                            isSelf ? "justify-content-end" : "justify-content-start"
-                          }`}
-                        >
-                          <motion.div
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.22, ease: SMOOTH_EASE }}
-                            drag={!isSelf ? "x" : false}
-                            dragConstraints={{ left: 0, right: 64 }}
-                            dragElastic={0.25}
-                            onDragEnd={(_, info) => {
-                              if (!isSelf && info.offset.x > 36) {
-                                setReplyTo({
-                                  sender: msg.sender,
-                                  text: msg.text,
-                                });
-                              }
-                            }}
-                            whileDrag={{ scale: 0.99 }}
-                            className="px-3 py-2 rounded-3"
-                            style={{
-                              width: "fit-content",
-                              maxWidth: "82%",
-                              cursor: !isSelf ? "grab" : "default",
-                              backgroundColor: isSelf
-                                ? "rgba(197, 160, 89, 0.2)"
-                                : "rgba(34, 31, 28, 0.86)",
-                              border: isSelf
-                                ? "1px solid rgba(226, 194, 125, 0.42)"
-                                : "1px solid rgba(145, 165, 195, 0.24)",
-                            }}
-                          >
-                            {/* Header Nama & PP: di kanan untuk diri sendiri, di kiri untuk user lain */}
+                    {/* Area Balon Chat */}
+                    <div
+                      className="d-flex flex-column gap-2.5 mb-3 p-2.5 rounded-3"
+                      style={{
+                        minHeight: "250px",
+                        maxHeight: "380px",
+                        overflowY: "auto",
+                        backgroundColor: "rgba(12, 10, 8, 0.55)",
+                        border: "1px solid rgba(197, 160, 89, 0.14)",
+                      }}
+                    >
+                      {activeGroup.messages.map((msg) => {
+                        if (msg.systemJoin) {
+                          return (
                             <div
-                              className={`d-flex align-items-center gap-1.5 mb-1 ${
-                                isSelf
-                                  ? "justify-content-end"
-                                  : "justify-content-start"
-                              }`}
-                            >
-                              {isSelf ? (
-                                <>
-                                  <span
-                                    style={{
-                                      fontFamily:
-                                        "var(--font-tommy-medium), sans-serif",
-                                      fontSize: "0.73rem",
-                                      color: "#f0d08a",
-                                    }}
-                                  >
-                                    @{msg.sender}
-                                  </span>
-                                  <UserAvatar
-                                    username={msg.sender}
-                                    avatarUrl={msg.avatar || currentAvatar}
-                                    isSelf={true}
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <UserAvatar
-                                    username={msg.sender}
-                                    avatarUrl={msg.avatar}
-                                    isSelf={false}
-                                  />
-                                  <span
-                                    style={{
-                                      fontFamily:
-                                        "var(--font-tommy-medium), sans-serif",
-                                      fontSize: "0.73rem",
-                                      color: "#cfe2f7",
-                                    }}
-                                  >
-                                    @{msg.sender}
-                                  </span>
-                                </>
-                              )}
-                            </div>
-
-                            {/* Cuplikan Pesan yang Di-reply */}
-                            {msg.replyTo && (
-                              <div
-                                className="px-2 py-1 mb-1.5 rounded-2"
-                                style={{
-                                  fontFamily:
-                                    "var(--font-tommy-regular), sans-serif",
-                                  fontSize: "0.7rem",
-                                  color: "#d6cbb9",
-                                  backgroundColor: "rgba(12, 10, 8, 0.48)",
-                                  borderLeft: "2px solid #c5a059",
-                                }}
-                              >
-                                <div style={{ fontWeight: 600 }}>
-                                  @{msg.replyTo.sender}
-                                </div>
-                                <div className="text-truncate">
-                                  {msg.replyTo.text}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Teks Pesan & Jam di Bawah Kanan Dalam Balon */}
-                            <div
-                              className="d-flex align-items-end justify-content-between gap-2.5 flex-wrap"
+                              key={msg.id}
+                              className="text-center my-1"
                               style={{
                                 fontFamily:
                                   "var(--font-tommy-regular), sans-serif",
+                                fontSize: "0.7rem",
+                                color: "#c5a059",
                               }}
                             >
-                              <span
-                                style={{
-                                  fontSize: "0.82rem",
-                                  color: "#f2ece1",
-                                  lineHeight: 1.48,
-                                  wordBreak: "break-word",
-                                }}
-                              >
-                                {msg.text}
-                              </span>
-                              <span
-                                className="ms-auto"
-                                style={{
-                                  fontSize: "0.66rem",
-                                  color: isSelf ? "#e6cfa1" : "#9d958b",
-                                  lineHeight: 1,
-                                }}
-                              >
-                                {msg.time}
-                              </span>
+                              {msg.text} • {msg.time}
                             </div>
-                          </motion.div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                          );
+                        }
 
-                  {/* Preview Balas Chat Jika Sedang Me-reply */}
-                  <AnimatePresence>
-                    {replyTo && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 6 }}
-                        transition={{ duration: 0.2, ease: SMOOTH_EASE }}
-                        className="d-flex align-items-center justify-content-between gap-2 px-2.5 py-1.5 mb-2 rounded-3"
+                        const isSelf = msg.sender === currentUsername;
+                        const isSwipingThis = swipingId === msg.id;
+
+                        return (
+                          <div
+                            key={msg.id}
+                            className={`d-flex ${
+                              isSelf
+                                ? "justify-content-end"
+                                : "justify-content-start"
+                            }`}
+                          >
+                            <motion.div
+                              initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                              animate={
+                                isSwipingThis
+                                  ? { opacity: 1, y: 0, scale: 0.99, x: 0 }
+                                  : { opacity: 1, y: 0, scale: 1, x: 0 }
+                              }
+                              transition={{
+                                duration: isSwipingThis ? 1 : 0.35,
+                                ease: SMOOTH_EASE,
+                              }}
+                              drag={!isSelf && Boolean(user) ? "x" : false}
+                              dragConstraints={{ left: 0, right: 64 }}
+                              dragElastic={0.25}
+                              onDragEnd={(_, info) => {
+                                if (!isSelf && info.offset.x > 36) {
+                                  setReplyTo({
+                                    sender: msg.sender,
+                                    text: msg.text,
+                                  });
+                                }
+                                setSwipingId(msg.id);
+                                setTimeout(() => {
+                                  setSwipingId((curr) =>
+                                    curr === msg.id ? null : curr
+                                  );
+                                }, 1000);
+                              }}
+                              className="px-3 py-2 rounded-3"
+                              style={{
+                                width: "fit-content",
+                                maxWidth: "82%",
+                                cursor:
+                                  !isSelf && user ? "grab" : "default",
+                                backgroundColor: isSelf
+                                  ? "rgba(197, 160, 89, 0.2)"
+                                  : "rgba(34, 31, 28, 0.86)",
+                                border: isSelf
+                                  ? "1px solid rgba(226, 194, 125, 0.42)"
+                                  : "1px solid rgba(145, 165, 195, 0.24)",
+                              }}
+                            >
+                              {/* Header Nama & PP */}
+                              <div
+                                className={`d-flex align-items-center gap-1.5 mb-1 ${
+                                  isSelf
+                                    ? "justify-content-end"
+                                    : "justify-content-start"
+                                }`}
+                              >
+                                {isSelf ? (
+                                  <>
+                                    <span
+                                      style={{
+                                        fontFamily:
+                                          "var(--font-tommy-medium), sans-serif",
+                                        fontSize: "0.73rem",
+                                        color: "#f0d08a",
+                                      }}
+                                    >
+                                      @{msg.sender}
+                                    </span>
+                                    <UserAvatar
+                                      username={msg.sender}
+                                      avatarUrl={msg.avatar || currentAvatar}
+                                      isSelf={true}
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <UserAvatar
+                                      username={msg.sender}
+                                      avatarUrl={msg.avatar}
+                                      isSelf={false}
+                                    />
+                                    <span
+                                      style={{
+                                        fontFamily:
+                                          "var(--font-tommy-medium), sans-serif",
+                                        fontSize: "0.73rem",
+                                        color: "#cfe2f7",
+                                      }}
+                                    >
+                                      @{msg.sender}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+
+                              {/* Cuplikan Pesan yang Di-reply */}
+                              {msg.replyTo && (
+                                <div
+                                  className="px-2 py-1 mb-1.5 rounded-2"
+                                  style={{
+                                    fontFamily:
+                                      "var(--font-tommy-regular), sans-serif",
+                                    fontSize: "0.7rem",
+                                    color: "#d6cbb9",
+                                    backgroundColor: "rgba(12, 10, 8, 0.48)",
+                                    borderLeft: "2px solid #c5a059",
+                                  }}
+                                >
+                                  <div style={{ fontWeight: 600 }}>
+                                    @{msg.replyTo.sender}
+                                  </div>
+                                  <div className="text-truncate">
+                                    {msg.replyTo.text}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Teks Pesan & Jam di Bawah Kanan Dalam Balon */}
+                              <div
+                                className="d-flex align-items-end justify-content-between gap-2.5 flex-wrap"
+                                style={{
+                                  fontFamily:
+                                    "var(--font-tommy-regular), sans-serif",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    fontSize: "0.82rem",
+                                    color: "#f2ece1",
+                                    lineHeight: 1.48,
+                                    wordBreak: "break-word",
+                                  }}
+                                >
+                                  {msg.text}
+                                </span>
+                                <span
+                                  className="ms-auto"
+                                  style={{
+                                    fontSize: "0.66rem",
+                                    color: isSelf ? "#e6cfa1" : "#9d958b",
+                                    lineHeight: 1,
+                                  }}
+                                >
+                                  {msg.time}
+                                </span>
+                              </div>
+                            </motion.div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Preview Balas Chat */}
+                    <AnimatePresence>
+                      {replyTo && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 6 }}
+                          transition={{ duration: 0.2, ease: SMOOTH_EASE }}
+                          className="d-flex align-items-center justify-content-between gap-2 px-2.5 py-1.5 mb-2 rounded-3"
+                          style={{
+                            fontFamily: "var(--font-tommy-regular), sans-serif",
+                            fontSize: "0.72rem",
+                            color: "#e6cfa1",
+                            backgroundColor: "rgba(38, 33, 27, 0.78)",
+                            borderLeft: "3px solid #c5a059",
+                          }}
+                        >
+                          <div className="text-truncate">
+                            Membalas <strong>@{replyTo.sender}</strong>:{" "}
+                            {replyTo.text}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setReplyTo(null)}
+                            className="btn btn-sm p-0 px-1.5 text-decoration-none"
+                            style={{ fontSize: "0.7rem", color: "#f2ece1" }}
+                          >
+                            Batal
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Input Kirim Pesan */}
+                    <form
+                      onSubmit={handleSendMessage}
+                      className="d-flex align-items-center gap-2"
+                    >
+                      <input
+                        type="text"
+                        value={chatInput}
+                        disabled={!user}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder={
+                          user
+                            ? "Tulis pesan komunikasi..."
+                            : "Masuk jika ingin talk"
+                        }
+                        className="form-control form-control-sm"
                         style={{
-                          fontFamily: "var(--font-tommy-regular), sans-serif",
-                          fontSize: "0.72rem",
-                          color: "#e6cfa1",
-                          backgroundColor: "rgba(38, 33, 27, 0.78)",
-                          borderLeft: "3px solid #c5a059",
+                          backgroundColor: "rgba(14, 12, 10, 0.78)",
+                          borderColor: "rgba(197, 160, 89, 0.28)",
+                          color: "#f2ece1",
+                        }}
+                      />
+                      <motion.button
+                        type="submit"
+                        disabled={!user}
+                        whileHover={user ? { scale: 1.03 } : undefined}
+                        whileTap={user ? { scale: 0.94 } : undefined}
+                        transition={NAV_SPRING}
+                        className="btn btn-sm px-3 py-1.5 rounded-pill flex-shrink-0 d-inline-flex align-items-center gap-1.5"
+                        style={{
+                          fontFamily: "var(--font-tommy-medium), sans-serif",
+                          fontSize: "0.75rem",
+                          background:
+                            "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
+                          color: "#16120e",
+                          border: "1px solid rgba(255, 236, 188, 0.45)",
+                          opacity: user ? 1 : 0.65,
                         }}
                       >
-                        <div className="text-truncate">
-                          Membalas <strong>@{replyTo.sender}</strong>:{" "}
-                          {replyTo.text}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setReplyTo(null)}
-                          className="btn btn-sm p-0 px-1.5 text-decoration-none"
-                          style={{ fontSize: "0.7rem", color: "#f2ece1" }}
-                        >
-                          Batal
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Input Kirim Pesan */}
-                  <form
-                    onSubmit={handleSendMessage}
-                    className="d-flex align-items-center gap-2"
+                        <span>Kirim</span>
+                        <SendPlaneSvg size={14} />
+                      </motion.button>
+                    </form>
+                  </>
+                ) : (
+                  <p
+                    className="mb-0"
+                    style={{ fontSize: "0.8rem", color: "#9d958b" }}
                   >
-                    <input
-                      type="text"
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      placeholder="Tulis pesan komunikasi..."
-                      className="form-control form-control-sm"
-                      style={{
-                        backgroundColor: "rgba(14, 12, 10, 0.78)",
-                        borderColor: "rgba(197, 160, 89, 0.28)",
-                        color: "#f2ece1",
-                      }}
-                    />
-                    <motion.button
-                      type="submit"
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.94 }}
-                      transition={NAV_SPRING}
-                      className="btn btn-sm px-3 py-1.5 rounded-pill flex-shrink-0"
-                      style={{
-                        fontFamily: "var(--font-tommy-medium), sans-serif",
-                        fontSize: "0.75rem",
-                        background:
-                          "linear-gradient(180deg, #e2c27d 0%, #c5a059 100%)",
-                        color: "#16120e",
-                        border: "1px solid rgba(255, 236, 188, 0.45)",
-                      }}
-                    >
-                      Kirim
-                    </motion.button>
-                  </form>
-                </>
-              ) : (
-                <p
-                  className="mb-0"
-                  style={{ fontSize: "0.8rem", color: "#9d958b" }}
-                >
-                  Belum ada grup Talk. Buat grup dulu di tab Daftar Talk.
-                </p>
-              )}
+                    Belum ada grup Talk. Buat grup dulu di tab Daftar Talk.
+                  </p>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
